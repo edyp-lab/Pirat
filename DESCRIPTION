@@ -1,0 +1,22 @@
+Package: Pirat
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: c(
+    person("Lucas", "Etourneau", email = "lucas.etourneau@univ-grenoble-alpes.fr", role = c("cre", "aut")),
+    person("Thomas", "Burger", email = "thomas.burger@cea.fr",  role = c("cre", "aut"))
+    person("Samuel", "Wieczorek", email = "samuel.wieczorek@cea.fr",  role = "cont")
+    )
+Maintainer: Lucas Etourneau <lucas.etourneau@univ-grenoble-alpes.fr>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Depends:
+  R (>= 4.3.0)
+Imports:
+    knitr, progress, MASS, invgamma, reticulate, grDevices, stats, graphics
+VignetteBuilder: knitr
+  

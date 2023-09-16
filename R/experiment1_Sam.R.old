@@ -1,0 +1,615 @@
+#setwd("~/PhD_project/2020-proteomics-transcriptomics")
+
+#source("../data_loader/maxquant_data.R")
+#source("../data_loader/proline_data.R")
+#source("../data_loader/huang2020_data.R")
+
+# library(reticulate)
+# library(missForest)
+# reticulate::use_condaenv("classics")
+# reticulate::source_python("llk_maximize.py")
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param imputed.ds xxx
+#' @param or.ds xxx
+#'
+#' @return xxx
+#'
+put_imputed_in_or = function(imputed.ds, or.ds) {
+  imputed.names = colnames(imputed.ds)
+  or.names = colnames(or.ds)
+  is.imputed = or.names %in% imputed.names
+  or.ds[, is.imputed] = imputed.ds
+  return(or.ds)
+}
+
+
+
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @param name xxx
+#' #' @param data xxx
+#' #' @param path2saveRDS xxx
+#' #' @param difference xxx
+#' #'
+#' #' @return xxx
+#' #'
+#' SaveTest <- function(name,
+#'                      data,
+#'                      path2saveRDS = '',
+#'                      difference = NULL){
+#'
+#'   stopifnot(path2saveRDS != '')
+#'
+#'   saveRDS(data,
+#'           file = file.path(path2saveRDS, paste0(name, ".rds")))
+#'
+#'   if (!is.null(difference))
+#'     saveRDS(difference,
+#'             file.path(path2saveRDS, paste0(name, "_time.rds")))
+#' }
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @return A list
+#' #'
+#' #' @export
+#' #'
+#' Load_Maxquant_data <- function(){
+#'   data.name = "MaxQuant"
+#'   pathpeptides = "../../datasets/maxquant/peptides.txt"
+#'   pathsupmat2 = "../../datasets/maxquant/mcp.M113.031591-2.csv"
+#'   mq.data.comp = get.maxquant.data(pathpeptides, pathsupmat2, n.na.max = 7, rm.nested.pg = T)
+#'   saveRDS(mq.data.comp, file = file.path("..", "processed_data", "cox_comp.rds"))
+#'   mq.data.comp = readRDS(file.path("..", "processed_data", "cox_comp.rds"))
+#'   groups = factor(rep(1:2, each = 4))
+#'   return(
+#'     list(
+#'       mq.data.comp = mq.data.comp,
+#'       groups = groups,
+#'       data.name = data.name
+#'       )
+#'     )
+#' }
+
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @return A list
+#' #'
+#' #' @export
+#' #'
+#' Load_Proline_data <- function(){
+#'   # Load Proline data
+#'   data.name = "Proline"
+#'   pathpeptides <- system.file("extdata", "proline_pep_prot.csv", package = "Pirat")
+#'   mq.data.comp <- get.proline.data(pathpeptides, n.na.max = 39, rm.nested.pg = T)
+#'   #saveRDS(mq.data.comp, file = file.path("..", "processed_data", "bouyssie_comp.rds"))
+#'   saveRDS(mq.data.comp, file = file.path(".", "processed_data", "bouyssie_comp.rds"))
+#'   #mq.data.comp = readRDS(file.path("..", "processed_data", "bouyssie_comp.rds"))
+#'   mq.data.comp = readRDS(file.path(".", "processed_data", "bouyssie_comp.rds"))
+#'   groups = factor(rep(1:10, each = 4))
+#'
+#'   return(
+#'     list(
+#'       mq.data.comp = mq.data.comp,
+#'       groups = groups,
+#'       data.name = data.name
+#'       )
+#'     )
+#' }
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @return A list
+#' #'
+#' Load_Huang2020_data <- function(){
+#' data.name = "Huang2020"
+#' pathpeptides = "../../datasets/Huang2020/Spike-in-biol-var-OT-SN-Report.txt"
+#' # mq.data = get.huang.data(pathpeptides, n.na.max = 24, rm.nested.pg = T)
+#' # saveRDS(mq.data.comp, file = file.path("..", "processed_data", "Huang2020_data_comp.rds"))
+#' mq.data.comp = readRDS(file.path("..", "processed_data", "Huang2020_data_comp.rds"))
+#' groups = factor(rep(1:5, each = 5))
+#'
+#' return(
+#'   list(
+#'     mq.data.comp = mq.data.comp,
+#'     groups = groups,
+#'     data.name = data.name
+#'     )
+#'   )
+#' }
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @export
+#'
+Our_Method <- function(mq.data.comp,
+                      transpose = FALSE,
+                      mcar = FALSE){
+  #source("pipeline_impute.R")
+  start_time <- Sys.time()
+  res.mle <- pipeline_llkimpute(mq.data.comp,
+                                nu_factor = 2,
+                                transpose = transpose,
+                                mcar = mcar)
+  end_time <- Sys.time()
+
+  name <- NULL
+  if (!transpose && !mcar)
+    name <- "MLEMNAR"
+  else if (mcar && transpose)
+    name <- "MLEMCAR_transpose"
+  else if (mcar && !transpose)
+    name <- "MLEMCAR"
+
+  SaveTest(name = name,
+           data = res.mle,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @param mq.data.comp xxx
+#' #' @param transpose xxx
+#' #'
+#' Our_Method_MCAR <- function(mq.data.comp,
+#'                             transpose = FALSE){
+#'   # # Our method MCAR version
+#'   #source("pipeline_impute.R")
+#'   start_time <- Sys.time()
+#'   res.mle_mcar = pipeline_llkimpute(mq.data.comp, nu_factor=2, mcar = T, transpose = transpose)
+#'   end_time = Sys.time()
+#'
+#'   name <- paste0("MLEMCAR")
+#'   if(isTRUE(transpose)){
+#'     name <- paste0("MLEMCAR_transpose")
+#'     }
+#'
+#'   SaveTest(name = name,
+#'            data = res.mle_mcar,
+#'            path2saveRDS = path2saveRDS,
+#'            difference = difftime(end_time, start_time, units='mins')
+#'   )
+#'
+#' }
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#' @param groups xxx
+#' @param method Available values are 'v2' (default), 'v2-mnar'.
+#' @import msImpute
+#' @export
+MsImpute <- function(mq.data.comp, groups, method = 'v2'){
+  require(msImpute)
+
+  stopifnot(method %in% c('v2', 'v2-mnar'))
+
+  start_time <- Sys.time()
+  res.msimpute = t(msImpute(
+    t(mq.data.comp$peptides_ab[, colSums(!is.na(mq.data.comp$peptides_ab)) >= 4]),
+    method = method,
+    group = groups)
+    )
+
+  res.msimpute = put_imputed_in_or(res.msimpute, mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+
+  name <- 'msImpute'
+  if (method == 'v2-mnar')
+    name <- 'msImpute_mnar'
+
+  SaveTest(name = name,
+           data = res.msimpute,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+
+#'
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @param mq.data.comp xxx
+#' #' @param groups xxx
+#' #'
+#' #' @import msImpute
+#' #' @export
+#' MsImpute <- function(mq.data.comp, groups){
+#'   start_time <- Sys.time()
+#'   res.msimpute = t(msImpute(
+#'     t(
+#'       mq.data.comp$peptides_ab[, colSums(!is.na(mq.data.comp$peptides_ab)) >= 4]
+#'     ), method = "v2", group = groups))
+#'   res.msimpute = put_imputed_in_or(res.msimpute, mq.data.comp$peptides_ab)
+#'   end_time = Sys.time()
+#'
+#'   SaveTest(name = 'msImpute',
+#'            data = res.msimpute,
+#'            path2saveRDS = path2saveRDS,
+#'            difference = difftime(end_time, start_time, units='mins')
+#'   )
+#'
+#' }
+
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import MsCoreUtils
+#' @export
+MLE_Classics <- function(mq.data.comp){
+  require(MsCoreUtils)
+  start_time <- Sys.time()
+  res.mleclass = impute_mle(mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+
+  SaveTest(name = 'MLECLASS',
+           data = res.mleclass,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import rrcovNA
+#' @export
+Impseq <- function(mq.data.comp){
+  require(rrcovNA)
+  start_time <- Sys.time()
+  res.impseq <- t(impSeq(t(mq.data.comp$peptides_ab)))
+  end_time = Sys.time()
+
+  SaveTest(name = 'ImpSeq',
+           data = res.impseq,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import rrcovNA
+#' @export
+ImpSeqRob <- function(mq.data.comp){
+  require(rrcovNA)
+  start_time <- Sys.time()
+  res.impseqrob <- t(impSeqRob(t(mq.data.comp$peptides_ab))$x)
+  end_time = Sys.time()
+
+  SaveTest(name = 'ImpSeqRob',
+           data = res.impseqrob,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import pcaMethods
+#' @export
+BPCA <- function(mq.data.comp){
+  require(pcaMethods)
+  start_time <- Sys.time()
+  npcs = 3
+  res.bpca = pca(t(mq.data.comp$peptides_ab), method = "bpca", nPcs = npcs)
+  end_time = Sys.time()
+  res.bpca = t(res.bpca@completeObs)
+
+  SaveTest(name = 'BPCA',
+           data = res.bpca,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @export
+MissForest <- function(mq.data.comp){
+  require("missForest")
+  start_time <- Sys.time()
+  res.misfor = missForest(mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+
+  SaveTest(name = 'MissForest',
+           data = res.misfor$ximp,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+           )
+}
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import pcaMethods
+#' @export
+xxx <- function(mq.data.comp){
+
+}
+
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import impute
+#' @export
+KNN_func <- function(mq.data.comp, path2saveRDS){
+  start_time <- Sys.time()
+  res.knn = impute.knn(t(mq.data.comp$peptides_ab), k = 10, rowmax = 1, colmax = 1)
+  end_time = Sys.time()
+  res.knn = t(res.knn$data)
+
+  SaveTest(name = 'KNN',
+           data = res.knn,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import imputeLCMD
+#' @export
+QRILC_func <- function(mq.data.comp, path2saveRDS){
+ start_time <- Sys.time()
+  res.qrilc = impute.QRILC(t(mq.data.comp$peptides_ab))
+  end_time = Sys.time()
+  res.qrilc = t(res.qrilc[[1]])
+  SaveTest(name = 'QRILC',
+           data = res.qrilc,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import imputeLCMD
+#' @export
+MinProb_func <- function(mq.data.comp, path2saveRDS){
+#library("imputeLCMD")
+start_time <- Sys.time()
+res.minprob = t(impute.MinProb(t(mq.data.comp$peptides_ab)))
+end_time = Sys.time()
+SaveTest(name = 'MinProb',
+         data = res.minprob,
+         path2saveRDS = path2saveRDS,
+         difference = difftime(end_time, start_time, units='mins')
+)
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import pcaMethods
+#' @export
+SVD_func <- function(mq.data.comp, path2saveRDS){
+  # library(pcaMethods)
+  start_time <- Sys.time()
+  res.svd = pca(t(mq.data.comp$peptides_ab), nPcs = 2, method = "svdImpute")
+  end_time = Sys.time()
+  res.svd = t(res.svd@completeObs)
+
+  SaveTest(name = 'SVD',
+           data = res.minprob,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import GMSimpute
+#' @export
+GMS_func <- function(mq.data.comp, path2saveRDS){
+  # library(GMSimpute)
+  start_time <- Sys.time()
+  res.gms <- t(GMS.Lasso(
+    t(
+      mq.data.comp$peptides_ab[, colSums(!is.na(mq.data.comp$peptides_ab)) >= 3]
+      ),nfolds=3,log.scale=FALSE,TS.Lasso=TRUE))
+  res.gms = put_imputed_in_or(res.gms, mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+
+  SaveTest(name = 'GMS',
+           data = res.gms,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+}
+
+
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @param mq.data.comp xxx
+#' #'
+#' #' @import SeqKnn
+#' #' @export
+#' SeqKNN_func <- function(mq.data.comp, path2saveRDS){
+#'   # library(SeqKnn)
+#'   start_time <- Sys.time()
+#'   res.seqknn <- t(SeqKNN(t(mq.data.comp$peptides_ab), k = 10))
+#'   end_time = Sys.time()
+#'
+#'   SaveTest(name = 'SeqKNN',
+#'            data = res.seqknn,
+#'            path2saveRDS = path2saveRDS,
+#'            difference = difftime(end_time, start_time, units='mins')
+#'   )
+#' }
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import tidyverse
+#' @export
+trKNN_func <- function(mq.data.comp, path2saveRDS){
+  source('Imput_funcs.r')
+  library(tidyverse)
+  sim_trKNN_wrapper <- function(data) {
+    result <- data %>% as.matrix %>% t %>% imputeKNN(., k=10, distance='truncation') %>% t
+    return(result)
+  }
+  start_time <- Sys.time()
+  res.trknn <- sim_trKNN_wrapper(
+    mq.data.comp$peptides_ab[, !colSums(is.na(mq.data.comp$peptides_ab)) >= 3])
+  res.trknn = put_imputed_in_or(res.trknn, mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+
+  SaveTest(name = 'trKNN',
+           data = res.trknn,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+
+#' @title xxx
+#' @description xxx
+#'
+#' @param mq.data.comp xxx
+#'
+#' @import pcaMethods
+#' @export
+LLS_func <- function(mq.data.comp, path2saveRDS){
+  # library(pcaMethods)
+  start_time <- Sys.time()
+  res.lls = llsImpute(mq.data.comp$peptides_ab)
+  end_time = Sys.time()
+  res.lls = res.lls@completeObs
+
+  SaveTest(name = 'LLS',
+           data = res.lls,
+           path2saveRDS = path2saveRDS,
+           difference = difftime(end_time, start_time, units='mins')
+  )
+
+}
+
+#########################################################################
+#' @export
+test_Lucas_Sam <- function(){
+
+  data("bouyssie")
+  #res <- Load_Maxquant_data()
+  #res <- Load_Huang2020_data()
+  #res <- Load_Proline_data()
+
+  mq.data.comp <- bouyssie
+  groups <- factor(rep(1:10, each = 4))
+  data.name <- 'bouyssie'
+
+
+  #path2saveRDS = file.path("..", "experiments", data.name, paste(seednum, "_w_shared", sep = ""))
+  #path2saveRDS = file.path(".", "experiments", data.name, paste(seednum, "_w_shared", sep = ""))
+  #dir.create(path2saveRDS)
+  #saveRDS(mq.data.comp, file = file.path(path2saveRDS, "DATA.rds"))
+
+  npeps = ncol(mq.data.comp$peptides_ab)
+  seednum = 543210
+  set.seed(seednum)
+
+
+  Our_Method(mq.data.comp)
+  Our_Method(mq.data.comp, mcar = TRUE, transpose = FALSE)
+  Our_Method(mq.data.comp, mcar = TRUE, transpose = TRUE)
+
+  MsImpute(mq.data.comp, groups, 'v2-mnar')
+  MsImpute(mq.data.comp, groups, 'v2')
+  MLE_Classics(mq.data.comp)
+  # MissForest_func(mq.data.comp)
+  # KNN_func(mq.data.comp)
+  # QRILC_func(mq.data.comp)
+  # MinProb_func(mq.data.comp)
+  # SVD_func(mq.data.comp)
+  # LLS_func(mq.data.comp)
+  # trKNN_func(mq.data.comp)
+  # SeqKNN_func(mq.data.comp)
+  # GMS_func(mq.data.comp)
+  Impseq(mq.data.comp)
+  ImpSeqRob(mq.data.comp)
+  BPCA(mq.data.comp)
+
+}
