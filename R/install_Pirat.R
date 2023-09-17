@@ -7,16 +7,16 @@
 #'   recommended installation method for most users, as it ensures that the R
 #'   python installation is isolated from other python installations. All python
 #'   packages will by default be installed into a self-contained conda or venv
-#'   environment named "r-reticulate". Note that "conda" is the only supported
-#'   method on M1 Mac.
+#'   environment named "reticulate-Pirat". Note that "conda" is the only 
+#'   supported method on M1 Mac.
 #'
 #'   If you initially declined the miniconda installation prompt, you can later
 #'   manually install miniconda by running [`reticulate::install_miniconda()`].
 #'
-#' @section Custom Installation: `install_Pirat()` isn't required to use Pirat
-#'  with the package. If you manually configure a python environment with the 
-#'  required dependencies, you can tell R to use it by pointing reticulate at it,
-#'   commonly by setting an environment variable:
+#' @section Custom Installation: `install_Pirat()` isn't required to use Pirat.
+#'  If you manually configure a python environment with the required 
+#'  dependencies and Python environment, you can tell R to use it by pointing 
+#'  reticulate at it, commonly by setting an environment variable:
 #'
 #'   ``` R
 #'   Sys.setenv("RETICULATE_PYTHON" = "~/path/to/python-env/bin/python")
@@ -28,8 +28,8 @@
 #' @param conda xxx
 #' @param envname xxx
 #'
-#' @param restart_session Restart R session after installing (note this will
-#'   only occur within RStudio).
+#' @param restart_session Whether to restart R session after installing. Note that 
+#' it will be automatically if in RStudio.
 #'
 #' @param pip_ignore_installed Whether pip should ignore installed python
 #'   packages and reinstall all already installed python packages. This defaults
@@ -83,10 +83,21 @@ install_Pirat <- function(
   
   cat("\nInstallation complete.\n\n")
   
-  if (restart_session &&
+  
+  is.rstudio <- function(){
+    .Platform$GUI == "RStudio"
+  }
+  
+  
+  
+  if (restart_session){
+    if (is.rstudio() &&
       requireNamespace("rstudioapi", quietly = TRUE) &&
       rstudioapi::hasFun("restartSession"))
     rstudioapi::restartSession()
+    else
+      cat('Please restart the R session.')
+  }
   
   invisible(NULL)
 }

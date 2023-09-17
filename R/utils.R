@@ -586,7 +586,25 @@ plot2hists <- function(d1,
   legend("topleft", c(name1, name2), fill = c(c1, c2))
 }
 
-ggplot2hist = function(list.values, titlename, xlabel="") {
+
+#' @title xxx
+#' @description xxxx
+#'
+#' @param list.values xxx
+#' @param titlename xxx
+#' @param xlabel xxx
+#' 
+#' @import ggplot2
+#'
+#' @return xxx
+#' @export
+#'
+#' @examples
+#' NULL
+#'
+ggplot2hist <- function(list.values, 
+                        titlename, 
+                        xlabel="") {
   data.hist = data.frame(values = unlist(list.values),
                         group = factor(rep(names(list.values),
                                     unlist(lapply(list.values, length)))))

@@ -28,8 +28,8 @@ with the prebuilt Pirat binaries.}
 \item{new_env}{If \code{TRUE}, any existing Python virtual environment and/or
 conda environment specified by \code{envname} is deleted first.}
 
-\item{restart_session}{Restart R session after installing (note this will
-only occur within RStudio).}
+\item{restart_session}{Whether to restart R session after installing. Note that
+it will be automatically if in RStudio.}
 }
 \description{
 \code{install_Pirat()} installs just the python packages needed by Pirat.
@@ -40,17 +40,17 @@ did not find a non-system installation of python. Miniconda is the
 recommended installation method for most users, as it ensures that the R
 python installation is isolated from other python installations. All python
 packages will by default be installed into a self-contained conda or venv
-environment named "r-reticulate". Note that "conda" is the only supported
-method on M1 Mac.
+environment named "reticulate-Pirat". Note that "conda" is the only
+supported method on M1 Mac.
 
 If you initially declined the miniconda installation prompt, you can later
 manually install miniconda by running \code{\link[reticulate:install_miniconda]{reticulate::install_miniconda()}}.
 }
 \section{Custom Installation}{
- \code{install_Pirat()} isn't required to use Pirat
-with the package. If you manually configure a python environment with the
-required dependencies, you can tell R to use it by pointing reticulate at it,
-commonly by setting an environment variable:
+ \code{install_Pirat()} isn't required to use Pirat.
+If you manually configure a python environment with the required
+dependencies and Python environment, you can tell R to use it by pointing
+reticulate at it, commonly by setting an environment variable:
 
 \if{html}{\out{<div class="sourceCode R">}}\preformatted{Sys.setenv("RETICULATE_PYTHON" = "~/path/to/python-env/bin/python")
 }\if{html}{\out{</div>}}

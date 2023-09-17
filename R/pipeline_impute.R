@@ -1,11 +1,4 @@
 
-# #reticulate::use_condaenv("classics")
-# reticulate::use_condaenv("mypython39")
-# reticulate::source_python(system.file("extdata/python", "LBFGS.py", package="Pirat"))
-# reticulate::source_python(system.file("extdata/python", "llk_maximize.py", package="Pirat"))
-#
-
-
 
 #' @title xxxx
 #' @description Pirat imputation function
@@ -53,19 +46,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                               degenerated = FALSE) {
 
   
-  if(!reticulate:::virtualenv_exists('reticulate-Pirat')){
-    warning("No 'reticulate-Pirat' virtualenv exists. 
-    You should install one first by running: install_Pirat()")
-    return()
-  }
-  
-  dir.backup <- getwd()
-  setwd(system.file(".", package="Pirat"))
-  #reticulate::use_condaenv("r-Pirat")
-  reticulate::use_virtualenv("reticulate-Pirat")
-  reticulate::source_python(system.file("python", "LBFGS.py", package="Pirat"))
-  reticulate::source_python(system.file("python", "llk_maximize.py", package="Pirat"))
-  setwd(dir.backup)
+  #Load_Python_Scripts()
   
   ####### Pas sur qu'il faille le laisser ##############
   npeps = ncol(data.pep.rna.mis$peptides_ab)
