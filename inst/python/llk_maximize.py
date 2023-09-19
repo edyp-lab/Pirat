@@ -239,8 +239,10 @@ def impute_from_params(X_w_na, mu, sigma, phi, phi0):
 
 def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=True, eps_chol=1e-4, eps_phi=1e-8,
                                tol_obj=1e-9, tol_grad=1e-5, tol_param=1e-6, maxiter=500, lr=1., true_mu=None,
-                               true_sigma=None, true_X=None, verbose=False, max_try=10, max_ls=10, eps_sig=1e-5,
+                               true_sigma=None, true_X=None, verbose=True, max_try=10, max_ls=10, eps_sig=1e-5,
                                nsamples=1000):
+    TRUEFAIL = None
+    
     t.manual_seed(12345)
     np.random.seed(12345)
 

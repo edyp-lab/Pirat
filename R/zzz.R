@@ -9,8 +9,8 @@
 }
 
 
-#' @title xxxx
-#' @description Pirat imputation function
+#' @title Load Python scripts into R session
+#' @description xxxx
 #' 
 #' @import reticulate
 #' 
@@ -29,9 +29,10 @@ Load_Python_Scripts <- function(){
   setwd(system.file(".", package="Pirat"))
   reticulate::use_condaenv("r-Pirat")
   #reticulate::use_virtualenv("reticulate-Pirat")
-  reticulate::source_python(system.file("python", "LBFGS.py", package="Pirat"))
-  reticulate::source_python(system.file("python", "llk_maximize.py", package="Pirat"))
+  reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+  reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
   setwd(dir.backup)
   
+  py <- reticulate::import("torch")
   return(TRUE)
 }

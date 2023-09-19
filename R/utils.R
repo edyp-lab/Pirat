@@ -222,6 +222,8 @@ impute_block_llk_reset = function(data.pep.rna.crop,
                                   group_pep_solo = F,
                                   max_pg_size = NULL,
                                   ...) {
+  
+  
   if (!group_pep_solo)
     adj = data.pep.rna.crop$adj
   else
@@ -281,6 +283,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
         K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       }
       psimat = psi*((1 - psiratio)*diag(n_pep_cur) + psiratio)
+
       res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
       ermsg = res_imp$error_msg
       stopifnot(ermsg == "success")
@@ -454,11 +457,11 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     colnames(cur_ab_rna) = colnames(rnas_ab)[idx_cur_rna]
     subpp_ab = cbind(cur_ab, cur_ab_rna)
     if (is.null(pep_ab_or)) {
-      X_gt = NULL
+      X_gt <- NULL
     }
     else {
       cur_ab_gt = matrix(pep_ab_or[,idx_cur_pep], nrow = nsamples)
-      X_gt = cbind(cur_ab_gt, cur_ab_rna)
+      X_gt <- cbind(cur_ab_gt, cur_ab_rna)
     }
     if (sum(is.na(subpp_ab)) == 0 |
         (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {
