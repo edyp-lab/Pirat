@@ -5,11 +5,11 @@
 \title{Install Pirat and its dependencies}
 \usage{
 install_Pirat(
-  method = c("virtualenv", "conda"),
+  method = "conda",
   conda = "auto",
-  envname = "reticulate-Pirat",
+  envname = "r-Pirat",
   pip_ignore_installed = FALSE,
-  new_env = identical(envname, "reticulate-Pirat"),
+  new_env = identical(envname, "r-Pirat"),
   restart_session = TRUE
 )
 }
@@ -40,7 +40,7 @@ did not find a non-system installation of python. Miniconda is the
 recommended installation method for most users, as it ensures that the R
 python installation is isolated from other python installations. All python
 packages will by default be installed into a self-contained conda or venv
-environment named "reticulate-Pirat". Note that "conda" is the only
+environment named "r-Pirat". Note that "conda" is the only
 supported method on M1 Mac.
 
 If you initially declined the miniconda installation prompt, you can later

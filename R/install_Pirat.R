@@ -7,7 +7,7 @@
 #'   recommended installation method for most users, as it ensures that the R
 #'   python installation is isolated from other python installations. All python
 #'   packages will by default be installed into a self-contained conda or venv
-#'   environment named "reticulate-Pirat". Note that "conda" is the only 
+#'   environment named "r-Pirat". Note that "conda" is the only 
 #'   supported method on M1 Mac.
 #'
 #'   If you initially declined the miniconda installation prompt, you can later
@@ -40,26 +40,28 @@
 #'   conda environment specified by `envname` is deleted first.
 #'
 #' @export
+#' 
+#' @import reticulate
+#' 
 install_Pirat <- function(
-    method = c("virtualenv", "conda"),
+    method = "conda",
     conda = "auto",
-    envname = "reticulate-Pirat",
+    envname = "r-Pirat",
     pip_ignore_installed = FALSE,
-    new_env = identical(envname, "reticulate-Pirat"),
+    new_env = identical(envname, "r-Pirat"),
     restart_session = TRUE
     ) {
   
   method <- match.arg(method)
   python_version <- "3.9.5"
+  pytorch_version <- "1.10.0"
+  extra_packages <- c("numpy", 'matplotlib')
   
-  packages <- c("numpy==1.20.2", 'matplotlib', "torch==1.10.0")
-  print(method)
+  
+ # if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
+ #   reticulate::install_python(version = python_version)
   
   if (isTRUE(new_env)) {
-    
-    if (method  == "virtualenv" && 
-        reticulate::virtualenv_exists(envname))
-      reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
     
     if (method == "conda") {
       if (!is.null(tryCatch(conda_python(envname, conda = conda),
@@ -71,15 +73,26 @@ install_Pirat <- function(
   
   
   
+   # install_pytorch(
+   #   method = 'conda',
+   #   # conda = "auto",
+   #   version = '1.10.0',
+   #   # channel = 'torch',
+   #   envname = envname,
+   #   extra_packages = extra_packages,
+   #   conda_python_version = python_version)
+  
+  
+  
   reticulate::py_install(
-    packages = packages,
+    packages = c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0'),
     envname = envname,
-    method = method,
-    conda = conda,
-    python_version = python_version,
-    pip = TRUE,
-    pip_ignore_installed = pip_ignore_installed
+    method = 'conda',
+    conda = 'auto',
+    python_version = '3.9.5'
   )
+  
+
   
   cat("\nInstallation complete.\n\n")
   
