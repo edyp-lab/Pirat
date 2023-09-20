@@ -5,25 +5,13 @@
 \title{Install Pirat and its dependencies}
 \usage{
 install_Pirat(
-  method = "conda",
-  conda = "auto",
   envname = "r-Pirat",
-  pip_ignore_installed = FALSE,
   new_env = identical(envname, "r-Pirat"),
   restart_session = TRUE
 )
 }
 \arguments{
-\item{method}{xxx}
-
-\item{conda}{xxx}
-
 \item{envname}{xxx}
-
-\item{pip_ignore_installed}{Whether pip should ignore installed python
-packages and reinstall all already installed python packages. This defaults
-to \code{TRUE}, to ensure that Pirat dependencies like NumPy are compatible
-with the prebuilt Pirat binaries.}
 
 \item{new_env}{If \code{TRUE}, any existing Python virtual environment and/or
 conda environment specified by \code{envname} is deleted first.}
@@ -56,3 +44,10 @@ reticulate at it, commonly by setting an environment variable:
 }\if{html}{\out{</div>}}
 }
 
+\examples{
+\dontrun{
+install_Pirat()
+}
+
+
+}

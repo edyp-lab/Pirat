@@ -2,12 +2,12 @@
 % Please edit documentation in R/zzz.R
 \name{Load_Python_Scripts}
 \alias{Load_Python_Scripts}
-\title{xxxx}
+\title{Load Python scripts into R session}
 \usage{
 Load_Python_Scripts()
 }
 \description{
-Pirat imputation function
+xxxx
 }
 \examples{
 Load_Python_Scripts()

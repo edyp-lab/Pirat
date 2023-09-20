@@ -2,6 +2,7 @@
 
 export(Load_Python_Scripts)
 export(get_indexes_embedded_prots)
+export(get_os)
 export(ggplot2hist)
 export(group_solo_pep)
 export(impute_block_llk_reset)

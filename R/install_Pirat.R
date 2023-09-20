@@ -24,17 +24,10 @@
 #'
 #' @md
 #' 
-#' @param method xxx
-#' @param conda xxx
 #' @param envname xxx
 #'
 #' @param restart_session Whether to restart R session after installing. Note that 
 #' it will be automatically if in RStudio.
-#'
-#' @param pip_ignore_installed Whether pip should ignore installed python
-#'   packages and reinstall all already installed python packages. This defaults
-#'   to `TRUE`, to ensure that Pirat dependencies like NumPy are compatible
-#'   with the prebuilt Pirat binaries.
 #'
 #' @param new_env If `TRUE`, any existing Python virtual environment and/or
 #'   conda environment specified by `envname` is deleted first.
@@ -43,25 +36,37 @@
 #' 
 #' @import reticulate
 #' 
+#' @examples
+#' \dontrun{
+#' install_Pirat()
+#' }
+#' 
+#' 
 install_Pirat <- function(
-    method = "conda",
-    conda = "auto",
     envname = "r-Pirat",
-    pip_ignore_installed = FALSE,
     new_env = identical(envname, "r-Pirat"),
     restart_session = TRUE
     ) {
   
-  method <- match.arg(method)
+  if (get_os()=='windows')
+    method <- 'virtualenv'
+  else if (get_os()=='Linux')
+    method <- 'conda'
+  
+
   python_version <- "3.9.5"
   pytorch_version <- "1.10.0"
-  extra_packages <- c("numpy", 'matplotlib')
+  extra_packages <- c("numpy=1.20.2", 'matplotlib')
   
   
   if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
    reticulate::install_python(version = python_version)
   
   if (isTRUE(new_env)) {
+    
+    if (method  == "virtualenv" && 
+        reticulate::virtualenv_exists(envname))
+      reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
     
     if (method == "conda") {
       if (!is.null(tryCatch(conda_python(envname, conda = conda),
@@ -71,24 +76,10 @@ install_Pirat <- function(
     
   }
   
-  
-  
-   # install_pytorch(
-   #   method = 'conda',
-   #   # conda = "auto",
-   #   version = '1.10.0',
-   #   # channel = 'torch',
-   #   envname = envname,
-   #   extra_packages = extra_packages,
-   #   conda_python_version = python_version)
-  
-  
-  
   reticulate::py_install(
-    packages = c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0'),
+    packages = c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0'),
     envname = envname,
-    method = 'conda',
-    conda = 'auto',
+    method = method,
     python_version = '3.9.5'
   )
   
