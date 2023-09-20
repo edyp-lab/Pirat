@@ -58,8 +58,8 @@ install_Pirat <- function(
   extra_packages <- c("numpy", 'matplotlib')
   
   
- # if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
- #   reticulate::install_python(version = python_version)
+  if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
+   reticulate::install_python(version = python_version)
   
   if (isTRUE(new_env)) {
     

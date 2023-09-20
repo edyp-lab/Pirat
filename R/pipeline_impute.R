@@ -28,7 +28,7 @@
 #'
 #' @examples
 #' data(bouyssie)
-#' res.mle <- pipeline_llkimpute(bouyssie)
+#'  
 #' res.mle.transp <- pipeline_llkimpute(bouyssie, transpose = TRUE)
 #' res.mle.transp.mcar <- pipeline_llkimpute(bouyssie, transpose = TRUE, mcar = TRUE)
 #' 

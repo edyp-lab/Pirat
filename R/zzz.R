@@ -20,7 +20,7 @@
 #' @export
 #' 
 Load_Python_Scripts <- function(){
-  if(!('r-Pirat' %in% reticulate::conda_list()['name',])){
+  if(!('r-Pirat' %in% reticulate::conda_list()$name)){
     warning("No conda 'r-Pirat' env exists. 
     You should install one first by running: install_Pirat()")
     return()
@@ -34,5 +34,5 @@ Load_Python_Scripts <- function(){
   setwd(dir.backup)
   
   py <- reticulate::import("torch")
-  return(TRUE)
+  #return(TRUE)
 }
