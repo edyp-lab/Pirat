@@ -48,19 +48,26 @@ install_Pirat <- function(
     restart_session = TRUE
     ) {
   
-  if (get_os()=='windows')
-    method <- 'virtualenv'
-  else if (get_os()=='Linux')
-    method <- 'conda'
+  method <- switch(get_os(),
+         windows = 'virtualenv',
+         linux = 'conda',
+         default = {
+           warning("OS not detected or managed")
+           NULL
+         }
+  )
   
-
+  
+  if (method == 'virtualenv')
+    pkgs <- c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0')
+  if (method == 'conda')
+    pkgs <- c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0')
+  
   python_version <- "3.9.5"
-  pytorch_version <- "1.10.0"
-  extra_packages <- c("numpy=1.20.2", 'matplotlib')
   
   
-  if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
-   reticulate::install_python(version = python_version)
+  #if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
+  # reticulate::install_python(version = python_version)
   
   if (isTRUE(new_env)) {
     
@@ -77,13 +84,23 @@ install_Pirat <- function(
   }
   
   reticulate::py_install(
-    packages = c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0'),
+    packages = pkgs,
     envname = envname,
     method = method,
     python_version = '3.9.5'
   )
   
 
+  
+  # Now, install custom Python scripts
+  cat("\nInstallation of custom Python scripts: ...")
+  dir.backup <- getwd()
+  setwd(system.file(".", package="Pirat"))
+  reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+  reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+  setwd(dir.backup)
+  cat("done\n\n")
+  
   
   cat("\nInstallation complete.\n\n")
   
@@ -98,9 +115,9 @@ install_Pirat <- function(
     if (is.rstudio() &&
       requireNamespace("rstudioapi", quietly = TRUE) &&
       rstudioapi::hasFun("restartSession"))
-    rstudioapi::restartSession()
+    rstudioapi::restartSession(command='library(Pirat)')
     else
-      cat('Please restart the R session.')
+      cat("Please restart the R session and reload the 'Pirat' package.")
   }
   
   invisible(NULL)
