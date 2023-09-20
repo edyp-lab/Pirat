@@ -22,6 +22,7 @@
 Load_Python_Scripts <- function(){
   
   
+  cat("\nLoading Python env: ...")
   switch(get_os(),
          windows = {
            if (!reticulate::virtualenv_exists('r-Pirat')){
@@ -46,15 +47,19 @@ Load_Python_Scripts <- function(){
            return()
          }
   )
-    
+  cat("done\n\n")
 
   
-  # dir.backup <- getwd()
-  # setwd(system.file(".", package="Pirat"))
-  # reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-  # reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-  # setwd(dir.backup)
-  # 
+  # Now, install custom Python scripts
+  cat("\nInstallation of custom Python scripts: ...")
+  dir.backup <- getwd()
+  setwd(system.file(".", package="Pirat"))
+  reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+  reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+  setwd(dir.backup)
+  cat("done\n\n")
+  
+  
   py <- reticulate::import("torch")
 
 }

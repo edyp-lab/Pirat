@@ -92,15 +92,6 @@ install_Pirat <- function(
   
 
   
-  # Now, install custom Python scripts
-  cat("\nInstallation of custom Python scripts: ...")
-  dir.backup <- getwd()
-  setwd(system.file(".", package="Pirat"))
-  reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-  reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-  setwd(dir.backup)
-  cat("done\n\n")
-  
   
   cat("\nInstallation complete.\n\n")
   
