@@ -1,4 +1,4 @@
-#' @title xxx
+#' @title Get Operating System
 #' @description Get the operating system 
 #'
 #' @export

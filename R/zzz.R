@@ -43,23 +43,23 @@ Load_Python_Scripts <- function(){
             }
              },
          default = {
-           warning("OS not detected or managed")
+           warning("OS not detected or unmanaged")
            return()
          }
   )
-  cat("done\n\n")
+  cat("done")
 
   
   # Now, install custom Python scripts
-  cat("\nInstallation of custom Python scripts: ...")
+  cat("\nInstalling custom Python scripts: ...")
   dir.backup <- getwd()
   setwd(system.file(".", package="Pirat"))
   reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
   reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
   setwd(dir.backup)
-  cat("done\n\n")
+  cat("done")
   
-  
+  cat("\nFinalizing loading: ...")
   py <- reticulate::import("torch")
-
+  cat("done")
 }
