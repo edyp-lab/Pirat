@@ -17,7 +17,7 @@ RoxygenNote: 7.2.3
 Depends:
   R (>= 4.3.0)
 Imports:
-    progress, ggplot2, MASS, invgamma, reticulate, grDevices, stats,
+    rTorch, progress, ggplot2, MASS, invgamma, reticulate, grDevices, stats,
     graphics, rstudioapi
 Suggests:
   knitr

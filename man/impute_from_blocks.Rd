@@ -2,24 +2,26 @@
 % Please edit documentation in R/utils.R
 \name{impute_from_blocks}
 \alias{impute_from_blocks}
-\title{xxx}
+\title{Impute abundance table from PGs results}
 \usage{
 impute_from_blocks(logs.blocks, data.pep.rna, idx_blocks)
 }
 \arguments{
-\item{logs.blocks}{xxx}
+\item{logs.blocks}{List of PGs imputation results, that also contains related peptide/PGs adjacency matrix.}
 
-\item{data.pep.rna}{xxx}
+\item{data.pep.rna}{List representing the dataset not yet imputed}
 
-\item{idx_blocks}{xxx}
+\item{idx_blocks}{Indices of PGs for which imputation results should be integrated}
 }
 \value{
-xxx
+The original peptide abundance table with imputed values.
 }
 \description{
-Returns the imputed matrix from the imputed PGs.
+From imputation results in each PG and the associate adjacency peptide/PG matrix,
+imputes the original abundance table.  .
 }
 \examples{
 NULL
+
 
 }

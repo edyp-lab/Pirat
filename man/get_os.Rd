@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_os}
 \alias{get_os}
-\title{xxx}
+\title{Get Operating System}
 \usage{
 get_os()
 }

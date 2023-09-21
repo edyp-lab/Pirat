@@ -2,18 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{remove_pep_from_idx}
 \alias{remove_pep_from_idx}
-\title{xxx}
+\title{Remove peptides by index}
 \usage{
 remove_pep_from_idx(l_pep_rna, pepidxs)
 }
 \arguments{
-\item{l_pep_rna}{xxx}
+\item{l_pep_rna}{List representing the dataset}
 
-\item{pepidxs}{xxx}
+\item{pepidxs}{Vector of indices}
 }
 \value{
-xxx
+List representing the dataset
 }
 \description{
-Remove peptide by index
+Remove peptide by index, then deletes empty PGs
 }

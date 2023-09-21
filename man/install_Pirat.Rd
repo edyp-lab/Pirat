@@ -5,8 +5,8 @@
 \title{Install Pirat and its dependencies}
 \usage{
 install_Pirat(
-  envname = "r-Pirat",
-  new_env = identical(envname, "r-Pirat"),
+  envname = "r-pirat2",
+  new_env = identical(envname, "r-pirat2"),
   restart_session = TRUE
 )
 }

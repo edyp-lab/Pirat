@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{rm_pg_from_idx_merge_pg}
 \alias{rm_pg_from_idx_merge_pg}
-\title{xxx}
+\title{Remove PGs by index and merge}
 \usage{
 rm_pg_from_idx_merge_pg(l_pep_rna, pg_idx)
 }

@@ -2,20 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{split_large_pg}
 \alias{split_large_pg}
-\title{xxx}
+\title{Split too large PGs}
 \usage{
 split_large_pg(adj, size_max)
 }
 \arguments{
-\item{adj}{xxx}
+\item{adj}{Adjacency matrix between peptides and PGs.}
 
-\item{size_max}{xxx}
+\item{size_max}{Maximum PG size desired.}
 }
 \value{
-xxx
+New adjacency matrix between peptides and PGs.
 }
 \description{
-Split PGs with too many peptides/precursors.
+Split PGs with too many peptides/precursors. It creates different PGs with
+size equal to size max. Hence, some peptides can be duplicated in the new PGs.
 }
 \examples{
 NULL

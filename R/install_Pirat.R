@@ -35,6 +35,7 @@
 #' @export
 #' 
 #' @import reticulate
+#' @import rTorch
 #' 
 #' @examples
 #' \dontrun{
@@ -43,65 +44,89 @@
 #' 
 #' 
 install_Pirat <- function(
-    envname = "r-Pirat",
-    new_env = identical(envname, "r-Pirat"),
+    envname = "r-pirat2",
+    new_env = identical(envname, "r-pirat2"),
     restart_session = TRUE
     ) {
   
-  method <- switch(get_os(),
-         windows = 'virtualenv',
-         linux = 'conda',
-         default = {
-           warning("OS not detected or managed")
-           NULL
-         }
-  )
-  
-  
-  if (method == 'virtualenv')
-    pkgs <- c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0')
-  if (method == 'conda')
-    pkgs <- c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0')
+  # method <- switch(get_os(),
+  #        windows = 'virtualenv',
+  #        linux = 'conda',
+  #        default = {
+  #          warning("OS not detected or managed")
+  #          NULL
+  #        }
+  # )
   
   python_version <- "3.9.5"
-  conda <- 'auto'
   
-  if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE))){
-    cat('\nInstalling Python : ...')
-    #reticulate::install_miniconda()
-    reticulate::install_python(version = python_version)
-    cat('done')
-  }
   
-  if (isTRUE(new_env)) {
-    cat('\nCreating new Python environment: ...')
-    if (method  == "virtualenv" && reticulate::virtualenv_exists(envname)){
-      reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
-      reticulate::virtualenv_install(
-        packages = pkgs,
-        envname = envname,
-        method = method,
-        python_version = '3.9.5'
-      )
-      
-    }
-    
-    if (method == "conda") {
-      if (!is.null(tryCatch(conda_python(envname, conda = conda),
-                            error = function(e) NULL)))
-        reticulate::conda_remove(envname, conda = conda)
-      
-      reticulate::conda_install(
-        packages = pkgs,
-        envname = envname,
-        method = method,
-        python_version = '3.9.5'
-      )
-      
-    }
-    cat('done')
-    
-  }
+  # if (method == 'virtualenv'){
+  #   pkgs <- c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0')
+  #   
+  #   if(reticulate::virtualenv_exists(envname))
+  #     reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
+  #     
+  #     # create a new environment 
+  #   virtualenv_create("r-pirat2")
+  #   virtualenv_install("r-pirat2", 
+  #                      packages = pkgs,
+  #                      python_version = python_version)
+  #   
+  #   
+  #   
+  # }
+  # 
+  # 
+  # if (method == 'conda'){
+  #   pkgs <- c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0')
+  #   # create a new environment 
+  #   conda_create("r-pirat2")
+  #   conda_install("r-pirat2", 
+  #                 packages = pkgs,
+  #                 channel="pytorch", 
+  #                 python_version = python_version)
+  # }
+  # 
+  # 
+  # conda <- 'auto'
+  # 
+  # if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE))){
+  #   cat('\nInstalling Python : ...')
+  #   #reticulate::install_miniconda()
+  #   reticulate::install_python(version = python_version)
+  #   cat('done')
+  # }
+  # 
+  # if (isTRUE(new_env)) {
+  #   cat('\nCreating new Python environment: ...')
+  #   if (method  == "virtualenv" && reticulate::virtualenv_exists(envname)){
+  #     reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
+  #     reticulate::virtualenv_install(
+  #       packages = pkgs,
+  #       envname = envname,
+  #       method = method,
+  #       python_version = '3.9.5'
+  #     )
+  #     
+  #   }
+  #   
+  #   if (method == "conda") {
+  #     if (!is.null(tryCatch(conda_python(envname, conda = conda),
+  #                           error = function(e) NULL)))
+  #       reticulate::conda_remove(envname, conda = conda)
+  #     
+  #     reticulate::conda_install(
+  #       packages = pkgs,
+  #       envname = envname,
+  #       method = method,
+  #       python_version = '3.9.5'
+  #     )
+  #     
+  #   }
+  #   cat('done')
+  #   
+  # }
   
   # cat('\nInstalling Python and packages: ...')
   # reticulate::py_install(

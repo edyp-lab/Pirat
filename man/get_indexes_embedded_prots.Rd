@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_indexes_embedded_prots}
 \alias{get_indexes_embedded_prots}
-\title{xxx}
+\title{Indexes of PGs embedded in each others}
 \usage{
 get_indexes_embedded_prots(adj)
 }
@@ -13,7 +13,7 @@ get_indexes_embedded_prots(adj)
 A vector of indices
 }
 \description{
-Get indexes of PGs that are embedded in others
+Returns indexes of PGs that are embedded in others
 }
 \examples{
 NULL

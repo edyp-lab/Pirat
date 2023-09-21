@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{ggplot2hist}
 \alias{ggplot2hist}
-\title{xxx}
+\title{Plot several densities}
 \usage{
 ggplot2hist(list.values, titlename, xlabel = "")
 }
@@ -17,7 +17,7 @@ ggplot2hist(list.values, titlename, xlabel = "")
 xxx
 }
 \description{
-xxxx
+Plot empirical densities estimated by gaussian kernel
 }
 \examples{
 NULL

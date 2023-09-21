@@ -2,62 +2,48 @@
 % Please edit documentation in R/utils.R
 \name{impute_block_llk_reset}
 \alias{impute_block_llk_reset}
-\title{xxx}
+\title{Impute each PG.}
 \usage{
 impute_block_llk_reset(
   data.pep.rna.crop,
   impfunc,
   psi,
   pep_ab_or = NULL,
-  psiratio = 0,
-  K_fixed = NULL,
-  tol.na.pep = 100,
   prot.idxs = NULL,
   df = 1,
-  nu_factor = 1,
-  psi_rna = NULL,
-  rna.cond.mask = F,
-  group_pep_solo = F,
+  nu_factor = 2,
   max_pg_size = NULL,
+  max.pg.size2imp = NULL,
   ...
 )
 }
 \arguments{
 \item{data.pep.rna.crop}{A list representing dataset}
 
-\item{impfunc}{xxx}
+\item{impfunc}{Imputation function}
 
-\item{psi}{xxx}
+\item{psi}{Inverse scale parameter for IW prior of peptides abundances}
 
-\item{pep_ab_or}{xxx}
+\item{pep_ab_or}{In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
+such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.}
 
-\item{psiratio}{xxx}
+\item{prot.idxs}{Vector of indices of PGs to impute}
 
-\item{K_fixed}{xxx}
+\item{df}{Estimate degree of freedom of the IG distribution fitted on observed variance.}
 
-\item{tol.na.pep}{xxx}
+\item{nu_factor}{Multiplication factor on degree of freedom. 2 by default.}
 
-\item{prot.idxs}{xxx}
+\item{max_pg_size}{Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.}
 
-\item{df}{xxx}
-
-\item{nu_factor}{xxx}
-
-\item{psi_rna}{xxx}
-
-\item{rna.cond.mask}{xxx}
-
-\item{group_pep_solo}{xxx}
-
-\item{max_pg_size}{xxx}
+\item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
 
 \item{...}{xxx}
 }
 \value{
-xxx
+A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
 }
 \description{
-Imputes dataset and return result for each component.
+Imputes each PG separately and return the results for each PG.
 }
 \examples{
 NULL

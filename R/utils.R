@@ -366,7 +366,7 @@ split_large_pg_PG = function(adj, size_max, adj_rna_pg) {
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
 #' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
 #' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
-#' @param ... 
+#' @param ... xxx
 #'
 #' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
 #' @export
@@ -383,7 +383,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      df = 2,
                                      nu_factor = 1,
                                      max_pg_size = NULL,
-                                     max.pg.size2imp = NULL
+                                     max.pg.size2imp = NULL,
                                      ...) {
 
   if (!is.null(max_pg_size)) {
@@ -491,6 +491,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 #' @export
 #'
 #' @examples
+#' NULL
 #' 
 #'
 impute_from_blocks = function(logs.blocks,
