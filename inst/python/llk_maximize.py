@@ -151,6 +151,7 @@ def impute_from_params(X_w_na, mu, sigma, phi, phi0):
     X = np.copy(X_w_na)
     npep = X.shape[1]
     var_imp = np.zeros(X.shape)
+    mu = np.asarray(mu)
     M = np.isnan(X)
     nsample = 1000
     uniq_m_patterns, idx_uniq = np.unique(M, axis=0, return_inverse=True)
@@ -239,10 +240,8 @@ def impute_from_params(X_w_na, mu, sigma, phi, phi0):
 
 def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=True, eps_chol=1e-4, eps_phi=1e-8,
                                tol_obj=1e-9, tol_grad=1e-5, tol_param=1e-6, maxiter=500, lr=1., true_mu=None,
-                               true_sigma=None, true_X=None, verbose=True, max_try=10, max_ls=10, eps_sig=1e-5,
+                               true_sigma=None, true_X=None, verbose=False, max_try=10, max_ls=10, eps_sig=1e-5,
                                nsamples=1000):
-    TRUEFAIL = None
-    
     t.manual_seed(12345)
     np.random.seed(12345)
 
@@ -446,7 +445,7 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
                     reason = "param"
                 if grads_norm.item() < tol_grad:
                     reason = "grad"
-                if np.nanmax(sigma_cur) >= 1000:
+                if np.nanmax(sigma_cur) >= 200:
                     error_msg = "var_exploded"
                 else:
                     error_msg = "success"
