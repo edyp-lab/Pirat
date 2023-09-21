@@ -70,7 +70,7 @@ install_Pirat <- function(
   # reticulate::install_python(version = python_version)
   
   if (isTRUE(new_env)) {
-    
+    cat('\nCreating new Python environment: ...')
     if (method  == "virtualenv" && 
         reticulate::virtualenv_exists(envname))
       reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
@@ -80,16 +80,18 @@ install_Pirat <- function(
                             error = function(e) NULL)))
         reticulate::conda_remove(envname, conda = conda)
     }
+    cat('done')
     
   }
   
+  cat('\nInstalling Python and packages: ...')
   reticulate::py_install(
     packages = pkgs,
     envname = envname,
     method = method,
     python_version = '3.9.5'
   )
-  
+  cat('done')
 
   
   
