@@ -64,35 +64,56 @@ install_Pirat <- function(
     pkgs <- c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0')
   
   python_version <- "3.9.5"
+  conda <- 'auto'
   
-  
-  #if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE)))
-  # reticulate::install_python(version = python_version)
+  if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE))){
+    cat('\nInstalling Python : ...')
+    #reticulate::install_miniconda()
+    reticulate::install_python(version = python_version)
+    cat('done')
+  }
   
   if (isTRUE(new_env)) {
     cat('\nCreating new Python environment: ...')
-    if (method  == "virtualenv" && 
-        reticulate::virtualenv_exists(envname))
+    if (method  == "virtualenv" && reticulate::virtualenv_exists(envname)){
       reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
+      reticulate::virtualenv_install(
+        packages = pkgs,
+        envname = envname,
+        method = method,
+        python_version = '3.9.5'
+      )
+      
+    }
     
     if (method == "conda") {
       if (!is.null(tryCatch(conda_python(envname, conda = conda),
                             error = function(e) NULL)))
         reticulate::conda_remove(envname, conda = conda)
+      
+      reticulate::conda_install(
+        packages = pkgs,
+        envname = envname,
+        method = method,
+        python_version = '3.9.5'
+      )
+      
     }
     cat('done')
     
   }
   
-  cat('\nInstalling Python and packages: ...')
-  reticulate::py_install(
-    packages = pkgs,
-    envname = envname,
-    method = method,
-    python_version = '3.9.5'
-  )
-  cat('done')
+  # cat('\nInstalling Python and packages: ...')
+  # reticulate::py_install(
+  #   packages = pkgs,
+  #   envname = envname,
+  #   method = method,
+  #   python_version = '3.9.5'
+  # )
+  # cat('done')
 
+  
+  
   
   
   cat("\nInstallation complete.\n\n")
