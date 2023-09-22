@@ -190,8 +190,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
         data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
       }
       
-      params_imp_blocks = list(tol.na.pep = 100,
-                               df = df,
+      params_imp_blocks = list(df = df,
                                nu_factor = nu_factor,
                                prot.idxs = protidxs, 
                                psi = psi, 
