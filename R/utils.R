@@ -34,6 +34,7 @@ is_debian <- function() {
   }
 }
 
+
 #' @title Indexes of PGs embedded in each others
 #' @description Returns indexes of PGs that are embedded in others
 #'
@@ -83,7 +84,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
       n_pep_per_pg2rm = colSums(adj2rm)
       pg_sim_mat = ((t(adj2rm) %*% adj2keep) == n_pep_per_pg2rm) &
         (n_pep_per_pg2rm != 0)
-      idx.pg2merge = which(pg_sim_mat, arr.ind = T)
+      idx.pg2merge = which(pg_sim_mat, arr.ind = TRUE)
       adj2keep_rna = l_pep_rna$adj_rna_pg[, -pg_idx, drop = F]
       adj2rm_rna = l_pep_rna$adj_rna_pg[, pg_idx, drop = F] 
       if (length(idx.pg2merge) != 0) {
@@ -159,7 +160,8 @@ remove_pep_from_idx <- function(l_pep_rna,
 #' @examples
 #' NULL
 #'
-split_large_pg = function(adj, size_max) {
+split_large_pg = function(adj, 
+                          size_max) {
   set.seed(1234)
   idx_pg_too_large = which(colSums(adj) >= size_max)
   if (length(idx_pg_too_large) > 0) {
@@ -180,7 +182,7 @@ split_large_pg = function(adj, size_max) {
         idx2add = setdiff(idx_pg_pep, groups_idx_pg_pep[[j]])
         n2samples = size_max - length(groups_idx_pg_pep[[j]])
         idx2add = sample(idx2add, n2samples)
-        new_pg[c(groups_idx_pg_pep[[j]], idx2add)] = T
+        new_pg[c(groups_idx_pg_pep[[j]], idx2add)] = TRUE
         l_adjs2bind[[idx_adj2bind]] = new_pg
         idx_adj2bind = idx_adj2bind + 1
       }
@@ -194,7 +196,7 @@ split_large_pg = function(adj, size_max) {
 
 # TODO: Rename this function in code. 
 # TODO: Impfunc shoud not be passed as parameter, by we should directly call "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to remove tham
+# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to remove them
 #' @title Impute each PG.
 #' @description Imputes each PG separately and return the results for each PG. 
 #'
@@ -206,7 +208,7 @@ split_large_pg = function(adj, size_max) {
 #' @param prot.idxs Vector of indices of PGs to impute
 #' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
-#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is splitted if its size is above this threshold.
+#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
 #' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
 #' @param ... xxx
 #'
@@ -291,7 +293,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   }
   endtime = Sys.time()
   logs[["time"]] = endtime - begtime
-  if (group_pep_solo | !is.null(max_pg_size)) {
+  if (!is.null(max_pg_size)) {
     logs[["new_adj"]] = adj
   }
   return(logs)
@@ -314,7 +316,9 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 #' @examples
 #' NULL
 #'
-split_large_pg_PG = function(adj, size_max, adj_rna_pg) {
+split_large_pg_PG = function(adj, 
+                             size_max, 
+                             adj_rna_pg) {
   set.seed(1234)
   idx_pg_too_large = which((colSums(adj) + colSums(adj_rna_pg)) >=
                              size_max)
@@ -397,7 +401,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      max_pg_size = NULL,
                                      max.pg.size2imp = NULL,
                                      ...) {
-
+  
   if (!is.null(max_pg_size)) {
     adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
                              data.pep.rna.crop$adj_rna_pg)
@@ -422,11 +426,11 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     rnas_means = colMeans(matrix(
       data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = F], nrep_rna))
     # rnas_sds = apply(matrix(
-    #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, sd, na.rm = T)
+    #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, sd, na.rm = TRUE)
     # rnas_sds[is.na(rnas_sds)] = 0
     # rnas_ab[pep.cond.mask == i, ] = matrix(rnorm(
-    #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, byrow = T) # This line enables to sample from statistics of each condition instead of setting the mean.
-    rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), nrep_pep, byrow = T)
+    #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, byrow = TRUE) # This line enables to sample from statistics of each condition instead of setting the mean.
+    rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), nrep_pep, byrow =TRUE)
     
   }
   if (!is.null(max.pg.size2imp)) {
@@ -563,11 +567,11 @@ plot2hists <- function(d1,
                        name2,
                        titlename,
                        xlab = "",
-                       freq = T) {
+                       freq = TRUE) {
   c1 <- rgb(173,216,230, maxColorValue = 255, alpha = 100, names = "lt.blue")
   c2 <- rgb(255,192,203, maxColorValue = 255, alpha = 100, names = "lt.pink")
-  b <- min(c(d1,d2), na.rm = T) - 0.01
-  e <- max(c(d1,d2), na.rm = T)*(1 + 0.1)
+  b <- min(c(d1,d2), na.rm = TRUE) - 0.01
+  e <- max(c(d1,d2), na.rm = TRUE)*(1 + 0.1)
   ax <- pretty(b:e, n = 50)
   if (freq) {
     hgA <- hist(d1, breaks = ax, plot = FALSE) # Save first histogram data
@@ -607,8 +611,8 @@ ggplot2hist <- function(list.values,
                         titlename, 
                         xlabel="") {
   data.hist = data.frame(values = unlist(list.values),
-                        group = factor(rep(names(list.values),
-                                    unlist(lapply(list.values, length)))))
+                         group = factor(rep(names(list.values),
+                                            unlist(lapply(list.values, length)))))
   g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
     geom_density(alpha=.2) +

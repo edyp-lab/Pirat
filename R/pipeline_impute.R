@@ -189,37 +189,32 @@ pipeline_llkimpute = function(data.pep.rna.mis,
         data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
       }
       
-      params_imp_blocks = list(
-       # tol.na.pep = 100,
-        df = df,
-        nu_factor = nu_factor,
-        prot.idxs = protidxs, 
-        psi = psi, 
-        max_pg_size = 30, 
-        pep_ab_or = pep.ab.comp)
+      params_imp_blocks = list(df = df,
+                               nu_factor = nu_factor,
+                               prot.idxs = protidxs, 
+                               psi = psi, 
+                               max_pg_size = 30, 
+                               pep_ab_or = pep.ab.comp)
       
-      params_llkimp = list(
-        phi0 = phi0, 
-        phi = phi, 
-        eps_chol = 1e-4, 
-        eps_phi = 1e-5, 
-        tol_obj = 1e-7, 
-        tol_grad = 1e-5, 
-        tol_param = 1e-4,
-        maxiter = as.integer(5000), 
-        lr = 0.5, 
-        phi_known = T,
-        max_try = 50, 
-        max_ls = 500, 
-        eps_sig = 1e-4, 
-        nsamples = 1000)
+      params_llkimp = list(phi0 = phi0, 
+                           phi = phi, 
+                           eps_chol = 1e-4, 
+                           eps_phi = 1e-5, 
+                           tol_obj = 1e-7, 
+                           tol_grad = 1e-5, 
+                           tol_param = 1e-4,
+                           maxiter = as.integer(5000), 
+                           lr = 0.5, 
+                           phi_known = T,
+                           max_try = 50, 
+                           max_ls = 500, 
+                           eps_sig = 1e-4, 
+                           nsamples = 1000)
       
       
-      res_per_block = do.call(impute_block_llk_reset, 
-                              c(list(data.pep.rna.mis, py$estimate_params_and_impute),
-                                params_imp_blocks, 
-                                params_llkimp)
-                              )
+      res_per_block = do.call(impute_block_llk_reset, c(list(data.pep.rna.mis,
+                                                             py$estimate_params_and_impute),
+                                                        params_imp_blocks, params_llkimp))
       
       data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis, protidxs)
       
