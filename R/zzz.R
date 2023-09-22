@@ -1,10 +1,16 @@
 
 
+requested_versions <- list(
+  torch = '1.10.0',
+  numpy = '1.20.2',
+  python = '3.9.5'
+)
+
+msg <- paste0("\nThis is Pirat version ", utils::packageVersion("Pirat"))
+packageStartupMessage(msg)
 
 
 .onAttach <- function(libname, pkgname) {
-  msg <- paste0("\nThis is Pirat version ", utils::packageVersion("Pirat"))
-  packageStartupMessage(msg)
   Load_Python_Scripts()
 }
 
@@ -43,10 +49,10 @@ Load_Python_Scripts <- function(){
   # Check if packages are available
   cat("\nChecking if config is correct: ...")
   config <- pirat_config()
-  
-  if (config$torch_version != "1.10.0" ||
-      config$numpy_version != "1.20.2" ||
-      config$python_version != "3.9"){
+  #browser()
+  if (config$torch_version != requested_versions$torch ||
+      config$numpy_version != requested_versions$numpy ||
+      config$python_version != requested_versions$python){
     cat('Please run install_pirat()')
     return()
   }
@@ -121,8 +127,8 @@ pirat_config <- function() {
       torch_version = torch_version,
       numpy_version = numpy_version,
       matplotlib_version = matplotlib_version,
-      python = config$python,
-      python_version = reticulate::py_version()
+      location = config$pythonhome,
+      python_version = py_version(config$version_string)
     ))
     
     # didn't find it
@@ -147,6 +153,25 @@ torch_version <- function() {
   else
     NULL
 }
+
+
+py_version <- function(x)
+  strsplit(x, split = ' | ')[[1]][1]
+
+
+#' @export
+print.pirat_config <- function(x, ...) {
+  # this is what will print when calling pirat_config()
+  if (x$available) {
+    aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
+    cat("PyTorch v", x$torch_version, " (", aliased(x$location), ")\n", sep = "")
+    cat("Python v", x$python_version, "\n", sep = "")
+    cat("NumPy v", x$numpy_version, "\n", sep = "")
+  } else {
+    cat(x$error_message, "\n")
+  }
+}
+
 
 
 # Build error message for TensorFlow configuration errors
