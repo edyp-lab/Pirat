@@ -1,4 +1,4 @@
-#' Title
+#' @title Estimate missingness parameters Gamma
 #'
 #' @param pep.ab.table 
 #'
@@ -51,12 +51,12 @@ estimate_gamma = function(pep.ab.table) {
 #' @description Estimate the inverse scale factor and degrees of freedom of 
 #' the distribution of columns-wise variances of an abundance table
 #'
-#' @param obs2NApep 
+#' @param obs2NApep Peptide abundance matrix (can contain MVs)
 #' 
 #' @import MASS
 #' @import invgamma
 #'
-#' @return
+#' @return List containing estimated parameters df (degrees of freedom) and psi (inverse scale)
 #' @export
 #'
 #' @examples
@@ -111,15 +111,14 @@ estmate_psi_df = function(obs2NApep) {
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
                               nu_factor = 2,
-                              cov_ratio = 0,
                               rna.cond.mask = NULL,
                               pep.cond.mask = NULL,
-                              group_pep_solo = FALSE,
                               mcar = FALSE,
                               protidxs = NULL,
                               max.pg.size2imp = NULL,
                               transpose = FALSE,
-                              degenerated = FALSE) {
+                              degenerated = FALSE,
+                              pathifcc1 = NULL) {
 
   
   #Load_Python_Scripts()
