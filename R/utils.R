@@ -291,7 +291,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   }
   endtime = Sys.time()
   logs[["time"]] = endtime - begtime
-  if (group_pep_solo | !is.null(max_pg_size)) {
+  if (!is.null(max_pg_size)) {
     logs[["new_adj"]] = adj
   }
   return(logs)
