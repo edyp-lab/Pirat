@@ -34,7 +34,6 @@
 #'
 #' @export
 #' 
-#' @import reticulate
 #' @import rTorch
 #' 
 #' @examples
@@ -44,102 +43,34 @@
 #' 
 #' 
 install_Pirat <- function(
-    envname = "r-pirat2",
-    new_env = identical(envname, "r-pirat2"),
+    envname = "r-pirat",
+    new_env = identical(envname, "r-pirat"),
     restart_session = TRUE
     ) {
   
-  # method <- switch(get_os(),
-  #        windows = 'virtualenv',
-  #        linux = 'conda',
-  #        default = {
-  #          warning("OS not detected or managed")
-  #          NULL
-  #        }
-  # )
   
+  torch_version <- "1.10.0"
   python_version <- "3.9.5"
+  pkgs <- c("cpuonly", 
+            "matplotlib", 
+            'numpy=1.20.2')
+  
+  # Check if Python is already installed. If not, install conda
+  # Miniconda appears to be not 100% reliable, specially in macOS. 
+  # It is strongly recommend using full conda for your PyTorch installation.
   
   
-  # if (method == 'virtualenv'){
-  #   pkgs <- c("numpy==1.20.2", 'matplotlib', 'torch==1.10.0')
-  #   
-  #   if(reticulate::virtualenv_exists(envname))
-  #     reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
-  #     
-  #     # create a new environment 
-  #   virtualenv_create("r-pirat2")
-  #   virtualenv_install("r-pirat2", 
-  #                      packages = pkgs,
-  #                      python_version = python_version)
-  #   
-  #   
-  #   
-  # }
-  # 
-  # 
-  # if (method == 'conda'){
-  #   pkgs <- c("numpy=1.20.2", 'matplotlib', 'pytorch=1.10.0')
-  #   # create a new environment 
-  #   conda_create("r-pirat2")
-  #   conda_install("r-pirat2", 
-  #                 packages = pkgs,
-  #                 channel="pytorch", 
-  #                 python_version = python_version)
-  # }
-  # 
-  # 
-  # conda <- 'auto'
-  # 
-  # if(is.null(reticulate::virtualenv_starter(version = python_version, all = FALSE))){
-  #   cat('\nInstalling Python : ...')
-  #   #reticulate::install_miniconda()
-  #   reticulate::install_python(version = python_version)
-  #   cat('done')
-  # }
-  # 
-  # if (isTRUE(new_env)) {
-  #   cat('\nCreating new Python environment: ...')
-  #   if (method  == "virtualenv" && reticulate::virtualenv_exists(envname)){
-  #     reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
-  #     reticulate::virtualenv_install(
-  #       packages = pkgs,
-  #       envname = envname,
-  #       method = method,
-  #       python_version = '3.9.5'
-  #     )
-  #     
-  #   }
-  #   
-  #   if (method == "conda") {
-  #     if (!is.null(tryCatch(conda_python(envname, conda = conda),
-  #                           error = function(e) NULL)))
-  #       reticulate::conda_remove(envname, conda = conda)
-  #     
-  #     reticulate::conda_install(
-  #       packages = pkgs,
-  #       envname = envname,
-  #       method = method,
-  #       python_version = '3.9.5'
-  #     )
-  #     
-  #   }
-  #   cat('done')
-  #   
-  # }
-  
-  # cat('\nInstalling Python and packages: ...')
-  # reticulate::py_install(
-  #   packages = pkgs,
-  #   envname = envname,
-  #   method = method,
-  #   python_version = '3.9.5'
-  # )
-  # cat('done')
-
-  
-  
-  
+  rTorch::install_pytorch(method = c("conda", "virtualenv", "auto"),
+                  conda = "auto",
+                  version = torch_version,
+                  envname = envname,
+                  extra_packages = pkgs,
+                  restart_session = TRUE,
+                  conda_python_version = python_version,
+                  pip = FALSE,
+                  channel = "stable",
+                  cuda_version = NULL,
+                  dry_run = FALSE)
   
   cat("\nInstallation complete.\n\n")
   

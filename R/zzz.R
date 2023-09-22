@@ -63,3 +63,66 @@ Load_Python_Scripts <- function(){
   py <- reticulate::import("torch")
   cat("done")
 }
+
+
+
+
+#' Pirat configuration information
+#'
+#' @return List with information on the current configuration of TensorFlow.
+#'   You can determine whether TensorFlow was found using the `available`
+#'   member (other members vary depending on whether `available` is `TRUE`
+#'   or `FALSE`)
+#'
+#' @keywords internal
+#' @export
+torch_config <- function() {
+  
+  # first check if we found tensorflow
+  have_Pirat<- py_module_available("torch")
+  
+  # get py config
+  config <- py_config()
+  
+  # found it!
+  if (have_tensorflow) {
+    
+    # get version
+    if (reticulate::py_has_attr(tf, "version"))
+      version_raw <- tf$version$VERSION
+    else
+      version_raw <- tf$VERSION
+    
+    tfv <- strsplit(version_raw, ".", fixed = TRUE)[[1]]
+    version <- package_version(paste(tfv[[1]], tfv[[2]], sep = "."))
+    
+    structure(class = "tensorflow_config", list(
+      available = TRUE,
+      version = version,
+      version_str = version_raw,
+      location = config$required_module_path,
+      python = config$python,
+      python_version = config$version
+    ))
+    
+    # didn't find it
+  } else {
+    structure(class = "tensorflow_config", list(
+      available = FALSE,
+      python_versions = config$python_versions,
+      error_message = tf_config_error_message()
+    ))
+  }
+}
+
+
+#' @rdname tf_config
+#' @keywords internal
+#' @export
+torch_version <- function() {
+  config <- torch_config()
+  if (config$available)
+    config$version
+  else
+    NULL
+}
