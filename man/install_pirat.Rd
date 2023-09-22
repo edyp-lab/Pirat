@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_Pirat.R
 \name{install_pirat}
 \alias{install_pirat}
-\title{Install Pirat and its dependencies}
+\title{Install Pirat}
 \usage{
 install_pirat(
   method = c("conda", "virtualenv", "auto"),
@@ -20,43 +20,67 @@ install_pirat(
 )
 }
 \arguments{
-\item{envname}{xxx}
+\item{method}{Installation method. By default, "auto" automatically finds a
+method that will work in the local environment. Change the default to force
+a specific installation method. Note that the "virtualenv" method is not
+available on _Windows_ (as this isn't supported by _PyTorch_). Note also
+that since this command runs without privillege the "system" method is
+available only on _Windows_.}
 
-\item{restart_session}{Whether to restart R session after installing. Note that
-it will be automatically if in RStudio.}
+\item{conda}{The path to a \code{conda} executable. Use \code{"auto"} to allow
+\code{reticulate} to automatically find an appropriate \code{conda} binary.
+See \strong{Finding Conda} and \code{\link[reticulate:conda_binary]{conda_binary()}} for more details.}
 
-\item{new_env}{If \code{TRUE}, any existing Python virtual environment and/or
-conda environment specified by \code{envname} is deleted first.}
+\item{version}{PyTorch version to install. The "default" version is __1.10.0__.
+You can specify a specific __PyTorch__ version with `version="1.2"`,
+or `version="1.6"`.}
+
+\item{envname}{Name of Python or conda environment to install within.
+The default environment name is `r-torch`.}
+
+\item{extra_packages}{Additional Python packages to install along with
+PyTorch. If more than one package use a character vector:
+`c("pandas", "matplotlib")`. Default are `c("numpy=1.20.2", "matplotlib")`.}
+
+\item{restart_session}{Restart R session after installing (note this will
+only occur within RStudio).}
+
+\item{conda_python_version}{the _Python_ version installed in the created _conda_
+environment. Python __3.9.5__ is installed by default. But you could specify for instance:
+`conda_python_version="3.7"`.}
+
+\item{pip}{logical}
+
+\item{channel}{conda channel. The default channel is `stable`.
+The alternative channel is `nightly`.}
+
+\item{cuda_version}{string for the cuda toolkit version to install. For example,
+to install a specific CUDA version use `cuda_version="10.2"`.}
+
+\item{dry_run}{logical, set to TRUE for unit tests, otherwise will execute
+the command.}
+
+\item{...}{other arguments passed to [reticulate::conda_install()] or
+[reticulate::virtualenv_install()].}
 }
 \description{
-\code{install_Pirat()} installs just the python packages needed by Pirat.
+Install Pirat
 }
-\details{
-You may be prompted to download and install miniconda if reticulate
-did not find a non-system installation of python. Miniconda is the
-recommended installation method for most users, as it ensures that the R
-python installation is isolated from other python installations. All python
-packages will by default be installed into a self-contained conda or venv
-environment named "r-Pirat". Note that "conda" is the only
-supported method on M1 Mac.
-
-If you initially declined the miniconda installation prompt, you can later
-manually install miniconda by running \code{\link[reticulate:install_miniconda]{reticulate::install_miniconda()}}.
-}
-\section{Custom Installation}{
- \code{install_Pirat()} isn't required to use Pirat.
-If you manually configure a python environment with the required
-dependencies and Python environment, you can tell R to use it by pointing
-reticulate at it, commonly by setting an environment variable:
-
-\if{html}{\out{<div class="sourceCode R">}}\preformatted{Sys.setenv("RETICULATE_PYTHON" = "~/path/to/python-env/bin/python")
-}\if{html}{\out{</div>}}
-}
-
 \examples{
 \dontrun{
-install_pirat()
-}
 
+# install PyTorch 1.6 on Python 3.7 including pandas
+install_pytorch(version = "1.6", conda_python_version = "3.7",
+extra_packages = "pandas")
+
+# Install PyTorch 1.4, Python 3.6, pandas, matplotlib install from the console
+install_pytorch(version = "1.4", conda_python_version = "3.6",
+extra_packages = c("pandas", "matplotlib"))
+
+# Install PyTorch 1.3 on Python 3.6 including pandas, matplotlib
+install_pytorch(version = "1.3", conda_python_version = "3.6",
+extra_packages = c("pandas", "matplotlib"),
+dry_run = FALSE)
+}
 
 }

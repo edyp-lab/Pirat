@@ -1,5 +1,4 @@
-#' @title xxx
-#' @description xxx
+#' @title Estimate missingness parameters Gamma
 #'
 #' @param pep.ab.table xxx
 #' @param mcar xxx
@@ -56,12 +55,12 @@ estimate_gamma = function(pep.ab.table,
 #' @description Estimate the inverse scale factor and degrees of freedom of 
 #' the distribution of columns-wise variances of an abundance table
 #'
-#' @param obs2NApep xxx
+#' @param obs2NApep Peptide abundance matrix (can contain MVs)
 #' 
 #' @import MASS
 #' @import invgamma
 #'
-#' @return A list
+#' @return List containing estimated parameters df (degrees of freedom) and psi (inverse scale)
 #' @export
 #'
 #' @examples
@@ -89,15 +88,14 @@ estmate_psi_df = function(obs2NApep) {
 #' @param data.pep.rna.mis xxx
 #' @param pep.ab.comp xxx
 #' @param nu_factor xxx
-#' @param cov_ratio xxx
 #' @param rna.cond.mask xxx
 #' @param pep.cond.mask xxx
-#' @param group_pep_solo xxx
 #' @param mcar xxx
 #' @param protidxs xxx
 #' @param max.pg.size2imp xxx
 #' @param transpose xxx
 #' @param degenerated xxx
+#' @param pathifcc1 xxx
 #'
 #' @import progress
 #' @import MASS
@@ -118,16 +116,15 @@ estmate_psi_df = function(obs2NApep) {
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
                               nu_factor = 2,
-                              cov_ratio = 0,
                               rna.cond.mask = NULL,
                               pep.cond.mask = NULL,
-                              group_pep_solo = FALSE,
                               mcar = FALSE,
                               protidxs = NULL,
                               max.pg.size2imp = NULL,
                               transpose = FALSE,
-                              degenerated = FALSE) {
-
+                              degenerated = FALSE,
+                              pathifcc1 = NULL) {
+  
   set.seed(98765)
   psi_rna = NULL
   
@@ -192,33 +189,37 @@ pipeline_llkimpute = function(data.pep.rna.mis,
         data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
       }
       
-      params_imp_blocks = list(tol.na.pep = 100,
-                               df = df,
-                               nu_factor = nu_factor,
-                               prot.idxs = protidxs, 
-                               psi = psi, 
-                               max_pg_size = 30, 
-                               pep_ab_or = pep.ab.comp)
+      params_imp_blocks = list(
+       # tol.na.pep = 100,
+        df = df,
+        nu_factor = nu_factor,
+        prot.idxs = protidxs, 
+        psi = psi, 
+        max_pg_size = 30, 
+        pep_ab_or = pep.ab.comp)
       
-      params_llkimp = list(phi0 = phi0, 
-                           phi = phi, 
-                           eps_chol = 1e-4, 
-                           eps_phi = 1e-5, 
-                           tol_obj = 1e-7, 
-                           tol_grad = 1e-5, 
-                           tol_param = 1e-4,
-                           maxiter = as.integer(5000), 
-                           lr = 0.5, 
-                           phi_known = T,
-                           max_try = 50, 
-                           max_ls = 500, 
-                           eps_sig = 1e-4, 
-                           nsamples = 1000)
+      params_llkimp = list(
+        phi0 = phi0, 
+        phi = phi, 
+        eps_chol = 1e-4, 
+        eps_phi = 1e-5, 
+        tol_obj = 1e-7, 
+        tol_grad = 1e-5, 
+        tol_param = 1e-4,
+        maxiter = as.integer(5000), 
+        lr = 0.5, 
+        phi_known = T,
+        max_try = 50, 
+        max_ls = 500, 
+        eps_sig = 1e-4, 
+        nsamples = 1000)
       
       
-      res_per_block = do.call(impute_block_llk_reset, c(list(data.pep.rna.mis,
-                                                             py$estimate_params_and_impute),
-                                                        params_imp_blocks, params_llkimp))
+      res_per_block = do.call(impute_block_llk_reset, 
+                              c(list(data.pep.rna.mis, py$estimate_params_and_impute),
+                                params_imp_blocks, 
+                                params_llkimp)
+                              )
       
       data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis, protidxs)
       

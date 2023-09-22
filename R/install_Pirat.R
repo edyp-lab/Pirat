@@ -1,44 +1,65 @@
-#' Install Pirat and its dependencies
+#' Install Pirat 
 #'
-#' `install_Pirat()` installs just the python packages needed by Pirat.
+#' @inheritParams reticulate::conda_list
 #'
-#' @details You may be prompted to download and install miniconda if reticulate
-#'   did not find a non-system installation of python. Miniconda is the
-#'   recommended installation method for most users, as it ensures that the R
-#'   python installation is isolated from other python installations. All python
-#'   packages will by default be installed into a self-contained conda or venv
-#'   environment named "r-Pirat". Note that "conda" is the only 
-#'   supported method on M1 Mac.
+#' @param method Installation method. By default, "auto" automatically finds a
+#'   method that will work in the local environment. Change the default to force
+#'   a specific installation method. Note that the "virtualenv" method is not
+#'   available on _Windows_ (as this isn't supported by _PyTorch_). Note also
+#'   that since this command runs without privillege the "system" method is
+#'   available only on _Windows_.
 #'
-#'   If you initially declined the miniconda installation prompt, you can later
-#'   manually install miniconda by running [`reticulate::install_miniconda()`].
+#' @param version PyTorch version to install. The "default" version is __1.10.0__.
+#'   You can specify a specific __PyTorch__ version with `version="1.2"`,
+#'   or `version="1.6"`.
 #'
-#' @section Custom Installation: `install_Pirat()` isn't required to use Pirat.
-#'  If you manually configure a python environment with the required 
-#'  dependencies and Python environment, you can tell R to use it by pointing 
-#'  reticulate at it, commonly by setting an environment variable:
+#' @param envname Name of Python or conda environment to install within.
+#'   The default environment name is `r-torch`.
 #'
-#'   ``` R
-#'   Sys.setenv("RETICULATE_PYTHON" = "~/path/to/python-env/bin/python")
-#'   ```
+#' @param extra_packages Additional Python packages to install along with
+#'   PyTorch. If more than one package use a character vector:
+#'   `c("pandas", "matplotlib")`. Default are `c("numpy=1.20.2", "matplotlib")`.
 #'
-#' @md
-#' 
-#' @param envname xxx
+#' @param restart_session Restart R session after installing (note this will
+#'   only occur within RStudio).
 #'
-#' @param restart_session Whether to restart R session after installing. Note that 
-#' it will be automatically if in RStudio.
+#' @param conda_python_version the _Python_ version installed in the created _conda_
+#'   environment. Python __3.9.5__ is installed by default. But you could specify for instance:
+#'   `conda_python_version="3.7"`.
 #'
-#' @param new_env If `TRUE`, any existing Python virtual environment and/or
-#'   conda environment specified by `envname` is deleted first.
+#' @param pip logical
 #'
-#' @export
-#' 
+#' @param channel conda channel. The default channel is `stable`.
+#'   The alternative channel is `nightly`.
+#'
+#' @param cuda_version string for the cuda toolkit version to install. For example,
+#'   to install a specific CUDA version use `cuda_version="10.2"`.
+#'
+#' @param dry_run logical, set to TRUE for unit tests, otherwise will execute
+#'   the command.
+#'
+#' @param ... other arguments passed to [reticulate::conda_install()] or
+#'   [reticulate::virtualenv_install()].
+#'
+#' @importFrom jsonlite fromJSON
 #' @examples
 #' \dontrun{
-#' install_pirat()
+#'
+#' # install PyTorch 1.6 on Python 3.7 including pandas
+#' install_pytorch(version = "1.6", conda_python_version = "3.7",
+#' extra_packages = "pandas")
+#'
+#' # Install PyTorch 1.4, Python 3.6, pandas, matplotlib install from the console
+#' install_pytorch(version = "1.4", conda_python_version = "3.6",
+#' extra_packages = c("pandas", "matplotlib"))
+#'
+#' # Install PyTorch 1.3 on Python 3.6 including pandas, matplotlib
+#' install_pytorch(version = "1.3", conda_python_version = "3.6",
+#' extra_packages = c("pandas", "matplotlib"),
+#' dry_run = FALSE)
 #' }
-#' 
+#'
+#' @export
 #' 
 install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                           conda = "auto",

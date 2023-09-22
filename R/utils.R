@@ -206,7 +206,7 @@ split_large_pg = function(adj, size_max) {
 #' @param prot.idxs Vector of indices of PGs to impute
 #' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
-#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
+#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is splitted if its size is above this threshold.
 #' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
 #' @param ... xxx
 #'

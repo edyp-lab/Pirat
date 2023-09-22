@@ -7,10 +7,10 @@
 estmate_psi_df(obs2NApep)
 }
 \arguments{
-\item{obs2NApep}{xxx}
+\item{obs2NApep}{Peptide abundance matrix (can contain MVs)}
 }
 \value{
-A list
+List containing estimated parameters df (degrees of freedom) and psi (inverse scale)
 }
 \description{
 Estimate the inverse scale factor and degrees of freedom of 

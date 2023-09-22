@@ -8,15 +8,14 @@ pipeline_llkimpute(
   data.pep.rna.mis,
   pep.ab.comp = NULL,
   nu_factor = 2,
-  cov_ratio = 0,
   rna.cond.mask = NULL,
   pep.cond.mask = NULL,
-  group_pep_solo = FALSE,
   mcar = FALSE,
   protidxs = NULL,
   max.pg.size2imp = NULL,
   transpose = FALSE,
-  degenerated = FALSE
+  degenerated = FALSE,
+  pathifcc1 = NULL
 )
 }
 \arguments{
@@ -26,13 +25,9 @@ pipeline_llkimpute(
 
 \item{nu_factor}{xxx}
 
-\item{cov_ratio}{xxx}
-
 \item{rna.cond.mask}{xxx}
 
 \item{pep.cond.mask}{xxx}
-
-\item{group_pep_solo}{xxx}
 
 \item{mcar}{xxx}
 
@@ -43,6 +38,8 @@ pipeline_llkimpute(
 \item{transpose}{xxx}
 
 \item{degenerated}{xxx}
+
+\item{pathifcc1}{xxx}
 }
 \value{
 xxx

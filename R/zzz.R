@@ -27,7 +27,7 @@ Load_Python_Scripts <- function(){
   pirat_venv_exists <-reticulate::virtualenv_exists('r-pirat')
     
   
-  if (!pirat_conda_exists && !rpirat_venv_exists){
+  if (!pirat_conda_exists && !pirat_venv_exists){
   warning("No 'r-pirat' env exists. 
           You should install one first by running: install_Pirat()")
     return()
@@ -40,6 +40,18 @@ Load_Python_Scripts <- function(){
 
   cat("done")
 
+  # Check if packages are available
+  cat("\nChecking if config is correct: ...")
+  config <- pirat_config()
+  
+  if (config$torch_version != "1.10.0" ||
+      config$numpy_version != "1.20.2" ||
+      config$python_version != "3.9"){
+    cat('Please run install_pirat()')
+    return()
+  }
+      
+  cat("done")
   
   # Now, install custom Python scripts
   cat("\nSourcing custom Python scripts: ...")
@@ -57,7 +69,12 @@ Load_Python_Scripts <- function(){
 
 
 
+#' @title xxx
+#' @description xxx
+#' 
+#' 
 #' @export
+#' 
 Get_active_env <- function(){
   
   py_home <- reticulate::py_config()$pythonhome

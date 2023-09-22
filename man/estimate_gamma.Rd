@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline_impute.R
 \name{estimate_gamma}
 \alias{estimate_gamma}
-\title{xxx}
+\title{Estimate missingness parameters Gamma}
 \usage{
 estimate_gamma(pep.ab.table, mcar = FALSE)
 }
@@ -15,7 +15,7 @@ estimate_gamma(pep.ab.table, mcar = FALSE)
 A list
 }
 \description{
-xxx
+Estimate missingness parameters Gamma
 }
 \examples{
 NULL
