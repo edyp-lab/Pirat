@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{impute_block_llk_reset_PG}
 \alias{impute_block_llk_reset_PG}
-\title{xxx}
+\title{Impute each PG.}
 \usage{
 impute_block_llk_reset_PG(
   data.pep.rna.crop,
@@ -12,48 +12,47 @@ impute_block_llk_reset_PG(
   rna.cond.mask,
   pep.cond.mask,
   pep_ab_or = NULL,
-  psiratio = 0,
   prot.idxs = NULL,
-  df = 1,
+  df = 2,
   nu_factor = 1,
   max_pg_size = NULL,
+  max.pg.size2imp = NULL,
   ...
 )
 }
 \arguments{
-\item{data.pep.rna.crop}{xxx}
+\item{data.pep.rna.crop}{A list representing dataset, with mRNA normalized counts and mRNA/PGs adjacecy table.}
 
-\item{impfunc}{xxx}
+\item{impfunc}{Imputation function}
 
-\item{psi}{xxx}
+\item{psi}{Inverse scale parameter for IW prior of peptides abundances}
 
-\item{psi_rna}{xxx}
+\item{psi_rna}{Inverse scale parameter for IW prior of mRNA abundances}
 
-\item{rna.cond.mask}{xxx}
+\item{rna.cond.mask}{Vector of size equal to the number of samples in mRNA abundance table, 
+containing indices of conditions of each sample.}
 
-\item{pep.cond.mask}{xxx}
+\item{pep.cond.mask}{Vector of size equal to the number of samples in peptide abundance table, 
+containing indices of conditions of each sample.}
 
-\item{pep_ab_or}{xxx}
+\item{pep_ab_or}{In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
+such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.}
 
-\item{psiratio}{xxx}
+\item{prot.idxs}{Vector of indices of PGs to impute}
 
-\item{prot.idxs}{xxx}
+\item{df}{Estimate degree of freedom of the IG distribution fitted on observed variance.}
 
-\item{df}{xxx}
+\item{nu_factor}{Multiplication factor on degree of freedom. 2 by default.}
 
-\item{nu_factor}{xxx}
+\item{max_pg_size}{Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.}
 
-\item{max_pg_size}{xxx}
+\item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
 
 \item{...}{xxx}
 }
 \value{
-xxx
+A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
 }
 \description{
-Impute dataset and return result for each component accounting for transcriptomic information
-}
-\examples{
-NULL
-
+Imputes each PG separately accounting for transcriptomic dataset and returns the results for each PG.
 }

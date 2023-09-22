@@ -2,22 +2,24 @@
 % Please edit documentation in R/utils.R
 \name{split_large_pg_PG}
 \alias{split_large_pg_PG}
-\title{xxx}
+\title{Split too large PGs in multi-omic context}
 \usage{
 split_large_pg_PG(adj, size_max, adj_rna_pg)
 }
 \arguments{
-\item{adj}{xxx}
+\item{adj}{Adjacency matrix between peptides and PGs.}
 
-\item{size_max}{xxx}
+\item{size_max}{Maximum PG size desired.}
 
-\item{adj_rna_pg}{xxx}
+\item{adj_rna_pg}{Adjacency matrix between mRNA and PGs.}
 }
 \value{
-xxx
+List containing new adjacency matrix between peptides and PGs, 
+and new adjacency matrix between mRNA and PGs.
 }
 \description{
-Split PGs that have too many peptides and transcripts.
+Split PGs with too many peptides/precursors, and adapts adjacency matrix between mRNA and PGs accordingly. It creates different PGs with
+size equal to size max (including peptides and mRNAs). Hence, some peptides and mRNA can be duplicated in the new PGs.
 }
 \examples{
 NULL

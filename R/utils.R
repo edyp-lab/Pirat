@@ -1,25 +1,37 @@
-#' @title Get Operating System
-#' @description Get the operating system 
-#'
-#' @export
-#'
-#' @examples
-#' get_os()
-#'
-get_os <- function(){
-  sysinf <- Sys.info()
-  if (!is.null(sysinf)){
-    os <- sysinf['sysname']
-    if (os == 'Darwin')
-      os <- "osx"
-  } else { ## mystery machine
-    os <- .Platform$OS.type
-    if (grepl("^darwin", R.version$os))
-      os <- "osx"
-    if (grepl("linux-gnu", R.version$os))
-      os <- "linux"
+is_windows <- function() {
+  identical(.Platform$OS.type, "windows")
+}
+
+is_unix <- function() {
+  identical(.Platform$OS.type, "unix")
+}
+
+is_osx <- function() {
+  Sys.info()[["sysname"]] == "Darwin"
+}
+
+is_linux <- function() {
+  identical(tolower(Sys.info()[["sysname"]]), "linux")
+}
+
+is_ubuntu <- function() {
+  # check /etc/lsb-release
+  if (is_unix() && file.exists("/etc/lsb-release")) {
+    lsbRelease <- readLines("/etc/lsb-release")
+    any(grepl("Ubuntu", lsbRelease))
+  } else {
+    FALSE
   }
-  tolower(os)
+}
+
+is_debian <- function() {
+  # check /etc/os-release
+  if (is_unix() && file.exists("/etc/os-release")) {
+    osRelease <- readLines("/etc/os-release")
+    any(grepl("Debian", osRelease))
+  } else {
+    FALSE
+  }
 }
 
 #' @title Indexes of PGs embedded in each others
@@ -366,7 +378,7 @@ split_large_pg_PG = function(adj, size_max, adj_rna_pg) {
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
 #' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
 #' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
-#' @param ... 
+#' @param ... xxx
 #'
 #' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
 #' @export
@@ -383,7 +395,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      df = 2,
                                      nu_factor = 1,
                                      max_pg_size = NULL,
-                                     max.pg.size2imp = NULL
+                                     max.pg.size2imp = NULL,
                                      ...) {
 
   if (!is.null(max_pg_size)) {
@@ -491,6 +503,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 #' @export
 #'
 #' @examples
+#' NULL
 #' 
 #'
 impute_from_blocks = function(logs.blocks,

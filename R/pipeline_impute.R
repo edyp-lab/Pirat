@@ -1,12 +1,16 @@
 #' @title Estimate missingness parameters Gamma
 #'
-#' @param pep.ab.table 
+#' @param pep.ab.table xxx
+#' @param mcar xxx
 #'
-#' @return
+#' @return A list
 #' @export
 #'
 #' @examples
-estimate_gamma = function(pep.ab.table) {
+#' NULL
+#' 
+estimate_gamma = function(pep.ab.table,
+                          mcar = FALSE) {
   mv_rates = colMeans(is.na(pep.ab.table))
   mean_abund = colMeans(pep.ab.table, na.rm = T)
   mean_abund_sorted = sort(mean_abund, index.return = T)
@@ -60,6 +64,8 @@ estimate_gamma = function(pep.ab.table) {
 #' @export
 #'
 #' @examples
+#' NULL
+#' 
 estmate_psi_df = function(obs2NApep) {
   f <- function(x, a, b)
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
@@ -120,9 +126,6 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                               degenerated = FALSE,
                               pathifcc1 = NULL) {
 
-  
-  #Load_Python_Scripts()
-  
   set.seed(98765)
   psi_rna = NULL
   
@@ -152,7 +155,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   }
   
   # Initial estimates of phi and phi0
-  est.phi.phi0 = estimate_gamma(data.pep.rna.mis$peptides_ab)
+  est.phi.phi0 = estimate_gamma(data.pep.rna.mis$peptides_ab, mcar)
   phi = est.phi.phi0$phi
   phi0 = est.phi.phi0$phi0
   nsamples = nrow(data.pep.rna.mis$peptides_ab)

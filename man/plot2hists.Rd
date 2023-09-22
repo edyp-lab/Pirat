@@ -2,25 +2,26 @@
 % Please edit documentation in R/utils.R
 \name{plot2hists}
 \alias{plot2hists}
-\title{xxx}
+\title{Plot 2 histograms}
 \usage{
 plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = T)
 }
 \arguments{
-\item{d1}{xxx}
+\item{d1}{vector of values for the first histogram}
 
-\item{d2}{xxx}
+\item{d2}{vector of values for the first histogram}
 
-\item{name1}{xxx}
+\item{name1}{Label for first histogram}
 
-\item{name2}{xxx}
+\item{name2}{Label for 2nd histogram}
 
-\item{titlename}{xxx}
+\item{titlename}{Title of figure}
 
-\item{xlab}{xxx}
+\item{xlab}{X-axis label}
 
-\item{freq}{xxx}
+\item{freq}{If True, bins heights correspond to raw counts, otherwise bins are normalized.}
 }
 \description{
+Plot 2 histograms on the same graph.
 xxxxx
 }
