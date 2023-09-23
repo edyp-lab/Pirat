@@ -1,31 +1,32 @@
-#' Install Pirat 
+#' @title Install Pirat package
+#' 
+#' @description This script installs Python and PyTorch in the requested
+#' versions. It is largely inspired by wthe scripts in rTorch package 
+#' (https://github.com/f0nzie/rTorch)
 #'
 #' @inheritParams reticulate::conda_list
 #'
 #' @param method Installation method. By default, "auto" automatically finds a
 #'   method that will work in the local environment. Change the default to force
-#'   a specific installation method. Note that the "virtualenv" method is not
-#'   available on _Windows_ (as this isn't supported by _PyTorch_). Note also
-#'   that since this command runs without privillege the "system" method is
-#'   available only on _Windows_.
+#'   a specific installation method.  Note that since this command runs without 
+#'   privilege the "system" method is available only on _Windows_.
 #'
-#' @param version PyTorch version to install. The "default" version is __1.10.0__.
-#'   You can specify a specific __PyTorch__ version with `version="1.2"`,
-#'   or `version="1.6"`.
+#' @param version PyTorch version to install. The "default" version is 
+#' __1.10.0__. You can specify a specific __PyTorch__ version with 
+#' `version="1.2"`, or `version="1.6"`.
 #'
 #' @param envname Name of Python or conda environment to install within.
-#'   The default environment name is `r-torch`.
+#'   The default environment name is `r-pirat`.
 #'
 #' @param extra_packages Additional Python packages to install along with
-#'   PyTorch. If more than one package use a character vector:
-#'   `c("pandas", "matplotlib")`. Default are `c("numpy=1.20.2", "matplotlib")`.
+#'   PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.
 #'
 #' @param restart_session Restart R session after installing (note this will
 #'   only occur within RStudio).
 #'
 #' @param conda_python_version the _Python_ version installed in the created _conda_
-#'   environment. Python __3.9.5__ is installed by default. But you could specify for instance:
-#'   `conda_python_version="3.7"`.
+#'   environment. Python __3.9.5__ is installed by default. But you could 
+#'   specify for instance: `conda_python_version="3.7"`.
 #'
 #' @param pip logical
 #'
@@ -45,18 +46,17 @@
 #' @examples
 #' \dontrun{
 #'
-#' # install PyTorch 1.6 on Python 3.7 including pandas
-#' install_pytorch(version = "1.6", conda_python_version = "3.7",
+#' # install PyTorch 1.10.0 on Python 3.3.9.5 including pandas
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
 #' extra_packages = "pandas")
 #'
-#' # Install PyTorch 1.4, Python 3.6, pandas, matplotlib install from the console
-#' install_pytorch(version = "1.4", conda_python_version = "3.6",
+#' # Install PyTorch 1.10.0, Python 3.9.5, pandas, matplotlib install from the console
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
 #' extra_packages = c("pandas", "matplotlib"))
 #'
-#' # Install PyTorch 1.3 on Python 3.6 including pandas, matplotlib
-#' install_pytorch(version = "1.3", conda_python_version = "3.6",
-#' extra_packages = c("pandas", "matplotlib"),
-#' dry_run = FALSE)
+#' # Install PyTorch 1.10.0 on Python 3.9.5 including pandas, matplotlib
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
+#' extra_packages = c("pandas", "matplotlib"), dry_run = FALSE)
 #' }
 #'
 #' @export
