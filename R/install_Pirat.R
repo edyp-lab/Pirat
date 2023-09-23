@@ -4,13 +4,13 @@
 #' versions. It is largely inspired by wthe scripts in rTorch package 
 #' (https://github.com/f0nzie/rTorch)
 #'
-#' @inheritParams reticulate::conda_list
-#'
 #' @param method Installation method. By default, "auto" automatically finds a
 #'   method that will work in the local environment. Change the default to force
 #'   a specific installation method.  Note that since this command runs without 
 #'   privilege the "system" method is available only on _Windows_.
 #'
+#' @param conda www
+#' 
 #' @param version PyTorch version to install. The "default" version is 
 #' __1.10.0__. You can specify a specific __PyTorch__ version with 
 #' `version="1.2"`, or `version="1.6"`.

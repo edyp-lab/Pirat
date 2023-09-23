@@ -7,11 +7,11 @@
 install_pirat(
   method = c("conda", "virtualenv", "auto"),
   conda = "auto",
-  version = "1.10.0",
+  version = requested_versions$torch,
   envname = "r-pirat",
   extra_packages = NULL,
   restart_session = TRUE,
-  conda_python_version = "3.9.5",
+  conda_python_version = requested_versions$numpy,
   pip = FALSE,
   channel = "stable",
   cuda_version = NULL,
@@ -25,9 +25,7 @@ method that will work in the local environment. Change the default to force
 a specific installation method.  Note that since this command runs without 
 privilege the "system" method is available only on _Windows_.}
 
-\item{conda}{The path to a \code{conda} executable. Use \code{"auto"} to allow
-\code{reticulate} to automatically find an appropriate \code{conda} binary.
-See \strong{Finding Conda} and \code{\link[reticulate:conda_binary]{conda_binary()}} for more details.}
+\item{conda}{www}
 
 \item{version}{PyTorch version to install. The "default" version is 
 __1.10.0__. You can specify a specific __PyTorch__ version with 
