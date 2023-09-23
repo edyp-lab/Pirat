@@ -81,7 +81,13 @@ Load_Python_Scripts <- function(){
 }
 
 
+#' @title xxx
+#' @description xxx
+#' 
+#' @param config xxx
+#' 
 #' @export
+#' 
 config_isValid <- function(config){
   is.valid <- (config$torch_version == requested_versions$torch &&
       config$numpy_version == requested_versions$numpy &&
@@ -89,6 +95,8 @@ config_isValid <- function(config){
 
     return(is.valid)
 }
+
+
 #' @title xxx
 #' @description xxx
 #' 
