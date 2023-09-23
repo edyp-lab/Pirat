@@ -63,11 +63,11 @@
 #' 
 install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                           conda = "auto",
-                          version = "1.10.0",
+                          version = requested_versions$torch,
                           envname = "r-pirat",
                           extra_packages = NULL,
                           restart_session = TRUE,
-                          conda_python_version = "3.9.5",
+                          conda_python_version = requested_versions$numpy,
                           pip = FALSE,
                           channel = "stable",
                           cuda_version = NULL,
