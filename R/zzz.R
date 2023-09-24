@@ -1,15 +1,17 @@
 
 
-requested_versions <- list(
-  torch = '1.10.0',
-  numpy = '1.20.2',
-  python = '3.9.5'
-)
+
 
 msg <- paste0("\nThis is Pirat version ", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
 
+# https://community.rstudio.com/t/when-to-use-onload-vs-onattach/21953
+# Usually you want .onLoad, which—as the name suggests—runs when the package is 
+# loaded. If something has to happen before anything is run, that's the way to 
+# go. onAttach only runs when the library is attached, e.g. when somebody calls
+# library(your_package). onLoad will also run when somebody loads but doesn't 
+# attach your package by calling your_package::your_function.
 .onAttach <- function(libname, pkgname) {
   Load_Python_Scripts()
 }
@@ -29,24 +31,24 @@ Load_Python_Scripts <- function(){
   
   
   cat("\nLoading Python env: ...")
-  pirat_conda_exists <- 'r-pirat' %in% reticulate::conda_list()$name
-  pirat_venv_exists <-reticulate::virtualenv_exists('r-pirat')
+  pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+  pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
     
   
   if (!pirat_conda_exists && !pirat_venv_exists){
-  warning("No 'r-pirat' env exists. 
-          You should install one first by running: install_Pirat()")
+    cat(paste0("\nNo ", pirat_envname, " environment exists. "))
+    cat("\nYou should install one first by running: install_Pirat()")
     return()
     } 
   
   if (pirat_conda_exists)
-    reticulate::use_condaenv("r-pirat")
+    reticulate::use_condaenv(pirat_envname)
   else if (pirat_venv_exists)
-    reticulate::use_virtualenv("r-pirat")
+    reticulate::use_virtualenv(pirat_envname)
 
   cat("done")
 
-  # Check if packages are available
+  # Check if necessary packages are available in the current env
   cat("\nChecking if config is correct: ...")
   config <- pirat_config()
   #browser()

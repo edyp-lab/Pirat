@@ -72,18 +72,18 @@ estmate_psi_df = function(obs2NApep) {
   vars = sort(apply(obs2NApep, MARGIN = 2, FUN = var, na.rm = T))
   hist(vars, 30, freq = F, xlab ="Variance completely observed",
        main="Histogram of observed variance and fitted inverse-gamma curve")
-  resllk = fitdistr( vars, f, list(a=1, b=0.1) )
+  resllk = MASS::fitdistr( vars, f, list(a=1, b=0.1) )
   alpha = resllk$estimate[1]
   beta = resllk$estimate[2]
-  curve(dinvgamma(x, shape = alpha, rate = beta), add=T, col="red")
+  curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), add=T, col="red")
   
   df = 2 * alpha
   psi = 2 * beta
   return(list(df=df, psi=psi))
 }
 
-#' @title xxxx
-#' @description Pirat imputation function
+#' @title Pirat imputation function
+#' @description xxx
 #'
 #' @param data.pep.rna.mis xxx
 #' @param pep.ab.comp xxx
@@ -100,7 +100,7 @@ estmate_psi_df = function(obs2NApep) {
 #' @import progress
 #' @import MASS
 #' @import invgamma
-#' @import reticulate
+# #' @import reticulate
 #' @import graphics
 #' @import stats
 #'

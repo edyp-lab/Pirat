@@ -64,7 +64,7 @@
 install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                           conda = "auto",
                           version = "1.10.0",
-                          envname = "r-pirat",
+                          envname = pirat_envname,
                           extra_packages = NULL,
                           restart_session = TRUE,
                           conda_python_version = "3.9.5",
@@ -184,21 +184,8 @@ install_conda <- function(package,
                           pip, 
                           ...) {
   
-  # Example:
-  # rTorch:::install_conda(package="pytorch=1.4",
-  # extra_packages=c("torchvision", "cpuonly", "matplotlib", "pandas")
-  # envname="r-torch", conda="auto", conda_python_version = "3.6",
-  # channel="pytorch", pip=FALSE
-  # )
-  
-  # find if environment exists
-  envname_exists <- envname %in% reticulate::conda_list(conda = conda)$name
-  
-  # remove environment
-  if (envname_exists) {
-    message("Removing ", envname, " conda environment... \n")
-    reticulate::conda_remove(envname = envname, conda = conda)
-  }
+
+  remove_Pirat(envname, conda)
   
   
   message("Creating ", envname, " conda environment... \n")
@@ -223,14 +210,8 @@ install_conda <- function(package,
 
 install_virtualenv <- function(package, extra_packages, envname, ...) {
   
-  # find if environment exists
-  envname_exists <- envname %in% reticulate::virtualenv_list()
+  remove_Pirat(envname)
   
-  # remove environment
-  if (envname_exists) {
-    message("Removing ", envname, " virtualenv environment... \n")
-    reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
-  }
   
   message("Creating ", envname, " virtualenv environment... \n")
   reticulate::virtualenv_create(envname = envname)

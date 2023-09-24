@@ -8,7 +8,7 @@ install_pirat(
   method = c("conda", "virtualenv", "auto"),
   conda = "auto",
   version = "1.10.0",
-  envname = "r-pirat",
+  envname = pirat_envname,
   extra_packages = NULL,
   restart_session = TRUE,
   conda_python_version = "3.9.5",
