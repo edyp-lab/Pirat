@@ -3,6 +3,7 @@
 S3method(print,pirat_config)
 export(Get_active_env)
 export(Load_Python_Scripts)
+export(config_isValid)
 export(estimate_gamma)
 export(estmate_psi_df)
 export(get_indexes_embedded_prots)

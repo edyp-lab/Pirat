@@ -13,6 +13,7 @@ packageStartupMessage(msg)
 # library(your_package). onLoad will also run when somebody loads but doesn't 
 # attach your package by calling your_package::your_function.
 .onAttach <- function(libname, pkgname) {
+  
   Load_Python_Scripts()
 }
 
@@ -51,15 +52,21 @@ Load_Python_Scripts <- function(){
   # Check if necessary packages are available in the current env
   cat("\nChecking if config is correct: ...")
   config <- pirat_config()
-  #browser()
-  if (config$torch_version != requested_versions$torch ||
-      config$numpy_version != requested_versions$numpy ||
-      config$python_version != requested_versions$python){
-    cat('Please run install_pirat()')
+  if(!config_isValid(config)){
+    cat('Error: Please run install_pirat()')
     return()
-  }
+  } else {
+    cat("done\n")
+    aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
+    cat("Python v", config$python_version, " (location: ", aliased(config$location), "\n", sep = "")
+    cat("Active env: ", config$acive_env, "\n", sep = "")
+    cat("PyTorch v", config$torch_version, "\n", sep = "")
+    cat("NumPy v", config$numpy_version, "\n", sep = "")
+    cat("matplotlib v", config$matplotlib_version, "\n", sep = "")
+    
+    }
       
-  cat("done")
+  
   
   # Now, install custom Python scripts
   cat("\nSourcing custom Python scripts: ...")
@@ -75,6 +82,21 @@ Load_Python_Scripts <- function(){
   cat("done")
 }
 
+
+#' @title xxx
+#' @description xxx
+#' 
+#' @param config xxx
+#' 
+#' @export
+#' 
+config_isValid <- function(config){
+  is.valid <- (config$torch_version == requested_versions$torch &&
+      config$numpy_version == requested_versions$numpy &&
+      config$python_version == requested_versions$python)
+
+    return(is.valid)
+}
 
 
 #' @title xxx
@@ -159,6 +181,7 @@ torch_version <- function() {
 
 py_version <- function(x)
   strsplit(x, split = ' | ')[[1]][1]
+
 
 
 #' @export
