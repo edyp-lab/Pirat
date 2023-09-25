@@ -1,86 +1,69 @@
+#' @title xxx
+#' @description xxxx
+#' # https://community.rstudio.com/t/when-to-use-onload-vs-onattach/21953
+#' Usually you want .onLoad, which—as the name suggests—runs when the package is 
+#' loaded. If something has to happen before anything is run, that's the way to 
+#' go. onAttach only runs when the library is attached, e.g. when somebody calls
+#' library(your_package). onLoad will also run when somebody loads but doesn't 
+#' attach your package by calling your_package::your_function.
+#'
+#' @docType package
+#' @aliases Piratpackage
+#' @name Pirat
+NULL
 
 
 
-
-msg <- paste0("\nThis is Pirat version ", utils::packageVersion("Pirat"))
+msg <- paste0("\nThis is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
-
-# https://community.rstudio.com/t/when-to-use-onload-vs-onattach/21953
-# Usually you want .onLoad, which—as the name suggests—runs when the package is 
-# loaded. If something has to happen before anything is run, that's the way to 
-# go. onAttach only runs when the library is attached, e.g. when somebody calls
-# library(your_package). onLoad will also run when somebody loads but doesn't 
-# attach your package by calling your_package::your_function.
 .onAttach <- function(libname, pkgname) {
+  tryCatch({
+    packageStartupMessage({"\nLoading Python env: ..."})
+      pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+      pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
   
-  Load_Python_Scripts()
+  
+      if (!pirat_conda_exists && !pirat_venv_exists){
+        packageStartupMessage({paste0("\nNo ", pirat_envname, " environment exists. ")})
+        packageStartupMessage({"\nYou should install one first by running: install_Pirat()"})
+        return()
+      } 
+  
+      if (pirat_conda_exists)
+        reticulate::use_condaenv(pirat_envname)
+      else if (pirat_venv_exists)
+        reticulate::use_virtualenv(pirat_envname)
+  
+      packageStartupMessage({"done"})
+  
+      # Check if necessary packages are available in the current env
+      packageStartupMessage({"\nChecking if config is correct: ..."})
+      config <- pirat_config()
+      if(!config_isValid(config)){
+        packageStartupMessage({'Error: Please run install_pirat()'})
+        return()
+        } 
+   
+
+      # Now, install custom Python scripts
+      packageStartupMessage({"\nSourcing custom Python scripts: ..."})
+      dir.backup <- getwd()
+      setwd(system.file(".", package="Pirat"))
+      reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+      reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+      setwd(dir.backup)
+      packageStartupMessage({"done"})
+  
+      packageStartupMessage({"\nFinalizing loading: ..."})
+      py <- reticulate::import("torch")
+      packageStartupMessage({"done"})
+    },
+    warning = function(w){packageStartupMessage({w})},
+    error = function(e){packageStartupMessage({e})}
+    )
 }
 
-
-#' @title Load Python scripts into R session
-#' @description xxxx
-#' 
-#' @import reticulate
-#' 
-#' @examples
-#' Load_Python_Scripts()
-#' 
-#' @export
-#' 
-Load_Python_Scripts <- function(){
-  
-  
-  cat("\nLoading Python env: ...")
-  pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
-  pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
-    
-  
-  if (!pirat_conda_exists && !pirat_venv_exists){
-    cat(paste0("\nNo ", pirat_envname, " environment exists. "))
-    cat("\nYou should install one first by running: install_Pirat()")
-    return()
-    } 
-  
-  if (pirat_conda_exists)
-    reticulate::use_condaenv(pirat_envname)
-  else if (pirat_venv_exists)
-    reticulate::use_virtualenv(pirat_envname)
-
-  cat("done")
-
-  # Check if necessary packages are available in the current env
-  cat("\nChecking if config is correct: ...")
-  config <- pirat_config()
-  if(!config_isValid(config)){
-    cat('Error: Please run install_pirat()')
-    return()
-  } else {
-    cat("done\n")
-    aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
-    cat("Python v", config$python_version, " (location: ", aliased(config$location), "\n", sep = "")
-    cat("Active env: ", config$acive_env, "\n", sep = "")
-    cat("PyTorch v", config$torch_version, "\n", sep = "")
-    cat("NumPy v", config$numpy_version, "\n", sep = "")
-    cat("matplotlib v", config$matplotlib_version, "\n", sep = "")
-    
-    }
-      
-  
-  
-  # Now, install custom Python scripts
-  cat("\nSourcing custom Python scripts: ...")
-  dir.backup <- getwd()
-  setwd(system.file(".", package="Pirat"))
-  reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-  reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-  setwd(dir.backup)
-  cat("done")
-  
-  cat("\nFinalizing loading: ...")
-  py <- reticulate::import("torch")
-  cat("done")
-}
 
 
 #' @title xxx
@@ -186,12 +169,14 @@ py_version <- function(x)
 
 #' @export
 print.pirat_config <- function(x, ...) {
-  # this is what will print when calling pirat_config()
   if (x$available) {
     aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
-    cat("PyTorch v", x$torch_version, " (", aliased(x$location), ")\n", sep = "")
-    cat("Python v", x$python_version, "\n", sep = "")
+    cat("Python v", x$python_version, " (location: ", aliased(x$location), "\n", sep = "")
+    cat("Active env: ", x$acive_env, "\n", sep = "")
+    cat("PyTorch v", x$torch_version, "\n", sep = "")
     cat("NumPy v", x$numpy_version, "\n", sep = "")
+    cat("matplotlib v", x$matplotlib_version, "\n", sep = "")
+    
   } else {
     cat(x$error_message, "\n")
   }

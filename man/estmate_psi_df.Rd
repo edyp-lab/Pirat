@@ -7,16 +7,23 @@
 estmate_psi_df(obs2NApep)
 }
 \arguments{
-\item{obs2NApep}{Peptide abundance matrix (can contain MVs)}
+\item{obs2NApep}{Peptide abundance matrix (can contain missing values)}
 }
 \value{
-List containing estimated parameters df (degrees of freedom) and psi (inverse scale)
+List containing estimated parameters df (degrees of freedom) and 
+psi (inverse scale)
 }
 \description{
 Estimate the inverse scale factor and degrees of freedom of 
 the distribution of columns-wise variances of an abundance table
 }
 \examples{
-NULL
+data(bouyssie)
+obj <- bouyssie
+idx <- get_indexes_embedded_prots(obj$adj)
+obj <- rm_pg_from_idx_merge_pg(obj, idx)
+obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0]
+estmate_psi_df(obs2NApep)
+
 
 }

@@ -7,13 +7,8 @@
 install_pirat(
   method = c("conda", "virtualenv", "auto"),
   conda = "auto",
-<<<<<<< HEAD
-  version = "1.10.0",
-  envname = pirat_envname,
-=======
   version = requested_versions$torch,
-  envname = "r-pirat",
->>>>>>> 8bb89cf43e69e3740e6a910150fc934cb30aa0b3
+  envname = pirat_envname,
   extra_packages = NULL,
   restart_session = TRUE,
   conda_python_version = requested_versions$numpy,

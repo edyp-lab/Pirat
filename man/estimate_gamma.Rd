@@ -18,6 +18,7 @@ A list
 Estimate missingness parameters Gamma
 }
 \examples{
-NULL
+#' data(bouyssie)
+estimate_gamma(bouyssie$peptides_ab)
 
 }

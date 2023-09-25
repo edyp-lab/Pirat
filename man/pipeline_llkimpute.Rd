@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline_impute.R
 \name{pipeline_llkimpute}
 \alias{pipeline_llkimpute}
-\title{xxxx}
+\title{Pirat imputation function}
 \usage{
 pipeline_llkimpute(
   data.pep.rna.mis,
@@ -45,7 +45,7 @@ pipeline_llkimpute(
 xxx
 }
 \description{
-Pirat imputation function
+xxx
 }
 \examples{
 data(bouyssie)

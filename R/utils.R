@@ -593,7 +593,7 @@ plot2hists <- function(d1,
 
 # TODO: Change name of this function
 #' @title Plot several densities
-#' @description Plot empirical densities estimated by gaussian kernel
+#' @description Plot empirical densities estimated by Gaussian kernel
 #'
 #' @param list.values xxx
 #' @param titlename xxx
@@ -605,15 +605,16 @@ plot2hists <- function(d1,
 #' @export
 #'
 #' @examples
-#' NULL
+#' ll <- list(A=1:10, B=3:6)
+#' ggplot2hist(ll, 'test')
 #'
 ggplot2hist <- function(list.values, 
                         titlename, 
-                        xlabel="") {
+                        xlabel = "") {
   data.hist = data.frame(values = unlist(list.values),
                          group = factor(rep(names(list.values),
                                             unlist(lapply(list.values, length)))))
-  g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
+  g <- ggplot(data.hist, aes(x = data.hist$values, fill = data.hist$group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
     geom_density(alpha=.2) +
     ggtitle(titlename) +
@@ -623,5 +624,5 @@ ggplot2hist <- function(list.values,
           aspect.ratio = 1,
           legend.key = element_rect(fill = "white"),
           plot.title = element_text(hjust = 0.5))
-  print(g)
+  g
 }

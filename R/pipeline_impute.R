@@ -7,7 +7,8 @@
 #' @export
 #'
 #' @examples
-#' NULL
+#' #' data(bouyssie)
+#' estimate_gamma(bouyssie$peptides_ab)
 #' 
 estimate_gamma = function(pep.ab.table,
                           mcar = FALSE) {
@@ -55,31 +56,44 @@ estimate_gamma = function(pep.ab.table,
 #' @description Estimate the inverse scale factor and degrees of freedom of 
 #' the distribution of columns-wise variances of an abundance table
 #'
-#' @param obs2NApep Peptide abundance matrix (can contain MVs)
+#' @param obs2NApep Peptide abundance matrix (can contain missing values)
 #' 
 #' @import MASS
 #' @import invgamma
 #'
-#' @return List containing estimated parameters df (degrees of freedom) and psi (inverse scale)
+#' @return List containing estimated parameters df (degrees of freedom) and 
+#' psi (inverse scale)
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(bouyssie)
+#' obj <- bouyssie
+#' idx <- get_indexes_embedded_prots(obj$adj)
+#' obj <- rm_pg_from_idx_merge_pg(obj, idx)
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0]
+#' estmate_psi_df(obs2NApep)
+#'
 #' 
 estmate_psi_df = function(obs2NApep) {
   f <- function(x, a, b)
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
-  vars = sort(apply(obs2NApep, MARGIN = 2, FUN = var, na.rm = T))
-  hist(vars, 30, freq = F, xlab ="Variance completely observed",
-       main="Histogram of observed variance and fitted inverse-gamma curve")
-  resllk = MASS::fitdistr( vars, f, list(a=1, b=0.1) )
-  alpha = resllk$estimate[1]
-  beta = resllk$estimate[2]
-  curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), add=T, col="red")
   
-  df = 2 * alpha
-  psi = 2 * beta
-  return(list(df=df, psi=psi))
+  vars = sort(apply(obs2NApep, MARGIN = 2, FUN = var, na.rm = TRUE))
+  hist(vars, 
+       30, 
+       freq = FALSE, 
+       xlab ="Variance completely observed",
+       main="Histogram of observed variance and fitted inverse-gamma curve")
+  resllk <- MASS::fitdistr( vars, f, list(a=1, b=0.1) )
+  alpha <- resllk$estimate[1]
+  beta <- resllk$estimate[2]
+  curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), 
+        add = TRUE, 
+        col = "red")
+  
+  df <- 2 * alpha
+  psi <- 2 * beta
+  return(list(df = df, psi = psi))
 }
 
 #' @title Pirat imputation function
@@ -100,7 +114,6 @@ estmate_psi_df = function(obs2NApep) {
 #' @import progress
 #' @import MASS
 #' @import invgamma
-# #' @import reticulate
 #' @import graphics
 #' @import stats
 #'
