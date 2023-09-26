@@ -6,7 +6,6 @@
 \usage{
 impute_block_llk_reset(
   data.pep.rna.crop,
-  impfunc,
   psi,
   pep_ab_or = NULL,
   prot.idxs = NULL,
@@ -19,8 +18,6 @@ impute_block_llk_reset(
 }
 \arguments{
 \item{data.pep.rna.crop}{A list representing dataset}
-
-\item{impfunc}{Imputation function}
 
 \item{psi}{Inverse scale parameter for IW prior of peptides abundances}
 

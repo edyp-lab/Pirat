@@ -16,7 +16,7 @@ remove_Pirat <- function(envname = pirat_envname,
   conda_env_exists <- envname %in% reticulate::conda_list(conda=conda)$name
   
   if (!venv_exists && !conda_env_exists){
-    cat('No pirat environment was found')
+    message('No pirat environment was found')
     } else {
       # remove environment
       if (venv_exists) {

@@ -1,19 +1,44 @@
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_windows <- function() {
   identical(.Platform$OS.type, "windows")
 }
 
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_unix <- function() {
   identical(.Platform$OS.type, "unix")
 }
 
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_osx <- function() {
   Sys.info()[["sysname"]] == "Darwin"
 }
 
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_linux <- function() {
   identical(tolower(Sys.info()[["sysname"]]), "linux")
 }
 
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_ubuntu <- function() {
   # check /etc/lsb-release
   if (is_unix() && file.exists("/etc/lsb-release")) {
@@ -24,6 +49,11 @@ is_ubuntu <- function() {
   }
 }
 
+#' @title xxx
+#' @description xxx
+#'
+#' @return A boolean
+#' 
 is_debian <- function() {
   # check /etc/os-release
   if (is_unix() && file.exists("/etc/os-release")) {
@@ -201,7 +231,7 @@ split_large_pg = function(adj,
 #' @description Imputes each PG separately and return the results for each PG. 
 #'
 #' @param data.pep.rna.crop A list representing dataset
-#' @param impfunc Imputation function
+# #' @param impfunc Imputation function
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
 #' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
 #' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
@@ -219,7 +249,6 @@ split_large_pg = function(adj,
 #' NULL
 #'
 impute_block_llk_reset = function(data.pep.rna.crop,
-                                  impfunc,
                                   psi,
                                   pep_ab_or = NULL,
                                   prot.idxs = NULL,
@@ -281,7 +310,16 @@ impute_block_llk_reset = function(data.pep.rna.crop,
       n_pep_cur = ncol(subpp_ab)
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = psi*diag(n_pep_cur)
-      res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
+      #res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
+      
+      res_imp = py$estimate_params_and_impute(subpp_ab, 
+                                              true_X = X_gt, 
+                                              K = K, 
+                                              psi = psimat, 
+                                              ...) # + max(colSums(is.na(subpp_ab)))
+      
+      
+      
       ermsg = res_imp$error_msg
       stopifnot(ermsg == "success")
       if ((!is.null(X_gt)) & (ermsg == "success")) {
@@ -368,7 +406,7 @@ split_large_pg_PG = function(adj,
 #' @description Imputes each PG separately accounting for transcriptomic dataset and returns the results for each PG. 
 #'
 #' @param data.pep.rna.crop A list representing dataset, with mRNA normalized counts and mRNA/PGs adjacecy table.
-#' @param impfunc Imputation function
+# #' @param impfunc Imputation function
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
 #' @param psi_rna Inverse scale parameter for IW prior of mRNA abundances
 #' @param rna.cond.mask Vector of size equal to the number of samples in mRNA abundance table, 
@@ -389,7 +427,6 @@ split_large_pg_PG = function(adj,
 #' @import reticulate
 #'
 impute_block_llk_reset_PG = function(data.pep.rna.crop,
-                                     impfunc,
                                      psi,
                                      psi_rna,
                                      rna.cond.mask,
@@ -477,7 +514,17 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = c(rep(psi, ncol(cur_ab)), rep(psi_rna, ncol(cur_ab_rna))) * 
         diag(n_pep_cur)
-      res_imp = impfunc(subpp_ab, true_X = NULL, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
+      #res_imp = impfunc(subpp_ab, true_X = NULL, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
+      
+      res_imp = py$estimate_params_and_impute(subpp_ab, 
+                                              true_X = NULL, 
+                                              K = K, 
+                                              psi = psimat, 
+                                              ...) # + max(colSums(is.na(subpp_ab)))
+      
+      
+      
+      
       res_imp$Xhat = res_imp$Xhat[, 1:ncol(cur_ab)]
       # res_imp = list(Xhat=matrix(10, nsamples, ncol(cur_ab)), error_msg="success")
       ermsg = res_imp$error_msg
@@ -595,7 +642,7 @@ plot2hists <- function(d1,
 #' @description Plot empirical densities of correlations between peptides within
 #'  PG and at random, estimated by gaussian kernel.
 #'
-#' @param list.values List representing dataset
+#' @param pep.data List representing dataset
 #' @param titlename Title of the graph displayed
 #' @param xlabel Label of x-axis
 #' 
@@ -609,8 +656,8 @@ plot2hists <- function(d1,
 #' ggplot2hist(ll, 'test')
 #'
 plot_pep_correlations <- function(pep.data, 
-                        titlename=NULL, 
-                        xlabel="Correlations") {
+                                  titlename = NULL, 
+                                  xlabel = "Correlations") {
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
     pep.idx = which(pep.data$adj[, i] == 1)

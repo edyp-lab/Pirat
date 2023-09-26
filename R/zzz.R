@@ -26,7 +26,7 @@ packageStartupMessage(msg)
   
       if (!pirat_conda_exists && !pirat_venv_exists){
         packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
-        packageStartupMessage({"You should install one first by running: install_Pirat()"})
+        packageStartupMessage({"You should install one first by running: install_pirat()"})
         return()
       } 
   

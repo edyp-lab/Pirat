@@ -6,7 +6,6 @@
 \usage{
 impute_block_llk_reset_PG(
   data.pep.rna.crop,
-  impfunc,
   psi,
   psi_rna,
   rna.cond.mask,
@@ -22,8 +21,6 @@ impute_block_llk_reset_PG(
 }
 \arguments{
 \item{data.pep.rna.crop}{A list representing dataset, with mRNA normalized counts and mRNA/PGs adjacecy table.}
-
-\item{impfunc}{Imputation function}
 
 \item{psi}{Inverse scale parameter for IW prior of peptides abundances}
 
