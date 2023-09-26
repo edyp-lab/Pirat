@@ -21,6 +21,6 @@ a SummarizedExperiment .
 }
 \examples{
 data(bouyssie)
-create_SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
+pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
 
 }

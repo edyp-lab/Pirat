@@ -21,7 +21,7 @@ Plot empirical densities of correlations between peptides within
  PG and at random, estimated by gaussian kernel.
 }
 \examples{
-ll <- list(A=1:10, B=3:6)
-ggplot2hist(ll, 'test')
+data(bouyssie)
+plot_pep_correlations(bouyssie, 'test')
 
 }

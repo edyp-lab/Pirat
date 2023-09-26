@@ -652,8 +652,8 @@ plot2hists <- function(d1,
 #' @export
 #'
 #' @examples
-#' ll <- list(A=1:10, B=3:6)
-#' ggplot2hist(ll, 'test')
+#' data(bouyssie)
+#' plot_pep_correlations(bouyssie, 'test')
 #'
 plot_pep_correlations <- function(pep.data, 
                                   titlename = NULL, 

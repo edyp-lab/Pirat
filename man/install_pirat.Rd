@@ -11,7 +11,7 @@ install_pirat(
   envname = pirat_envname,
   extra_packages = NULL,
   restart_session = TRUE,
-  conda_python_version = requested_versions$numpy,
+  conda_python_version = requested_versions$python,
   pip = FALSE,
   channel = "stable",
   cuda_version = NULL,

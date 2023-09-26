@@ -8,20 +8,28 @@
 #' @param mask_pep_diff xxx
 #' 
 #' @import SummarizedExperiment
+#' @import S4Vectors
 #' 
 #' @export
 #' 
 #' @examples
 #' data(bouyssie)
-#' create_SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
+#' pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
 #' 
 pirat2SE <- function(peptides_ab, 
                       adj, 
                       mask_prot_diff, 
                       mask_pep_diff){
   
+  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+    stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
+  }
+  if (!requireNamespace("S4Vectors", quietly = TRUE)) {
+    stop("Please install S4Vectors: BiocManager::install('S4Vectors')")
+  }
+  
  obj <- SummarizedExperiment(assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
-                       colData = DataFrame(Condition = colnames(t(peptides_ab)),
+                       colData = S4Vectors::DataFrame(Condition = colnames(t(peptides_ab)),
                                          Sample = colnames(t(peptides_ab)),
                                          row.names = colnames(t(peptides_ab)))
   )
@@ -40,7 +48,7 @@ pirat2SE <- function(peptides_ab,
 #' @description xxx
 #' 
 #' @param se xxx
-#' @param ... xxx
+#' @param ... Additional arguments to pass to `pipeline_llkimpute()`
 #' 
 #' @import SummarizedExperiment
 #' 
@@ -48,9 +56,15 @@ pirat2SE <- function(peptides_ab,
 #' 
 #' @examples
 #' data(bouyssie)
+#' obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, 
+#' bouyssie$mask_pep_diff )
+#' wrapper_pipeline_llkimpute(obj)
+#' wrapper_pipeline_llkimpute(obj, transpose = TRUE, mcar = TRUE)
 #' 
 
 wrapper_pipeline_llkimpute <- function(se, ...){
+  
+  stopifnot(inherits(obj, 'SummarizedExperiment'))
   
   obj <- list(
     peptides_ab = t(assay(se)),
@@ -59,6 +73,5 @@ wrapper_pipeline_llkimpute <- function(se, ...){
     mask_pep_diff = metadata(se)$mask_pep_diff
   )
 
-  res.mle.transp <- pipeline_llkimpute(obj, ...)
-  res.mle.transp
-}
+  pipeline_llkimpute(obj, ...)
+  }
