@@ -167,8 +167,19 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   
   message("\nInstallation complete.\n\n")
   
-  if (restart_session && rstudioapi::hasFun("restartSession"))
-    rstudioapi::restartSession()
+  
+  is.rstudio <- function(){
+    .Platform$GUI == "RStudio"
+  }
+  
+  if (restart_session){
+    if (is.rstudio() &&
+        requireNamespace("rstudioapi", quietly = TRUE) &&
+        rstudioapi::hasFun("restartSession"))
+      rstudioapi::restartSession(command='library(Pirat)')
+    else
+      cat("Please restart the R session and reload the 'Pirat' package.")
+  }
   
   invisible(NULL)
 }
