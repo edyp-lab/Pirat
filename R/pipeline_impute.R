@@ -66,7 +66,7 @@ estimate_gamma = function(pep.ab.table,
 #' @examples
 #' NULL
 #' 
-estmate_psi_df = function(obs2NApep) {
+estimate_psi_df = function(obs2NApep) {
   f <- function(x, a, b)
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
   vars = sort(apply(obs2NApep, MARGIN = 2, FUN = var, na.rm = T))
@@ -138,7 +138,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   obs2NApep = data.pep.rna.mis$peptides_ab[
     ,colSums(is.na(data.pep.rna.mis$peptides_ab)) <= 0]
   # ceiling(0.05 * nrow(data.pep.rna.mis$peptides_ab))]
-  est.psi.df = estmate_psi_df(obs2NApep)
+  est.psi.df = estimate_psi_df(obs2NApep)
   df = est.psi.df$df
   psi = est.psi.df$psi
   
@@ -150,7 +150,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     obs2NArna = data.pep.rna.mis$rnas_ab[
       ,colSums(data.pep.rna.mis$rnas_ab == 0) <= 0]
     
-    est.psi.df.rna = estmate_psi_df(obs2NArna)
+    est.psi.df.rna = estimate_psi_df(obs2NArna)
     psi_rna = est.psi.df.rna$psi
   }
   
