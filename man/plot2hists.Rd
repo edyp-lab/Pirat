@@ -4,7 +4,7 @@
 \alias{plot2hists}
 \title{Plot 2 histograms}
 \usage{
-plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = T)
+plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = TRUE)
 }
 \arguments{
 \item{d1}{vector of values for the first histogram}

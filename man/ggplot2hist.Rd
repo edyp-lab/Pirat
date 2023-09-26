@@ -17,9 +17,10 @@ ggplot2hist(list.values, titlename, xlabel = "")
 xxx
 }
 \description{
-Plot empirical densities estimated by gaussian kernel
+Plot empirical densities estimated by Gaussian kernel
 }
 \examples{
-NULL
+ll <- list(A=1:10, B=3:6)
+ggplot2hist(ll, 'test')
 
 }

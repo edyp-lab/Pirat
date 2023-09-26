@@ -15,11 +15,13 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Depends:
-  R (>= 4.3.0)
+  R (>= 4.3.0),
+  reticulate
 Imports:
-    progress, ggplot2, MASS, invgamma, reticulate, grDevices, stats,
-    graphics, rstudioapi
-Suggests:
-  knitr
+    progress, ggplot2, MASS, invgamma, grDevices, stats,
+    graphics, rstudioapi, jsonlite
+Suggests: knitr
 VignetteBuilder: knitr
+URL: http://www.prostar-proteomics.org/
+BugReports: https://github.com/prostarproteomics/DAPARdata/issues
   
