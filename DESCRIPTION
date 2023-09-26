@@ -19,7 +19,6 @@ Depends:
 Imports:
     progress, ggplot2, MASS, invgamma, reticulate, grDevices, stats,
     graphics, rstudioapi, jsonlite
-Suggests:
-  knitr
+Suggests: knitr
 VignetteBuilder: knitr
   

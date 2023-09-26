@@ -14,19 +14,19 @@ NULL
 
 
 
-msg <- paste0("\nThis is Pirat v", utils::packageVersion("Pirat"))
+msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
 .onAttach <- function(libname, pkgname) {
   tryCatch({
-    packageStartupMessage({"\nLoading Python env: ..."})
+    packageStartupMessage({"Loading Python env..."})
       pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
       pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
   
   
       if (!pirat_conda_exists && !pirat_venv_exists){
-        packageStartupMessage({paste0("\nNo ", pirat_envname, " environment exists. ")})
-        packageStartupMessage({"\nYou should install one first by running: install_Pirat()"})
+        packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
+        packageStartupMessage({"You should install one first by running: install_Pirat()"})
         return()
       } 
   
@@ -35,10 +35,10 @@ packageStartupMessage(msg)
       else if (pirat_venv_exists)
         reticulate::use_virtualenv(pirat_envname)
   
-      packageStartupMessage({"done"})
+     # packageStartupMessage({"done"})
   
       # Check if necessary packages are available in the current env
-      packageStartupMessage({"\nChecking if config is correct: ..."})
+      packageStartupMessage({"Checking configuration..."})
       config <- pirat_config()
       if(!config_isValid(config)){
         packageStartupMessage({'Error: Please run install_pirat()'})
@@ -47,17 +47,17 @@ packageStartupMessage(msg)
    
 
       # Now, install custom Python scripts
-      packageStartupMessage({"\nSourcing custom Python scripts: ..."})
+      packageStartupMessage({"Sourcing custom Python scripts..."})
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
       reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
       reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
       setwd(dir.backup)
-      packageStartupMessage({"done"})
+      ##packageStartupMessage({"done"})
   
-      packageStartupMessage({"\nFinalizing loading: ..."})
+      packageStartupMessage({"Finalizing loading..."})
       py <- reticulate::import("torch")
-      packageStartupMessage({"done"})
+      #packageStartupMessage({"done"})
     },
     warning = function(w){packageStartupMessage({w})},
     error = function(e){packageStartupMessage({e})}
