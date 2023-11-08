@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' #' data(bouyssie)
+#' data(bouyssie)
 #' estimate_gamma(bouyssie$peptides_ab)
 #' 
 estimate_gamma = function(pep.ab.table,
