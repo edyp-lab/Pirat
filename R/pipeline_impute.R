@@ -43,10 +43,10 @@ estimate_gamma = function(pep.ab.table,
   print(paste("Gamma1 estimated = ", phi))
   sort_mean_abund = sort(mean_abund)
   plot(sort_mean_abund, exp(-(phi0 + phi*sort_mean_abund)))
-  print(paste("prop abundances values for which pmis = 1 : ", 
-              mean(pep.ab.table <= -phi0/phi, na.rm = T)))
-  print(paste("Nb abundances values for which pmis = 1 : ", 
-              sum(pep.ab.table <= -phi0/phi, na.rm = T)))
+  # print(paste("prop abundances values for which pmis = 1 : ", 
+  #             mean(pep.ab.table <= -phi0/phi, na.rm = T)))
+  # print(paste("Nb abundances values for which pmis = 1 : ", 
+  #             sum(pep.ab.table <= -phi0/phi, na.rm = T)))
   return(list(phi0 = phi0, phi=phi))
 }
 
@@ -97,19 +97,37 @@ estimate_psi_df = function(obs2NApep) {
 }
 
 #' @title Pirat imputation function
-#' @description xxx
+#' @description Imputation pipeline of Pirat. First, it creates PGs. Then,
+#' it estimates parameters of the penalty term (that amounts to an
+#' inverse-Wishart prior). Second, it estimates the missingness mechanism
+#' parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.  
 #'
-#' @param data.pep.rna.mis xxx
-#' @param pep.ab.comp xxx
-#' @param nu_factor xxx
-#' @param rna.cond.mask xxx
-#' @param pep.cond.mask xxx
-#' @param mcar xxx
-#' @param protidxs xxx
-#' @param max.pg.size2imp xxx
-#' @param transpose xxx
-#' @param degenerated xxx
-#' @param pathifcc1 xxx
+#' @param data.pep.rna.mis A list containing important elements of the dataset to impute. Must contain:
+#' **peptides_ab**, the peptide or precursor abundance matrix to impute, with samples in 
+#' row and peptides or precursors in column; **adj**, a n_peptide x n_protein 
+#' adjacency matrix between peptides and proteins containing 0 and 1, 
+#' or TRUE and FALSE. Can contain: **rnas_ab**, the mRNA normalized count matrix, with samples in 
+#' row and mRNAs in column; **adj_rna_pg**, a n_mrna x n_protein 
+#' adjacency matrix n_mrna and proteins containing 0 and 1, or TRUE and FALSE; 
+#' @param pep.ab.comp The pseudo-complete peptide or precursor abundance matrix, with samples in 
+#' row and peptides or precursors in column. Useful only in mask-and-impute 
+#' experiments, if one wants to impute solely peptides containing pseudo-MVs.
+#' @param alpha.factor Factor that multiplies the parameter alpha of the penalty in the
+#' original paper. 
+#' @param rna.cond.mask Vector of indexes representing conditions of samples of mRNA table, only mandatory
+#' if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).
+#' @param pep.cond.mask Vector of indexes representing conditions of samples of mRNA table, only mandatory
+#' if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).
+#' @param extension If NULL (default), classical Pirat is applied. If "2", only imputes
+#' PGs containing at least 2 peptides or precursors, and remaining peptides are left unchanged.
+#' If "S", Pirat-S is applied, considering sample-wise correlations only for singleton PGs.
+#' It "T", Pirat-T is applied, thus requiring **rnas_ab** and **adj_rna_pg** 
+#' in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and **pep.cond.mask**.
+#' Also, the maximum size of PGs for which transcriptomic data can be used is controlled with **max.pg.size.pirat.t**.
+#' @param mcar If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is considered.
+#' @param degenerated If TRUE, applies Pirat-Degenerated (i.e. its univariate alternative) as described in original paper.
+#' Should not be TRUE unless for experimental purposes.
+#' @param max.pg.size.pirat.t When extension == "T", the maximum PG size for which transcriptomic information is used for imputation. 
 #'
 #' @import progress
 #' @import MASS
@@ -117,26 +135,22 @@ estimate_psi_df = function(obs2NApep) {
 #' @import graphics
 #' @import stats
 #'
-#' @return xxx
+#' @return The imputed **data.pep.rna.mis$peptides_ab** table.
 #' @export
 #'
 #' @examples
 #' data(bouyssie)
 #' res.mle.transp <- pipeline_llkimpute(bouyssie)
-#' res.mle.transp <- pipeline_llkimpute(bouyssie, transpose = TRUE)
-#' res.mle.transp.mcar <- pipeline_llkimpute(bouyssie, transpose = TRUE, mcar = TRUE)
 #' 
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
-                              nu_factor = 2,
+                              alpha.factor = 2,
                               rna.cond.mask = NULL,
                               pep.cond.mask = NULL,
+                              extension = NULL,
                               mcar = FALSE,
-                              protidxs = NULL,
-                              max.pg.size2imp = NULL,
-                              transpose = FALSE,
                               degenerated = FALSE,
-                              pathifcc1 = NULL) {
+                              max.pg.size.pirat.t = 1) {
   
   set.seed(98765)
   psi_rna = NULL
@@ -144,7 +158,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   print("Remove nested prots...")
   idx.emb.prots = get_indexes_embedded_prots(data.pep.rna.mis$adj)
   data.pep.rna.mis = rm_pg_from_idx_merge_pg(data.pep.rna.mis, idx.emb.prots)
-  print("Data ready for boarding by Pirat")
+  print("Data ready for boarding with Pirat")
   
   # Estimate Gamma distrib peptides
   obs2NApep = data.pep.rna.mis$peptides_ab[
@@ -172,154 +186,126 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   phi0 = est.phi.phi0$phi0
   nsamples = nrow(data.pep.rna.mis$peptides_ab)
   
-  
-  if (is.null(rna.cond.mask)) {
-    
-    if (!is.null(pathifcc1)) {
-      imputed.data = readRDS(pathifcc1)
-      idx.pgs1 = which(colSums(data.pep.rna.mis$adj) == 1)
-      idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1]) >= 1)
-      imputed.data.wo.s1 = t(imputed.data[, -idx.pep.s1])
-      peps1 = t(data.pep.rna.mis$peptides_ab[, idx.pep.s1])
-      cov.imputed = cov(imputed.data.wo.s1)
-      mean.imputed = colMeans(imputed.data.wo.s1)
-      peps1.imputed = py$impute_from_params(peps1, mean.imputed, cov.imputed, 0, 0)[[1]]
-      imputed.data[, idx.pep.s1] = t(peps1.imputed)
-      data.imputed = imputed.data
+  if (is.null(extension) | extension == "2") { # No extension or 2 pep rule
+    if (degenerated) { # Degenerated case (only for paper experiments)
+      npep = nrow(data.pep.rna.mis$adj)
+      data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
+    }
+    if (extension == "2") {
+      min.pg.size2imp = 2
     }
     else {
-      if (transpose) {
-        data.pep.rna.mis$peptides_ab = t(data.pep.rna.mis$peptides_ab)
-        data.pep.rna.mis$adj = matrix(1, nrow = ncol(data.pep.rna.mis$peptides_ab), ncol = 1)
-        colnames(data.pep.rna.mis$adj) = "Samples"
-        rownames(data.pep.rna.mis$adj) = colnames(data.pep.rna.mis$peptides_ab)
-        if (!is.null(pep.ab.comp)) {
-          pep.ab.comp = t(pep.ab.comp)
-        }
-      }
-      else if (degenerated) {
-        npep = nrow(data.pep.rna.mis$adj)
-        data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
-      }
-      
-      # params_imp_blocks = list(df = df,
-      #                          nu_factor = nu_factor,
-      #                          prot.idxs = protidxs, 
-      #                          psi = psi, 
-      #                          max_pg_size = 30, 
-      #                          pep_ab_or = pep.ab.comp)
-      # 
-      # params_llkimp = list(phi0 = phi0, 
-      #                      phi = phi, 
-      #                      eps_chol = 1e-4, 
-      #                      eps_phi = 1e-5, 
-      #                      tol_obj = 1e-7, 
-      #                      tol_grad = 1e-5, 
-      #                      tol_param = 1e-4,
-      #                      maxiter = as.integer(5000), 
-      #                      lr = 0.5, 
-      #                      phi_known = T,
-      #                      max_try = 50, 
-      #                      max_ls = 500, 
-      #                      eps_sig = 1e-4, 
-      #                      nsamples = 1000)
-      
-      
-      # res_per_block = do.call(impute_block_llk_reset, c(list(data.pep.rna.mis,
-      #                                                        py$estimate_params_and_impute),
-      #                                                   params_imp_blocks, params_llkimp))
-      
-      res_per_block = impute_block_llk_reset(data.pep.rna.mis,
-                                             df = df,
-                                             nu_factor = nu_factor,
-                                             prot.idxs = protidxs, 
-                                             psi = psi, 
-                                             max_pg_size = 30, 
-                                             pep_ab_or = pep.ab.comp,
-                                             phi0 = phi0, 
-                                             phi = phi, 
-                                             eps_chol = 1e-4, 
-                                             eps_phi = 1e-5, 
-                                             tol_obj = 1e-7, 
-                                             tol_grad = 1e-5, 
-                                             tol_param = 1e-4,
-                                             maxiter = as.integer(5000), 
-                                             lr = 0.5, 
-                                             phi_known = T,
-                                             max_try = 50, 
-                                             max_ls = 500, 
-                                             eps_sig = 1e-4, 
-                                             nsamples = 1000)
-      
-      data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis, protidxs)
-      
-      if (transpose) {
-        data.imputed = t(data.imputed)
-      }
+      min.pg.size2imp = 1
     }
+    res_per_block = impute_block_llk_reset(data.pep.rna.mis,
+                                           psi = psi, 
+                                           pep_ab_or = pep.ab.comp,
+                                           df = df,
+                                           nu_factor = alpha.factor,
+                                           max_pg_size = 30,
+                                           min.pg.size2imp = min.pg.size2imp,
+                                           phi0 = phi0, 
+                                           phi = phi, 
+                                           eps_chol = 1e-4, 
+                                           eps_phi = 1e-5, 
+                                           tol_obj = 1e-7, 
+                                           tol_grad = 1e-5, 
+                                           tol_param = 1e-3,
+                                           maxiter = as.integer(5000), 
+                                           lr = 0.5,
+                                           phi_known = T,
+                                           max_try = 50, 
+                                           max_ls = 500, 
+                                           eps_sig = 1e-4, 
+                                           nsamples = 1000)
+    
+    data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis)
   }
-  else {
-    # params_imp_blocks = list(df = df, 
-    #                          nu_factor = nu_factor, 
-    #                          rna.cond.mask = rna.cond.mask,
-    #                          pep.cond.mask = pep.cond.mask,
-    #                          prot.idxs = protidxs, 
-    #                          psi = psi, 
-    #                          psi_rna = psi_rna,
-    #                          max_pg_size = 30,
-    #                          pep_ab_or = pep.ab.comp, 
-    #                          max.pg.size2imp = max.pg.size2imp)
-    # 
-    # params_llkimp = list(phi0 = phi0, 
-    #                      phi = phi, 
-    #                      eps_chol = 1e-4, 
-    #                      eps_phi = 1e-5, 
-    #                      tol_obj = 1e-7, 
-    #                      tol_grad = 1e-5, 
-    #                      tol_param = 1e-4,
-    #                      maxiter = as.integer(5000), 
-    #                      lr = 0.5, 
-    #                      phi_known = T,
-    #                      max_try = 50, 
-    #                      max_ls = 500, 
-    #                      eps_sig = 1e-4, 
-    #                      nsamples = 1000)
+  else if (extension == "S") { # Pirat-S
+    res_per_block = impute_block_llk_reset(data.pep.rna.mis,
+                                           psi = psi, 
+                                           df = df,
+                                           pep_ab_or = pep.ab.comp,
+                                           nu_factor = alpha.factor, 
+                                           max_pg_size = 30, 
+                                           min.pg.size2imp = 2,
+                                           phi0 = phi0, 
+                                           phi = phi, 
+                                           eps_chol = 1e-4, 
+                                           eps_phi = 1e-5, 
+                                           tol_obj = 1e-7, 
+                                           tol_grad = 1e-5, 
+                                           tol_param = 1e-4,
+                                           maxiter = as.integer(5000), 
+                                           lr = 0.5, 
+                                           phi_known = T,
+                                           max_try = 50, 
+                                           max_ls = 500, 
+                                           eps_sig = 1e-4, 
+                                           nsamples = 1000)
+    data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis)
+    idx.pgs1 = which(colSums(data.pep.rna.mis$adj) == 1)
+    idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1]) >= 1)
+    imputed.data.wo.s1 = t(data.imputed[, -idx.pep.s1])
+    peps1 = t(data.pep.rna.mis$peptides_ab[, idx.pep.s1])
+    cov.imputed = cov(imputed.data.wo.s1)
+    mean.imputed = colMeans(imputed.data.wo.s1)
+    peps1.imputed = py$impute_from_params(peps1, mean.imputed, cov.imputed, 0, 0)[[1]]
+    data.imputed[, idx.pep.s1] = t(peps1.imputed)
+    data.imputed = imputed.data
+  }
+  else if (extension == "T") {
+    res_per_block_pirat = impute_block_llk_reset(data.pep.rna.mis,
+                                                 psi = psi, 
+                                                 df = df,
+                                                 nu_factor = alpha.factor,
+                                                 max_pg_size = 30, 
+                                                 min.pg.size2imp = max.pg.size.pirat.t + 1,
+                                                 pep_ab_or = pep.ab.comp,
+                                                 phi0 = phi0, 
+                                                 phi = phi, 
+                                                 eps_chol = 1e-4, 
+                                                 eps_phi = 1e-5, 
+                                                 tol_obj = 1e-7, 
+                                                 tol_grad = 1e-5, 
+                                                 tol_param = 1e-4,
+                                                 maxiter = as.integer(5000), 
+                                                 lr = 0.5, 
+                                                 phi_known = T,
+                                                 max_try = 50, 
+                                                 max_ls = 500, 
+                                                 eps_sig = 1e-4, 
+                                                 nsamples = 1000)
+    data.imputed.pirat = impute_from_blocks(res_per_block_pirat, data.pep.rna.mis)
     
-    # res_per_block = do.call(impute_block_llk_reset_PG, 
-    #                         c(list(data.pep.rna.mis,
-    #                                py$estimate_params_and_impute),
-    #                           params_imp_blocks, params_llkimp))
     
-    res_per_block <- impute_block_llk_reset_PG(data.pep.rna.mis,
-                                              df = df,
-                                              nu_factor = nu_factor, 
-                                              rna.cond.mask = rna.cond.mask,
-                                              pep.cond.mask = pep.cond.mask,
-                                              prot.idxs = protidxs, 
-                                              psi = psi, 
-                                              psi_rna = psi_rna,
-                                              max_pg_size = 30,
-                                              pep_ab_or = pep.ab.comp, 
-                                              max.pg.size2imp = max.pg.size2imp, 
-                                              phi0 = phi0, 
-                                              phi = phi, 
-                                              eps_chol = 1e-4, 
-                                              eps_phi = 1e-5, 
-                                              tol_obj = 1e-7,
-                                              tol_grad = 1e-5, 
-                                              tol_param = 1e-4,
-                                              maxiter = as.integer(5000), 
-                                              lr = 0.5, 
-                                              phi_known = T,
-                                              max_try = 50, 
-                                              max_ls = 500, 
-                                              eps_sig = 1e-4, 
-                                              nsamples = 1000)
-    
-    
-    data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis,
-                                      protidxs)
-    
+    res_per_block_pirat_t <- impute_block_llk_reset_PG(data.pep.rna.mis,
+                                                       df = df,
+                                                       nu_factor = alpha.factor, 
+                                                       rna.cond.mask = rna.cond.mask,
+                                                       pep.cond.mask = pep.cond.mask,
+                                                       psi = psi, 
+                                                       psi_rna = psi_rna,
+                                                       max_pg_size = 30,
+                                                       pep_ab_or = pep.ab.comp, 
+                                                       max.pg.size2imp = max.pg.size.pirat.t, 
+                                                       phi0 = phi0, 
+                                                       phi = phi, 
+                                                       eps_chol = 1e-4, 
+                                                       eps_phi = 1e-5, 
+                                                       tol_obj = 1e-7,
+                                                       tol_grad = 1e-5, 
+                                                       tol_param = 1e-4,
+                                                       maxiter = as.integer(5000), 
+                                                       lr = 0.5, 
+                                                       phi_known = T,
+                                                       max_try = 50, 
+                                                       max_ls = 500, 
+                                                       eps_sig = 1e-4, 
+                                                       nsamples = 1000)
+    data.imputed.pirat.t = impute_from_blocks(res_per_block, data.pep.rna.mis)
+    combined <- array(c(m1, m2), dim = c(dim(m1), 2))
+    data.imputed = apply(combined, c(1, 2), function(x) mean(x, na.rm = TRUE))
   }
   return(data.imputed)
 }

@@ -142,40 +142,6 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 }
 
 
-#' @title Remove peptides by index
-#' 
-#' @description Remove peptide by index, then deletes empty PGs
-#'
-#' @param l_pep_rna List representing the dataset
-#' @param pepidxs Vector of indices
-#'
-#' @export
-#' @return List representing the dataset
-#'
-remove_pep_from_idx <- function(l_pep_rna,
-                                pepidxs) {
-  i_pep_rm = pepidxs
-  if (length(i_pep_rm) != 0) {
-    l_pep_rna$adj = l_pep_rna$adj[-i_pep_rm,]
-    l_pep_rna$peptides_ab = l_pep_rna$peptides_ab[,-i_pep_rm]
-    if (!is.null(l_pep_rna$mask_pep_diff)) {
-      l_pep_rna$mask_pep_diff = l_pep_rna$mask_pep_diff[-i_pep_rm]
-    }
-    if (!is.null(l_pep_rna$charges)) {
-      l_pep_rna$charges = l_pep_rna$charges[-i_pep_rm]
-    }
-    if (!is.null(l_pep_rna$modifs)) {
-      l_pep_rna$modifs = l_pep_rna$modifs[-i_pep_rm]
-    }
-    i_pg_rm = which(colSums(l_pep_rna$adj) == 0)
-    if (length(i_pg_rm) != 0) {
-      l_pep_rna = rm_pg_from_idx_merge_pg(l_pep_rna, i_pg_rm)
-    }
-  }
-  return(l_pep_rna)
-}
-
-
 #' @title Split too large PGs
 #' 
 #' @description Split PGs with too many peptides/precursors. It creates different PGs with
@@ -251,28 +217,24 @@ split_large_pg = function(adj,
 impute_block_llk_reset = function(data.pep.rna.crop,
                                   psi,
                                   pep_ab_or = NULL,
-                                  prot.idxs = NULL,
                                   df = 1,
                                   nu_factor = 2,
                                   max_pg_size = NULL,
-                                  max.pg.size2imp = NULL,
+                                  min.pg.size2imp = 1,
                                   ...) {
   
   adj = data.pep.rna.crop$adj
   if (!is.null(max_pg_size)) {
     adj = split_large_pg(adj, max_pg_size)
   }
-  if (is.null(prot.idxs)) {
-    prot.idxs = 1:ncol(adj)
-  }
+  prot.idxs = 1:ncol(adj)
   nsamples = nrow(data.pep.rna.crop$peptides_ab)
   logs = list()
   npseudoNA = 0
   begtime = Sys.time()
-  if (!is.null(max.pg.size2imp)) {
-    pg.idxs = which(colSums(adj) <= max.pg.size2imp)
+  if (min.pg.size2imp > 1) { # If need to remove too small PGs, change adj and PG indexes
+    pg.idxs = which(colSums(adj) >= min.pg.size2imp)
     adj = adj[, pg.idxs]
-    adj_rna_pg = adj_rna_pg[, pg.idxs]
     prot.idxs = 1:ncol(adj)
   }
   n_params = sum(colSums(adj)^2)
@@ -299,15 +261,16 @@ impute_block_llk_reset = function(data.pep.rna.crop,
       subpp_ab = as.matrix(cur_ab, nrow = nsamples)
       X_gt = as.matrix(cur_ab_gt, nrow = nsamples)
     }
-    if (sum(is.na(subpp_ab)) == 0 |
-        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {
+    n_pep_cur = ncol(subpp_ab)
+    if (sum(is.na(subpp_ab)) == 0 | # No missing values
+        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) # No pseudo-MVs
       logs[[i]] = list()
     }
     else {
       if (all(is.na(X_gt) == is.na(subpp_ab))) {
         X_gt = NULL
       }
-      n_pep_cur = ncol(subpp_ab)
+      
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = psi*diag(n_pep_cur)
       #res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
@@ -432,11 +395,10 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      rna.cond.mask,
                                      pep.cond.mask,
                                      pep_ab_or = NULL,
-                                     prot.idxs = NULL,
                                      df = 2,
                                      nu_factor = 1,
                                      max_pg_size = NULL,
-                                     max.pg.size2imp = NULL,
+                                     max.pg.size2imp = 1,
                                      ...) {
   
   if (!is.null(max_pg_size)) {
@@ -445,9 +407,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     adj = adjs$adj
     adj_rna_pg = adjs$adj_rna_pg
   }
-  if (is.null(prot.idxs)) {
-    prot.idxs = 1:ncol(adj)
-  }
+  prot.idxs = 1:ncol(adj)
   niter = length(prot.idxs)
   nsamples = nrow(data.pep.rna.crop$peptides_ab)
   logs = list()
@@ -559,7 +519,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 #'
 impute_from_blocks = function(logs.blocks,
                               data.pep.rna,
-                              idx_blocks) {
+                              idx_blocks = NULL) {
   if (!is.null(logs.blocks$new_adj)) {
     adj = logs.blocks$new_adj
   }
