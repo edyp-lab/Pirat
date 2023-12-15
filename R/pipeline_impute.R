@@ -255,6 +255,12 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     data.imputed = imputed.data
   }
   else if (extension == "T") {
+    if (is.null(rna.cond.mask) | is.null(pep.cond.mask)) {
+      stop("Experimental designed must be filled with Pirat-T in rna.cond.mask and pep.cond.mask")
+    }
+    if (is.null(data.pep.rna.mis$rnas_ab) | is.null(data.pep.rna.mis$adj_rna_pg)) {
+      stop("With Pirat-T, data.pep.rna.mis must contain rnas_ab and adj_rna_pg")
+    }
     res_per_block_pirat = impute_block_llk_reset(data.pep.rna.mis,
                                                  psi = psi, 
                                                  df = df,
