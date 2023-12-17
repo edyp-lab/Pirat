@@ -263,7 +263,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
     }
     n_pep_cur = ncol(subpp_ab)
     if (sum(is.na(subpp_ab)) == 0 | # No missing values
-        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) # No pseudo-MVs
+        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) { # No pseudo-MVs
       logs[[i]] = list()
     }
     else {
