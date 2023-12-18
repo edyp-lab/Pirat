@@ -16,17 +16,9 @@ NULL
 
 msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
-requested_versions <- list(
-  torch = '1.10.0',
-  numpy = '1.20.2',
-  python = '3.9.5'
-)
 
-pirat_envname <- 'r-pirat'
-
-onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   tryCatch({
-    pirat_envname <- 'r-pirat'
     packageStartupMessage({"Loading Python env..."})
       pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
       pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
@@ -38,12 +30,10 @@ onLoad <- function(libname, pkgname) {
         return()
       } 
   
-      if (pirat_conda_exists){
+      if (pirat_conda_exists)
         reticulate::use_condaenv(pirat_envname)
-      } else {
-        if (pirat_venv_exists)
+      else if (pirat_venv_exists)
         reticulate::use_virtualenv(pirat_envname)
-      }
   
      # packageStartupMessage({"done"})
   

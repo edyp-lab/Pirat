@@ -129,8 +129,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
         l_pep_rna$rnas_ab = l_pep_rna$rnas_ab[,-i_rna_rm]
         l_pep_rna$adj_rna_pg = l_pep_rna$adj_rna_pg[-i_rna_rm, ]
       }
-    }
-    else {
+    } else {
       l_pep_rna$adj = adj2keep
       if (!is.null(l_pep_rna$mask_prot_diff)) {
         l_pep_rna$mask_prot_diff = l_pep_rna$mask_prot_diff[-pg_idx]
@@ -140,6 +139,8 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
   }
   return(l_pep_rna)
 }
+
+
 
 
 #' @title Split too large PGs
@@ -184,8 +185,7 @@ split_large_pg = function(adj,
       }
     }
     return(cbind(new_adj, do.call(cbind, l_adjs2bind))[, -idx_pg_too_large])
-  }
-  else {
+  } else {
     return(adj)
   }
 }
@@ -201,11 +201,10 @@ split_large_pg = function(adj,
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
 #' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
 #' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
-#' @param prot.idxs Vector of indices of PGs to impute
 #' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
 #' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
-#' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
+#' @param min.pg.size2imp Minimum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
 #' @param ... xxx
 #'
 #' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
@@ -228,6 +227,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
     adj = split_large_pg(adj, max_pg_size)
   }
   prot.idxs = 1:ncol(adj)
+  
   nsamples = nrow(data.pep.rna.crop$peptides_ab)
   logs = list()
   npseudoNA = 0
@@ -247,7 +247,8 @@ impute_block_llk_reset = function(data.pep.rna.crop,
                          width = 100)      # Width of the progress bar
   
   for (i in prot.idxs) {
-    #message("\n##### peptide group=", i, "#####\n")
+    #message("##### peptide group=", i, "#####")
+    message("Peptide_group ", i," of ", ncol(adj))
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick(length(idx_cur_pep)^2)
     cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], nrow = nsamples)
@@ -255,18 +256,16 @@ impute_block_llk_reset = function(data.pep.rna.crop,
     if (is.null(pep_ab_or)) {
       X_gt = NULL
       subpp_ab = as.matrix(cur_ab, nrow = nsamples)
-    }
-    else {
+    } else {
       cur_ab_gt = matrix(pep_ab_or[,idx_cur_pep], nrow = nsamples)
       subpp_ab = as.matrix(cur_ab, nrow = nsamples)
       X_gt = as.matrix(cur_ab_gt, nrow = nsamples)
     }
     n_pep_cur = ncol(subpp_ab)
-    if (sum(is.na(subpp_ab)) == 0 | # No missing values
-        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) { # No pseudo-MVs
+    if (sum(is.na(subpp_ab)) == 0 || # No missing values
+        (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {# No pseudo-MVs
       logs[[i]] = list()
-    }
-    else {
+    } else {
       if (all(is.na(X_gt) == is.na(subpp_ab))) {
         X_gt = NULL
       }
@@ -356,8 +355,7 @@ split_large_pg_PG = function(adj,
     return(list(adj = cbind(new_adj, adj2bind)[, -idx_pg_too_large],
                 adj_rna_pg = cbind(new_adj_rna_pg,
                                    adj_rna_pg_2bind)[, -idx_pg_too_large]))
-  }
-  else {
+  } else {
     return(list(adj = adj, adj_rna_pg = adj_rna_pg))
   }
 }
@@ -378,7 +376,6 @@ split_large_pg_PG = function(adj,
 #' containing indices of conditions of each sample.
 #' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
 #' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
-#' @param prot.idxs Vector of indices of PGs to impute
 #' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
 #' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
@@ -457,16 +454,14 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     subpp_ab = cbind(cur_ab, cur_ab_rna)
     if (is.null(pep_ab_or)) {
       X_gt = NULL
-    }
-    else {
+    } else {
       cur_ab_gt = matrix(pep_ab_or[,idx_cur_pep], nrow = nsamples)
       X_gt = cbind(cur_ab_gt, cur_ab_rna)
     }
     if (sum(is.na(subpp_ab)) == 0 |
         (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {
       logs[[i]] = list()
-    }
-    else {
+    } else {
       if (all(is.na(X_gt) == is.na(subpp_ab))) {
         X_gt = NULL
       }
@@ -520,16 +515,14 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 impute_from_blocks = function(logs.blocks,
                               data.pep.rna,
                               idx_blocks = NULL) {
-  if (!is.null(logs.blocks$new_adj))
+  if (!is.null(logs.blocks$new_adj)) {
     adj = logs.blocks$new_adj
-  else
+  } else {
     adj = data.pep.rna$adj
-
-  
-  if (is.null(idx_blocks))
+  }
+  if (is.null(idx_blocks)) {
     idx_blocks = 1:ncol(adj)
-
-  
+  }
   npeps = ncol(data.pep.rna$peptides_ab)
   nsamples = nrow(data.pep.rna$peptides_ab)
   pep.imputed = matrix(0, nsamples, npeps)
@@ -543,8 +536,7 @@ impute_from_blocks = function(logs.blocks,
       if (!is.null(cur.block$Xhat)) {
         pep.imputed[, idxpeps] = pep.imputed[, idxpeps] + cur.block$Xhat
         n_imputations[, idxpeps] = n_imputations[, idxpeps] + 1
-      }
-      else { # Case were all observations of peptide group are available
+      }  else { # Case were all observations of peptide group are available
         pep.imputed[, idxpeps] = data.pep.rna$peptides_ab[, idxpeps]
         n_imputations[, idxpeps] = 1
       }

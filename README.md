@@ -23,8 +23,6 @@ This will install all necessary Python modules and restart the R session. Infos 
 pirat_config()
 ```
 
-### RStudio-Anaconda users
+### Anaconda users
 
 If you are already using Anaconda plugged to RStudio, change your RStudio Python interpreter to the one of the r-pirat anaconda environment that has been installed. To do so in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter".
-
-

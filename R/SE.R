@@ -56,9 +56,9 @@ pirat2SE <- function(peptides_ab,
 #' 
 #' @examples
 #' data(bouyssie)
-#' obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff,  bouyssie$mask_pep_diff )
-#' wrapper_pipeline_llkimpute(obj)
-#' wrapper_pipeline_llkimpute(obj, extension = '2', mcar = TRUE)
+#' obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, 
+#' bouyssie$mask_pep_diff )
+#' res <- wrapper_pipeline_llkimpute(obj)
 #' 
 
 wrapper_pipeline_llkimpute <- function(se, ...){

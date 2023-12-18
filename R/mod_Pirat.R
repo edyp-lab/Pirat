@@ -4,73 +4,32 @@
 #' @description 
 #' ## To be customized ##
 #' 
-#' @name extra_module
+#' @param id xxx
+#' @param obj xxx
+#' @param reset xxx
+#' 
+#' @name mod_Pirat
 #'
-#' @examples 
-#' if (interactive()){
-#' data(ft_na)
-#' ui <- foo_ui('query')
-#' 
-#' server <- function(input, output, session) {
-#'   
-#'   rv <- reactiveValues(
-#'     res = NULL
-#'   )
-#'   ll.tags <- c('None' = 'None', 
-#'   qMetadata.def(typeDataset(ft_na[[1]]))$node)
-#'   
-#'   rv$res <- foo_server('query', 
-#'   reset = reactive({NULL}),
-#'   is.enabled = reactive({NULL})
-#'   )
-#'   
-#'   observeEvent(rv$res$dataOut()$value, ignoreNULL = TRUE, ignoreInit = TRUE, {
-#'     print(rv$res$dataOut()$value)
-#'     print(rv$res$dataOut()$widgets)
-#'   })
-#' }
-#' 
-#' shinyApp(ui=ui, server=server)
-#' }
 NULL
 
-
-long_run_op <- function(num_iter) {
-  for (x in 1:num_iter) {
-    message("working... [peptide group=",x,"]")
-    Sys.sleep(0.5)
-  }
-  message("calculation finished.")
-  return(rnorm(num_iter))
-}
-
-
-#' @param id xxx
+#' @rdname mod_Pirat
 #' 
-#' @rdname extra_module
+#' @export
 #' 
 mod_Pirat_ui <- function(id){
   
   ns <- NS(id)
   
-  # This is an example of what it is expected
-  # You must 
-  # All the widgets must be defined in the server part. Here, 
-  # one have only calls with uiOutput() function.
-  
-  # Each line correspond to one widget and the id is composed of
-  # the name of the widget followed by '_ui'
   tagList(
     uiOutput(ns('extension_ui')),
-    #shiny::numericInput(ns('num_iter'), 'Iterations', 10, min=2, max=20),
-    shiny::actionButton(ns("run"), "Run"),
-    #uiOutput(ns('widget2_ui')),
-    #uiOutput(ns('widget3_ui')),
+    shiny::actionButton(ns("run"), "Run Pirat"),
     uiOutput(ns('valid_btn_ui'))
   )
 }
 
 
+#' @rdname mod_Pirat
+#' @export
 mod_Pirat_server <- function(id,
                              obj = reactive({NULL}),
                              reset = reactive({NULL})
@@ -91,7 +50,8 @@ mod_Pirat_server <- function(id,
   moduleServer(id,function(input, output, session) {
     ns <- session$ns
     
-   #rv <- reactiveValues(dataOut = NULL)
+   maxval <- reactiveVal(0)
+   
     dataOut <- reactiveValues(
       trigger = NULL,
       value = NULL,
@@ -99,30 +59,37 @@ mod_Pirat_server <- function(id,
     )
     
     output$extension_ui <- renderUI({
-      widget <- selectInput(ns('extension'), 'Algorithm', 
-                            choices = c('base' = 'base', 
-                                        '2 pg' = '2',
-                                        'S' = 'S',
-                                        'T' = 'T'),
-                            selected = widgets.default.values$extension)
+      selectInput(ns('extension'), 'Algorithm',
+                  choices = c('base' = 'base', 
+                              '2 pg' = '2',
+                              'S' = 'S',
+                              'T' = 'T'),
+                  selected = widgets.default.values$extension)
+    })
+    
+    
+    GetNbPg <- reactive({
+      5
     })
     
     shiny::observeEvent(input$run, {
+      
+      maxval(GetNbPg())
       shiny::withProgress(
         withCallingHandlers(
-          #out <- long_run_op(num_iter=input$num_iter),
-           out <- pipeline_llkimpute(bouyssie),
+         # out <- long_run_op(num_iter=10),
+           dataOut$value <- pipeline_llkimpute(obj(),
+                                               extension = input$extension),
            
-          message=function(m) if(grepl("\\[peptide group=[0-9]+\\]", m$message)) {
-            val <- as.numeric(gsub(".*\\[peptide group=([0-9]+)\\].*$", "\\1", m$message))
-            cat ('val = ', val)
-            cat("Stacksize: ", session$progressStack$size(),"\n")
-            shiny::setProgress(value=val, message = paste0(val, '/'))
+          message = function(m){
+            msg <- unlist(strsplit(m$message, split=' '))
+            if(msg[1] == 'Peptide_group') {
+              val <- as.numeric(msg[2])
+              shiny::setProgress(value = val, message = m$message)
+            }
           }
         ),
-        #message=paste0("working...", realtimevalue()),
-        max=5,
-        value=0
+        max = maxval()
       )
     })
      

@@ -1,4 +1,3 @@
-data(bouyssie)
 
 ui <- fluidPage(
   tagList(
@@ -7,7 +6,10 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-
+  
+  data(Exp1_R25_pept, package = 'DAPARdata')
+  data(bouyssie, package = 'Pirat')
+  
   res <- mod_Pirat_server('pirat',
                          obj = reactive({bouyssie}),
                          reset = reactive({NULL}))

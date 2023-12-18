@@ -43,8 +43,6 @@ such that imputation will by done only for pseudo-MVs. This will accelerate impu
 \item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
 
 \item{...}{xxx}
-
-\item{prot.idxs}{Vector of indices of PGs to impute}
 }
 \value{
 A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
