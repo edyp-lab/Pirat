@@ -10,7 +10,7 @@ pipeline_llkimpute(
   alpha.factor = 2,
   rna.cond.mask = NULL,
   pep.cond.mask = NULL,
-  extension = NULL,
+  extension = "base",
   mcar = FALSE,
   degenerated = FALSE,
   max.pg.size.pirat.t = 1
@@ -60,4 +60,10 @@ Imputation pipeline of Pirat. First, it creates PGs. Then,
 it estimates parameters of the penalty term (that amounts to an
 inverse-Wishart prior). Second, it estimates the missingness mechanism
 parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.
+}
+\examples{
+data(bouyssie)
+res.mle.transp <- pipeline_llkimpute(bouyssie)
+res.mle.transp <- pipeline_llkimpute(bouyssie,  extension = 'S')
+
 }

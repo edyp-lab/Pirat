@@ -13,13 +13,13 @@ server <- function(input, output, session) {
                          reset = reactive({NULL}))
 
   
-   observeEvent(res()$trigger, {
-  #   #print(rv$res$dataOut()$value)
-  #   #print(rv$res$dataOut()$widgets)
-    # browser()
-     print(res()$value$data.imputed)
-     print(res()$value$params)
-   })
+  #  observeEvent(res()$trigger, {
+  # #   #print(rv$res$dataOut()$value)
+  # #   #print(rv$res$dataOut()$widgets)
+  #   # browser()
+  #    print(res()$value$data.imputed)
+  #    print(res()$value$params)
+  #  })
 }
 
 shinyApp(ui=ui, server=server)
