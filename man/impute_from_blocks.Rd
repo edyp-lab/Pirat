@@ -4,7 +4,7 @@
 \alias{impute_from_blocks}
 \title{Impute abundance table from PGs results}
 \usage{
-impute_from_blocks(logs.blocks, data.pep.rna, idx_blocks)
+impute_from_blocks(logs.blocks, data.pep.rna, idx_blocks = NULL)
 }
 \arguments{
 \item{logs.blocks}{List of PGs imputation results, that also contains related peptide/PGs adjacency matrix.}

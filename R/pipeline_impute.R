@@ -141,16 +141,19 @@ estimate_psi_df = function(obs2NApep) {
 #' @examples
 #' data(bouyssie)
 #' res.mle.transp <- pipeline_llkimpute(bouyssie)
+#' res.mle.transp <- pipeline_llkimpute(bouyssie,  extension = 'S')
 #' 
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
                               alpha.factor = 2,
                               rna.cond.mask = NULL,
                               pep.cond.mask = NULL,
-                              extension = NULL,
+                              extension = 'base',
                               mcar = FALSE,
                               degenerated = FALSE,
                               max.pg.size.pirat.t = 1) {
+  
+  stopifnot(extension %in% c('base', '2', 'S', 'T'))
   
   set.seed(98765)
   psi_rna = NULL
@@ -186,17 +189,15 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   phi0 = est.phi.phi0$phi0
   nsamples = nrow(data.pep.rna.mis$peptides_ab)
   
-  if (is.null(extension) | extension == "2") { # No extension or 2 pep rule
+  if (extension %in% c('base', '2')) { # No extension or 2 pep rule
     if (degenerated) { # Degenerated case (only for paper experiments)
       npep = nrow(data.pep.rna.mis$adj)
       data.pep.rna.mis$adj = matrix(as.logical(diag(npep)), npep)
     }
-    if (extension == "2") {
+    min.pg.size2imp = 1
+    if (extension == "2")
       min.pg.size2imp = 2
-    }
-    else {
-      min.pg.size2imp = 1
-    }
+
     res_per_block = impute_block_llk_reset(data.pep.rna.mis,
                                            psi = psi, 
                                            pep_ab_or = pep.ab.comp,
@@ -255,7 +256,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     data.imputed = imputed.data
   }
   else if (extension == "T") {
-    if (is.null(rna.cond.mask) | is.null(pep.cond.mask)) {
+    if (is.null(rna.cond.mask) || is.null(pep.cond.mask)) {
       stop("Experimental designed must be filled with Pirat-T in rna.cond.mask and pep.cond.mask")
     }
     if (is.null(data.pep.rna.mis$rnas_ab) | is.null(data.pep.rna.mis$adj_rna_pg)) {
@@ -313,5 +314,12 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     combined <- array(c(m1, m2), dim = c(dim(m1), 2))
     data.imputed = apply(combined, c(1, 2), function(x) mean(x, na.rm = TRUE))
   }
-  return(data.imputed)
+  
+  
+  #  Format results
+  params = list(estimated.df = df,
+                estimated.psi = psi)
+  return(list(data.imputed = data.imputed,
+              params = params)
+  )
 }

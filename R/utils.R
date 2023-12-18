@@ -238,7 +238,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
     prot.idxs = 1:ncol(adj)
   }
   n_params = sum(colSums(adj)^2)
-  pb <- progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+  pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                          total = n_params,
                          complete = "=",   # Completion bar character
                          incomplete = "-", # Incomplete bar character
@@ -437,7 +437,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     prot.idxs = 1:ncol(adj)
   }
   n_params = sum((colSums(adj[, prot.idxs]) + 1)^2)
-  pb <- progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+  pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                          total = n_params,
                          complete = "=",   # Completion bar character
                          incomplete = "-", # Incomplete bar character
@@ -520,15 +520,16 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 impute_from_blocks = function(logs.blocks,
                               data.pep.rna,
                               idx_blocks = NULL) {
-  if (!is.null(logs.blocks$new_adj)) {
+  if (!is.null(logs.blocks$new_adj))
     adj = logs.blocks$new_adj
-  }
-  else {
+  else
     adj = data.pep.rna$adj
-  }
-  if (is.null(idx_blocks)) {
+
+  
+  if (is.null(idx_blocks))
     idx_blocks = 1:ncol(adj)
-  }
+
+  
   npeps = ncol(data.pep.rna$peptides_ab)
   nsamples = nrow(data.pep.rna$peptides_ab)
   pep.imputed = matrix(0, nsamples, npeps)

@@ -11,11 +11,10 @@ impute_block_llk_reset_PG(
   rna.cond.mask,
   pep.cond.mask,
   pep_ab_or = NULL,
-  prot.idxs = NULL,
   df = 2,
   nu_factor = 1,
   max_pg_size = NULL,
-  max.pg.size2imp = NULL,
+  max.pg.size2imp = 1,
   ...
 )
 }
@@ -35,8 +34,6 @@ containing indices of conditions of each sample.}
 \item{pep_ab_or}{In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
 such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.}
 
-\item{prot.idxs}{Vector of indices of PGs to impute}
-
 \item{df}{Estimate degree of freedom of the IG distribution fitted on observed variance.}
 
 \item{nu_factor}{Multiplication factor on degree of freedom. 2 by default.}
@@ -46,6 +43,8 @@ such that imputation will by done only for pseudo-MVs. This will accelerate impu
 \item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
 
 \item{...}{xxx}
+
+\item{prot.idxs}{Vector of indices of PGs to impute}
 }
 \value{
 A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
