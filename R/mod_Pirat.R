@@ -35,6 +35,16 @@
 NULL
 
 
+long_run_op <- function(num_iter) {
+  for (x in 1:num_iter) {
+    message("working... [peptide group=",x,"]")
+    Sys.sleep(0.5)
+  }
+  message("calculation finished.")
+  return(rnorm(num_iter))
+}
+
+
 #' @param id xxx
 #' 
 #' @rdname extra_module
@@ -52,6 +62,8 @@ mod_Pirat_ui <- function(id){
   # the name of the widget followed by '_ui'
   tagList(
     uiOutput(ns('extension_ui')),
+    #shiny::numericInput(ns('num_iter'), 'Iterations', 10, min=2, max=20),
+    shiny::actionButton(ns("run"), "Run"),
     #uiOutput(ns('widget2_ui')),
     #uiOutput(ns('widget3_ui')),
     uiOutput(ns('valid_btn_ui'))
@@ -76,11 +88,6 @@ mod_Pirat_server <- function(id,
    # widget3 = NULL
   )
   
-  
-  rv.custom.default.values <- list(
-    
-  )
-  
   moduleServer(id,function(input, output, session) {
     ns <- session$ns
     
@@ -100,29 +107,33 @@ mod_Pirat_server <- function(id,
                             selected = widgets.default.values$extension)
     })
     
-    # output$widget2_ui <- renderUI({
-    #   widget <- selectInput(ns('widget2'), 'widget2', choices = 1:3)
-    # })
-    # 
-    # output$widget3_ui <- renderUI({
-    #   widget <- selectInput(ns('widget3'), 'widget3', choices = 1:3)
-    # })
-    # 
-    
-    output$valid_btn_ui <- renderUI({
-      actionButton(ns('valid_btn'), 'Validate')
-      
+    shiny::observeEvent(input$run, {
+      shiny::withProgress(
+        withCallingHandlers(
+          #out <- long_run_op(num_iter=input$num_iter),
+           out <- pipeline_llkimpute(bouyssie),
+           
+          message=function(m) if(grepl("\\[peptide group=[0-9]+\\]", m$message)) {
+            val <- as.numeric(gsub(".*\\[peptide group=([0-9]+)\\].*$", "\\1", m$message))
+            cat ('val = ', val)
+            cat("Stacksize: ", session$progressStack$size(),"\n")
+            shiny::setProgress(value=val, message = paste0(val, '/'))
+          }
+        ),
+        #message=paste0("working...", realtimevalue()),
+        max=5,
+        value=0
+      )
     })
-    
-    
-    observeEvent(input$valid_btn, {
-      
-      dataOut$value <- pipeline_llkimpute(bouyssie,  extension = input$extension)
-      
-      print('test')
-      dataOut$trigger <- as.numeric(Sys.time())
-      dataOut$widgets <- list(extension = input$extension)
-    })
+     
+    # observeEvent(input$valid_btn, {
+    #   
+    #   dataOut$value <- pipeline_llkimpute(bouyssie,  extension = input$extension)
+    #   
+    #   print('test')
+    #   dataOut$trigger <- as.numeric(Sys.time())
+    #   dataOut$widgets <- list(extension = input$extension)
+    # })
     
     
     reactive({dataOut})

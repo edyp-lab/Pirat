@@ -16,9 +16,8 @@ xxx
 }
 \examples{
 data(bouyssie)
-obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, 
-bouyssie$mask_pep_diff )
+obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff,  bouyssie$mask_pep_diff )
 wrapper_pipeline_llkimpute(obj)
-wrapper_pipeline_llkimpute(obj, transpose = TRUE, mcar = TRUE)
+wrapper_pipeline_llkimpute(obj, extension = '2', mcar = TRUE)
 
 }

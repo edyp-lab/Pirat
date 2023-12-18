@@ -247,7 +247,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
                          width = 100)      # Width of the progress bar
   
   for (i in prot.idxs) {
-    # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
+    #message("\n##### peptide group=", i, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick(length(idx_cur_pep)^2)
     cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], nrow = nsamples)
