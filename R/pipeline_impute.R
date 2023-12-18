@@ -253,7 +253,6 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     mean.imputed = colMeans(imputed.data.wo.s1)
     peps1.imputed = py$impute_from_params(peps1, mean.imputed, cov.imputed, 0, 0)[[1]]
     data.imputed[, idx.pep.s1] = t(peps1.imputed)
-    data.imputed = imputed.data
   }
   else if (extension == "T") {
     if (is.null(rna.cond.mask) || is.null(pep.cond.mask)) {
@@ -318,7 +317,9 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   
   #  Format results
   params = list(estimated.df = df,
-                estimated.psi = psi)
+                estimated.psi = psi,
+                phi0 = phi0,
+                phi = phi)
   return(list(data.imputed = data.imputed,
               params = params)
   )
