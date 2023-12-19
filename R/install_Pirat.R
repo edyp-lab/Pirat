@@ -110,10 +110,15 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
     os <- ifelse(is_osx(), "osx",
                  ifelse(is_linux(), "linux",
                         ifelse(is_windows(), "windows", "None")))
-    out <- list(package = package, extra_packages = extra_packages,
-                envname = envname, conda = conda,
-                conda_python_version = conda_python_version,
-                channel = channel, pip = pip, os = os)
+    out <- list(package = package, 
+                extra_packages = extra_packages,
+                envname = envname, 
+                conda = conda,
+                conda_python_version = 
+                conda_python_version,
+                channel = channel, 
+                pip = pip, 
+                os = os)
     return(out)
   }
   

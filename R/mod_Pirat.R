@@ -80,6 +80,9 @@ mod_Pirat_server <- function(id,
          # out <- long_run_op(num_iter=10),
            dataOut$value <- pipeline_llkimpute(obj(),
                                                extension = input$extension),
+           dataOut$trigger <- as.numeric(Sys.time()),
+           dataOut$widgets <- list(extension = input$extension),
+           
            
           message = function(m){
             msg <- unlist(strsplit(m$message, split=' '))
@@ -91,6 +94,9 @@ mod_Pirat_server <- function(id,
         ),
         max = maxval()
       )
+      
+      
+      
     })
      
     # observeEvent(input$valid_btn, {

@@ -249,14 +249,16 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            nsamples = 1000)
     data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis)
     idx.pgs1 = which(colSums(data.pep.rna.mis$adj) == 1)
-    idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1]) >= 1)
-    imputed.data.wo.s1 = t(data.imputed[, -idx.pep.s1])
-    peps1 = t(data.pep.rna.mis$peptides_ab[, idx.pep.s1])
-    cov.imputed = cov(imputed.data.wo.s1)
-    mean.imputed = colMeans(imputed.data.wo.s1)
-    peps1.imputed = py$impute_from_params(peps1, mean.imputed, cov.imputed, 0, 0)[[1]]
-    data.imputed[, idx.pep.s1] = t(peps1.imputed)
-    data.imputed = imputed.data
+    
+    if (length(idx.pgs1) != 0) {
+      idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1]) >= 1)
+      imputed.data.wo.s1 = t(data.imputed[, -idx.pep.s1])
+      peps1 = t(data.pep.rna.mis$peptides_ab[, idx.pep.s1])
+      cov.imputed = cov(imputed.data.wo.s1)
+      mean.imputed = colMeans(imputed.data.wo.s1)
+      peps1.imputed = py$impute_from_params(peps1, mean.imputed, cov.imputed, 0, 0)[[1]]
+      data.imputed[, idx.pep.s1] = t(peps1.imputed)
+    }
   }
   else if (extension == "T") {
     if (is.null(rna.cond.mask) | is.null(pep.cond.mask)) {
@@ -288,34 +290,48 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                  nsamples = 1000)
     data.imputed.pirat = impute_from_blocks(res_per_block_pirat, data.pep.rna.mis)
     
-    res_per_block_pirat_t <- impute_block_llk_reset_PG(data.pep.rna.mis,
-                                                       df = df,
-                                                       nu_factor = alpha.factor, 
-                                                       rna.cond.mask = rna.cond.mask,
-                                                       pep.cond.mask = pep.cond.mask,
-                                                       psi = psi, 
-                                                       psi_rna = psi_rna,
-                                                       max_pg_size = 30,
-                                                       pep_ab_or = pep.ab.comp, 
-                                                       max.pg.size2imp = max.pg.size.pirat.t, 
-                                                       phi0 = phi0, 
-                                                       phi = phi, 
-                                                       eps_chol = 1e-4, 
-                                                       eps_phi = 1e-5, 
-                                                       tol_obj = 1e-7,
-                                                       tol_grad = 1e-5, 
-                                                       tol_param = 1e-4,
-                                                       maxiter = as.integer(5000), 
-                                                       lr = 0.5, 
-                                                       phi_known = T,
-                                                       max_try = 50, 
-                                                       max_ls = 500, 
-                                                       eps_sig = 1e-4, 
-                                                       nsamples = 1000)
-    data.imputed.pirat.t = impute_from_blocks(res_per_block, data.pep.rna.mis)
-    combined <- array(c(m1, m2), dim = c(dim(m1), 2))
-    data.imputed = apply(combined, c(1, 2), function(x) mean(x, na.rm = TRUE))
-    
+    idx.pgs1 = which(colSums(data.pep.rna.mis$adj) <= max.pg.size.pirat.t)
+    if (length(idx.pgs1) != 0) {
+      res_per_block_pirat_t <- impute_block_llk_reset_PG(data.pep.rna.mis,
+                                                         df = df,
+                                                         nu_factor = alpha.factor, 
+                                                         rna.cond.mask = rna.cond.mask,
+                                                         pep.cond.mask = pep.cond.mask,
+                                                         psi = psi, 
+                                                         psi_rna = psi_rna,
+                                                         max_pg_size = 30,
+                                                         pep_ab_or = pep.ab.comp, 
+                                                         max.pg.size2imp = max.pg.size.pirat.t, 
+                                                         phi0 = phi0, 
+                                                         phi = phi, 
+                                                         eps_chol = 1e-4, 
+                                                         eps_phi = 1e-5, 
+                                                         tol_obj = 1e-7,
+                                                         tol_grad = 1e-5, 
+                                                         tol_param = 1e-4,
+                                                         maxiter = as.integer(5000), 
+                                                         lr = 0.5, 
+                                                         phi_known = T,
+                                                         max_try = 50, 
+                                                         max_ls = 500, 
+                                                         eps_sig = 1e-4, 
+                                                         nsamples = 1000)
+      data.imputed.pirat.t = impute_from_blocks(res_per_block, data.pep.rna.mis)
+      combined <- array(c(m1, m2), dim = c(dim(m1), 2))
+      data.imputed = apply(combined, c(1, 2), function(x) mean(x, na.rm = TRUE))
+    }
+    else {
+      data.imputed = data.imputed.pirat
+    }
   }
-  return(data.imputed)
+  
+  #  Format results
+  params = list(estimated.df = df,
+                estimated.psi = psi,
+                phi0 = phi0,
+                phi = phi)
+  
+  return(list(data.imputed = data.imputed,
+              params = params)
+  )
 }
