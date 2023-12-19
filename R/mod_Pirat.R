@@ -64,7 +64,8 @@ mod_Pirat_server <- function(id,
                               '2 pg' = '2',
                               'S' = 'S',
                               'T' = 'T'),
-                  selected = widgets.default.values$extension)
+                  selected = widgets.default.values$extension,
+                  width = '150px')
     })
     
     

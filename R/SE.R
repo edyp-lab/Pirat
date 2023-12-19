@@ -17,9 +17,9 @@
 #' pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
 #' 
 pirat2SE <- function(peptides_ab, 
-                      adj, 
-                      mask_prot_diff, 
-                      mask_pep_diff){
+                     adj, 
+                     mask_prot_diff, 
+                     mask_pep_diff){
   
   if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
     stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
@@ -73,4 +73,6 @@ wrapper_pipeline_llkimpute <- function(se, ...){
   )
 
   pipeline_llkimpute(obj, ...)
-  }
+}
+
+
