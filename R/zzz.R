@@ -18,16 +18,20 @@ msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
 .onAttach <- function(libname, pkgname) {
+  
+  
+ 
+  
   tryCatch({
     packageStartupMessage({"Loading Python env..."})
       pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
-      pirat_venv_exists <-reticulate::virtualenv_exists(pirat_envname)
+      pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
   
   
       if (!pirat_conda_exists && !pirat_venv_exists){
         packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
         packageStartupMessage({"You should install one first by running: install_pirat()"})
-        return()
+        Pirat::install_pirat()
       } 
   
       if (pirat_conda_exists)

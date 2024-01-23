@@ -16,10 +16,9 @@ LazyData: true
 RoxygenNote: 7.2.3
 BiocViews: Proteomics,  MassSpectrometry
 Depends:
-  R (>= 4.3.0),
-  reticulate
+  R (>= 4.3.0)
 Imports:
-    progress, ggplot2, MASS, invgamma, grDevices, stats,
+    reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
     graphics, rstudioapi, jsonlite, SummarizedExperiment, S4Vectors
 Suggests: knitr
 VignetteBuilder: knitr

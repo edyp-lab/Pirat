@@ -75,6 +75,19 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                           ...) {
   
   
+  
+  pirat_envname <- 'r-pirat'
+  #if ( !reticulate::py_available() || reticulate::py_version() != "3.9.5") {
+    cat("installing python 3.9.5 ...")
+    reticulate::install_python(version = "3.9.5")
+    cat("installing miniconda ...")
+    reticulate::install_miniconda()
+  #} 
+  
+  
+  
+  
+  
   # verify 64-bit
   if (.Machine$sizeof.pointer != 8) {
     stop("Unable to install PyTorch on this platform.",
@@ -114,8 +127,7 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                 extra_packages = extra_packages,
                 envname = envname, 
                 conda = conda,
-                conda_python_version = 
-                conda_python_version,
+                conda_python_version = conda_python_version,
                 channel = channel, 
                 pip = pip, 
                 os = os)
@@ -213,14 +225,12 @@ install_conda <- function(package,
   message("Installing python modules...\n")
   # rTorch::conda_install(envname="r-torch-37", packages="pytorch-cpu",
   #         channel = "pytorch", conda="auto", python_version = "3.7")
-  conda_install(
-    envname = envname,
-    packages = c(package, extra_packages),
-    conda = conda,
-    pip = pip,       # always use pip since it's the recommend way.
-    channel = channel,
-    ...
-  )
+  reticulate::conda_install(envname = envname,
+                packages = c(package, extra_packages),
+                conda = conda,
+                pip = pip,       # always use pip since it's the recommend way.
+                channel = channel,
+                python_version = conda_python_version)
   
 }
 
