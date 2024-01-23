@@ -21,21 +21,27 @@ packageStartupMessage(msg)
   
   pirat_envname <- 'r-pirat'
     
-    
+    # Install python if not installed
   if ( !reticulate::py_available()){
     #|| reticulate::py_version() != "3.9.5") {
     cat("installing python 3.9.5 ...")
     reticulate::install_python(version = "3.9.5")
-    cat("installing miniconda ...")
-    reticulate::install_miniconda()
   } else {
     config <- reticulate::py_config()
     if (py_version(config$version_string) != '3.9.5')
       cat("installing python 3.9.5 ...")
       reticulate::install_python(version = "3.9.5")
-      cat("installing miniconda ...")
-      reticulate::install_miniconda()
-    }
+  }
+
+  if (reticulate::conda_version()){
+    cat("installing miniconda ...")
+    reticulate::install_miniconda()
+  }
+  
+  #remove_Pirat(envname, conda)
+  
+  # Install miniconda r-pirat if not installed
+  
   
  
   
