@@ -76,13 +76,6 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   
   
   
-  pirat_envname <- 'r-pirat'
-  #if ( !reticulate::py_available() || reticulate::py_version() != "3.9.5") {
-    cat("installing python 3.9.5 ...")
-    reticulate::install_python(version = "3.9.5")
-    cat("installing miniconda ...")
-    reticulate::install_miniconda()
-  #} 
   
   
   

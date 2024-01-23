@@ -19,6 +19,23 @@ packageStartupMessage(msg)
 
 .onAttach <- function(libname, pkgname) {
   
+  pirat_envname <- 'r-pirat'
+    
+    
+  if ( !reticulate::py_available()){
+    #|| reticulate::py_version() != "3.9.5") {
+    cat("installing python 3.9.5 ...")
+    reticulate::install_python(version = "3.9.5")
+    cat("installing miniconda ...")
+    reticulate::install_miniconda()
+  } else {
+    config <- reticulate::py_config()
+    if (py_version(config$version_string) != '3.9.5')
+      cat("installing python 3.9.5 ...")
+      reticulate::install_python(version = "3.9.5")
+      cat("installing miniconda ...")
+      reticulate::install_miniconda()
+    }
   
  
   
