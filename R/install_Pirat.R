@@ -76,9 +76,18 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   
   
   
+  # Install miniconda
   
-  
-  
+  tryCatch({
+    reticulate::conda_version()
+  },
+  warning = function(w){packageStartupMessage({w})},
+  error = function(e){
+    packageStartupMessage({e})
+    cat("Installing miniconda ...")
+    reticulate::install_miniconda()
+  }
+  )
   
   
   # verify 64-bit
@@ -174,6 +183,17 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
     stop("Unable to install PyTorch on this platform. ",
          "Binary installation is available for Windows, OS X, and Linux")
   }
+  
+  
+  
+  # Check if necessary packages are available in the current env
+  packageStartupMessage({"Checking configuration..."})
+  config <- pirat_config()
+  if(!config_isValid(config)){
+    packageStartupMessage({'Error: Please run install_pirat()'})
+    return()
+  } 
+  
   
   message("\nInstallation complete.\n\n")
   

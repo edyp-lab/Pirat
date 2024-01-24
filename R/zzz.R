@@ -29,18 +29,7 @@ packageStartupMessage(msg)
   
   reticulate::use_python(config$python)
   
-  tryCatch({
-  reticulate::conda_version()
-  },
-    warning = function(w){packageStartupMessage({w})},
-    error = function(e){
-      packageStartupMessage({e})
-      cat("Installing miniconda ...")
-      reticulate::install_miniconda()
-      }
-  )
-  
-  # tryCatch({
+   tryCatch({
     packageStartupMessage({"Loading Python env..."})
       pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
       pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
@@ -57,18 +46,7 @@ packageStartupMessage(msg)
       else if (pirat_venv_exists)
         reticulate::use_virtualenv(pirat_envname)
   
-     # packageStartupMessage({"done"})
-  
-      # Check if necessary packages are available in the current env
-      packageStartupMessage({"Checking configuration..."})
-      config <- pirat_config()
-      if(!config_isValid(config)){
-        packageStartupMessage({'Error: Please run install_pirat()'})
-        return()
-        } 
-   
-
-      # Now, install custom Python scripts
+      # Now, source custom Python scripts
       packageStartupMessage({"Sourcing custom Python scripts..."})
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
@@ -80,10 +58,10 @@ packageStartupMessage(msg)
       packageStartupMessage({"Finalizing loading..."})
       py <- reticulate::import("torch")
       #packageStartupMessage({"done"})
-    # },
-    # warning = function(w){packageStartupMessage({w})},
-    # error = function(e){packageStartupMessage({e})}
-    # )
+    },
+    warning = function(w){packageStartupMessage({w})},
+    error = function(e){packageStartupMessage({e})}
+    )
 }
 
 
