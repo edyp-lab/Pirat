@@ -76,7 +76,7 @@ packageStartupMessage(msg)
 #' 
 #' @export
 #' 
-config_isValid <- function(config){
+config_isValid <- function(config, requested_versions){
   is.valid <- (config$torch_version == requested_versions$torch &&
       config$numpy_version == requested_versions$numpy &&
       config$python_version == requested_versions$python)

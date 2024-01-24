@@ -2,6 +2,7 @@
 % Please edit documentation in R/zzz.R
 \docType{package}
 \name{Pirat}
+\alias{Pirat-package}
 \alias{Pirat}
 \alias{Piratpackage}
 \title{xxx}
@@ -13,4 +14,12 @@ loaded. If something has to happen before anything is run, that's the way to
 go. onAttach only runs when the library is attached, e.g. when somebody calls
 library(your_package). onLoad will also run when somebody loads but doesn't 
 attach your package by calling your_package::your_function.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://www.prostar-proteomics.org/}
+  \item Report bugs at \url{https://github.com/prostarproteomics/DAPARdata/issues}
+}
+
 }

@@ -7,11 +7,8 @@
 install_pirat(
   method = c("conda", "virtualenv", "auto"),
   conda = "auto",
-  version = requested_versions$torch,
-  envname = pirat_envname,
   extra_packages = NULL,
   restart_session = TRUE,
-  conda_python_version = requested_versions$python,
   pip = FALSE,
   channel = "stable",
   cuda_version = NULL,
@@ -27,22 +24,11 @@ privilege the "system" method is available only on _Windows_.}
 
 \item{conda}{www}
 
-\item{version}{PyTorch version to install. The "default" version is 
-__1.10.0__. You can specify a specific __PyTorch__ version with 
-`version="1.2"`, or `version="1.6"`.}
-
-\item{envname}{Name of Python or conda environment to install within.
-The default environment name is `r-pirat`.}
-
 \item{extra_packages}{Additional Python packages to install along with
 PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.}
 
 \item{restart_session}{Restart R session after installing (note this will
 only occur within RStudio).}
-
-\item{conda_python_version}{the _Python_ version installed in the created _conda_
-environment. Python __3.9.5__ is installed by default. But you could 
-specify for instance: `conda_python_version="3.7"`.}
 
 \item{pip}{logical}
 

@@ -4,7 +4,7 @@
 \alias{config_isValid}
 \title{xxx}
 \usage{
-config_isValid(config)
+config_isValid(config, requested_versions)
 }
 \arguments{
 \item{config}{xxx}
