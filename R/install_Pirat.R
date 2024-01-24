@@ -67,7 +67,7 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   
   # PyTorch version to install. The "default" version is __1.10.0__. 
   # You can specify a specific __PyTorch__ version with 
-  #' `version="1.2"`, or `version="1.6"`.
+  # `version="1.2"`, or `version="1.6"`.
   version <- requested_versions$torch
   
   conda_python_version <- requested_versions$python
