@@ -20,32 +20,27 @@ packageStartupMessage(msg)
 .onAttach <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
-    
-    # Install python if not installed
-  if ( !reticulate::py_available()){
-    #|| reticulate::py_version() != "3.9.5") {
-    cat("installing python 3.9.5 ...")
-    reticulate::install_python(version = "3.9.5")
-  } else {
-    config <- reticulate::py_config()
-    if (py_version(config$version_string) != '3.9.5')
-      cat("installing python 3.9.5 ...")
-      reticulate::install_python(version = "3.9.5")
-  }
-
-  if (reticulate::conda_version()){
-    cat("installing miniconda ...")
-    reticulate::install_miniconda()
+  config <- reticulate::py_discover_config()
+  
+  if (py_version(config$version_string) != '3.9.5'){
+    cat("Python 3.9.5 is not installed. Please install it before using Pirat")
+    return()
   }
   
-  #remove_Pirat(envname, conda)
-  
-  # Install miniconda r-pirat if not installed
-  
-  
- 
+  reticulate::use_python(config$python)
   
   tryCatch({
+  reticulate::conda_version()
+  },
+    warning = function(w){packageStartupMessage({w})},
+    error = function(e){
+      packageStartupMessage({e})
+      cat("Installing miniconda ...")
+      reticulate::install_miniconda()
+      }
+  )
+  
+  # tryCatch({
     packageStartupMessage({"Loading Python env..."})
       pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
       pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
@@ -85,10 +80,10 @@ packageStartupMessage(msg)
       packageStartupMessage({"Finalizing loading..."})
       py <- reticulate::import("torch")
       #packageStartupMessage({"done"})
-    },
-    warning = function(w){packageStartupMessage({w})},
-    error = function(e){packageStartupMessage({e})}
-    )
+    # },
+    # warning = function(w){packageStartupMessage({w})},
+    # error = function(e){packageStartupMessage({e})}
+    # )
 }
 
 
