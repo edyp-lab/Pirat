@@ -10,23 +10,11 @@
 #'   privilege the "system" method is available only on _Windows_.
 #'
 #' @param conda www
-#' 
-#' @param version PyTorch version to install. The "default" version is 
-#' __1.10.0__. You can specify a specific __PyTorch__ version with 
-#' `version="1.2"`, or `version="1.6"`.
-#'
-#' @param envname Name of Python or conda environment to install within.
-#'   The default environment name is `r-pirat`.
-#'
 #' @param extra_packages Additional Python packages to install along with
 #'   PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.
 #'
 #' @param restart_session Restart R session after installing (note this will
 #'   only occur within RStudio).
-#'
-#' @param conda_python_version the _Python_ version installed in the created _conda_
-#'   environment. Python __3.9.5__ is installed by default. But you could 
-#'   specify for instance: `conda_python_version="3.7"`.
 #'
 #' @param pip logical
 #'
@@ -63,17 +51,27 @@
 #' 
 install_pirat <- function(method = c("conda", "virtualenv", "auto"),
                           conda = "auto",
-                          version = requested_versions$torch,
-                          envname = pirat_envname,
                           extra_packages = NULL,
                           restart_session = TRUE,
-                          conda_python_version = requested_versions$python,
                           pip = FALSE,
                           channel = "stable",
                           cuda_version = NULL,
                           dry_run = FALSE,
                           ...) {
   
+  requested_versions <- list(
+    torch = '1.10.0',
+    numpy = '1.20.2',
+    python = '3.9.5'
+  )
+  
+  # PyTorch version to install. The "default" version is __1.10.0__. 
+  # You can specify a specific __PyTorch__ version with 
+  #' `version="1.2"`, or `version="1.6"`.
+  version <- requested_versions$torch
+  
+  conda_python_version <- requested_versions$python
+  envname <- 'r-pirat'
   
   
   # Install miniconda
@@ -189,8 +187,8 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   # Check if necessary packages are available in the current env
   packageStartupMessage({"Checking configuration..."})
   config <- pirat_config()
-  if(!config_isValid(config)){
-    packageStartupMessage({'Error: Please run install_pirat()'})
+  if(!config_isValid(config, requested_versions)){
+    packageStartupMessage({'Error in config: Please run install_pirat()'})
     return()
   } 
   

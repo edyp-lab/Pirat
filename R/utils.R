@@ -1,6 +1,7 @@
 #' @title xxx
 #' @description xxx
 #'
+#' @export
 #' @return A boolean
 #' 
 is_windows <- function() {
@@ -9,7 +10,7 @@ is_windows <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_unix <- function() {
@@ -18,6 +19,8 @@ is_unix <- function() {
 
 #' @title xxx
 #' @description xxx
+#' 
+#' @export
 #'
 #' @return A boolean
 #' 
@@ -27,7 +30,7 @@ is_osx <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_linux <- function() {
@@ -36,7 +39,7 @@ is_linux <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_ubuntu <- function() {
@@ -51,7 +54,7 @@ is_ubuntu <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_debian <- function() {
