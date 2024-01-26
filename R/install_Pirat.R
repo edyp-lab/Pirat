@@ -74,6 +74,24 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   envname <- 'r-pirat'
   
   
+  #install Python if not installed
+  python_ver <- NULL
+  tryCatch({
+    python_ver <- reticulate::py_discover_config()$version_string
+  },
+  warning = function(w){ cat(w)},
+  error = function(e){
+    cat('could not find a Python environment')
+    })
+  
+  if (is.null(python_ver)){
+    cat("Python is not installed. Launch installation...")
+    reticulate::install_python(version="3.9.5")
+  } else if (py_version(config$version_string) != '3.9.5'){
+    cat("Python version 3.9.5 is not installed. Launch installation...")
+    reticulate::install_python(version="3.9.5")
+  }
+  
   # Install miniconda
   
   tryCatch({
