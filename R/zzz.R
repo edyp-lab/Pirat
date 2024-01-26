@@ -29,7 +29,7 @@ packageStartupMessage(msg)
   
   packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
   
-  reticulate::use_python(config$python)
+  #reticulate::use_python(config$python)
   
    tryCatch({
     packageStartupMessage({"Loading Python env..."})
