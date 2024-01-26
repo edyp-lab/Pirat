@@ -49,7 +49,7 @@
 #'
 #' @export
 #' 
-install_pirat <- function(method = c("conda", "virtualenv", "auto"),
+install_pirat <- function(method = "conda",
                           conda = "auto",
                           extra_packages = NULL,
                           restart_session = TRUE,
@@ -69,14 +69,6 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   # You can specify a specific __PyTorch__ version with 
   # `version="1.2"`, or `version="1.6"`.
   version <- requested_versions$torch
-  
-  conda_python_version <- requested_versions$python
-  envname <- 'r-pirat'
-  
-  version <- "3.9.5"
-  install_python(version)
-  install_miniconda()
-  conda_create("r-pirat", version = version)
   
   
   #install Python if not installed

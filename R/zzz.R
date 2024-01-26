@@ -18,7 +18,7 @@ packageStartupMessage(msg)
 
 .onAttach <- function(libname, pkgname) {
   
-  pirat_envname <- 'r-pirat'
+  pirat_envname <- 'r-reticulate'
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
   # config <- reticulate::py_discover_config()
   # 
