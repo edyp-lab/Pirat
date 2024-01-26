@@ -19,13 +19,13 @@ packageStartupMessage(msg)
 .onAttach <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
-  packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-  config <- reticulate::py_discover_config()
-  
-  if (py_version(config$version_string) != '3.9.5'){
-    packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
-    return()
-  }
+  # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
+  # config <- reticulate::py_discover_config()
+  # 
+  # if (py_version(config$version_string) != '3.9.5'){
+  #   packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
+  #   return()
+  # }
   
   packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
   

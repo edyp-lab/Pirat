@@ -73,37 +73,43 @@ install_pirat <- function(method = c("conda", "virtualenv", "auto"),
   conda_python_version <- requested_versions$python
   envname <- 'r-pirat'
   
+  version <- "3.9.5"
+  install_python(version)
+  install_miniconda()
+  conda_create("r-pirat", version = version)
+  
   
   #install Python if not installed
-  python_ver <- NULL
-  tryCatch({
-    python_ver <- reticulate::py_discover_config()$version_string
-  },
-  warning = function(w){ cat(w)},
-  error = function(e){
-    cat('could not find a Python environment')
-    })
-  
-  if (is.null(python_ver)){
-    cat("Python is not installed. Launch installation...")
-    reticulate::install_python(version="3.9.5")
-  } else if (py_version(config$version_string) != '3.9.5'){
-    cat("Python version 3.9.5 is not installed. Launch installation...")
-    reticulate::install_python(version="3.9.5")
-  }
-  
-  # Install miniconda
-  
-  tryCatch({
-    reticulate::conda_version()
-  },
-  warning = function(w){packageStartupMessage({w})},
-  error = function(e){
-    packageStartupMessage({e})
-    cat("Installing miniconda ...")
-    reticulate::install_miniconda()
-  }
-  )
+  # config <- NULL
+  # tryCatch({
+  #   config <- reticulate::py_discover_config()
+  # },
+  # warning = function(w){ cat(w)},
+  # error = function(e){
+  #   cat('could not find a Python environment')
+  #   })
+  # 
+  # if (is.null(config)){
+  #   cat("Python is not installed.")
+  #   cat("Launch installation...")
+  #   reticulate::install_python(version="3.9.5")
+  # } else if (py_version(config$version_string) != '3.9.5'){
+  #   cat("Python version 3.9.5 is not installed. Launch installation...")
+  #   reticulate::install_python(version="3.9.5")
+  # }
+  # 
+  # # Install miniconda
+  # 
+  # tryCatch({
+  #   reticulate::conda_version()
+  # },
+  # warning = function(w){packageStartupMessage({w})},
+  # error = function(e){
+  #   packageStartupMessage({e})
+  #   cat("Installing miniconda ...")
+  #   reticulate::install_miniconda()
+  # }
+  # )
   
   
   # verify 64-bit
