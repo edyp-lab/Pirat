@@ -40,17 +40,17 @@ packageStartupMessage(msg)
     #   } 
   
       #if (pirat_conda_exists)
-     #   reticulate::use_condaenv('r-reticulate', required = TRUE)
+     #   reticulate::use_condaenv('r-pirat', required = TRUE)
       #else if (pirat_venv_exists)
       #  reticulate::use_virtualenv(pirat_envname)
   
       # Now, source custom Python scripts
       packageStartupMessage({"Sourcing custom Python scripts..."})
-      dir.backup <- getwd()
-      setwd(system.file(".", package="Pirat"))
+      #dir.backup <- getwd()
+      #setwd(system.file(".", package="Pirat"))
       reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
       reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-      setwd(dir.backup)
+      #setwd(dir.backup)
       ##packageStartupMessage({"done"})
   
       packageStartupMessage({"Finalizing loading..."})
@@ -72,9 +72,9 @@ packageStartupMessage(msg)
     warning = function(w){packageStartupMessage({w})},
 python.builtin.ModuleNotFoundError = function(e) {
   warning(e$message, "\n",
-          "Restart the R session and load the tensorflow R package before ",
+          "Restart the R session and load the Pirat R package before ",
           "reticulate has initialized Python, or ensure reticulate initialized ",
-          "a Python installation where the tensorflow module is installed.", call. = FALSE)
+          "a Python installation where the Pirat module is installed.", call. = FALSE)
 }
     )
 
