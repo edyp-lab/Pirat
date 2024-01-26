@@ -72,14 +72,14 @@ install_pirat <- function(method = "conda",
   version <- requested_versions$torch
   reticulate::install_python("3.9.5")
   reticulate::install_miniconda()
-  reticulate::conda_create(version = "3.9.5")
+  reticulate::conda_create(envname = 'base', version = "3.9.5")
   
   #virtualenv_create("r-pirat", version = version)
   
   
   #use_virtualenv("r-pirat")
-  use_condaenv("r-reticulate")
-  conda_python_version <- '3.9.5'
+  reticulate::use_condaenv("base")
+  reticulate::conda_python_version <- '3.9.5'
   
   # verify 64-bit
   if (.Machine$sizeof.pointer != 8) {
