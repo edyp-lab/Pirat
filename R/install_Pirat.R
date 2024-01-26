@@ -49,162 +49,179 @@
 #'
 #' @export
 #' 
-install_pirat <- function(method = "conda",
-                          conda = "auto",
-                          extra_packages = NULL,
-                          restart_session = TRUE,
-                          pip = FALSE,
-                          channel = "stable",
-                          cuda_version = NULL,
-                          dry_run = FALSE,
-                          ...) {
+install_pirat <-
+  function(method = c("auto", "virtualenv", "conda"),
+           conda = "auto",
+           version = "default",
+           envname = "r-pirat",
+           extra_packages = NULL,
+           restart_session = TRUE,
+           conda_python_version = NULL,
+           ...,
+           cuda = NULL,
+           metal = is_mac_arm64(),
+           pip_ignore_installed = FALSE,
+           new_env = identical(envname, "r-pirat"),
+           python_version = '3.9.5') {
   
-  requested_versions <- list(
-    torch = '1.10.0',
-    numpy = '1.20.2',
-    python = '3.9.5'
-  )
+  # requested_versions <- list(
+  #   torch = '1.10.0',
+  #   numpy = '1.20.2',
+  #   python = '3.9.5'
+  # )
+  # 
+  # envname <- 'r-reticulate'
+  # # PyTorch version to install. The "default" version is __1.10.0__. 
+  # # You can specify a specific __PyTorch__ version with 
+  # # `version="1.2"`, or `version="1.6"`.
+  # version <- requested_versions$torch
+  # reticulate::install_python("3.9.5")
+  # reticulate::install_miniconda(force=TRUE)
+  # reticulate::conda_create(version = "3.9.5")
+  # reticulate::use_condaenv('r-reticulate', required = TRUE)
+  # reticulate::conda_python_version <- '3.9.5'
   
-  envname <- 'r-reticulate'
-  # PyTorch version to install. The "default" version is __1.10.0__. 
-  # You can specify a specific __PyTorch__ version with 
-  # `version="1.2"`, or `version="1.6"`.
-  version <- requested_versions$torch
-  reticulate::install_python("3.9.5")
-  reticulate::install_miniconda()
-  reticulate::conda_create(envname = 'base', version = "3.9.5")
-  
-  #virtualenv_create("r-pirat", version = version)
-  
-  
-  #use_virtualenv("r-pirat")
-  reticulate::use_condaenv("base")
-  reticulate::conda_python_version <- '3.9.5'
-  
-  # verify 64-bit
-  if (.Machine$sizeof.pointer != 8) {
-    stop("Unable to install PyTorch on this platform.",
-         "Binary installation is only available for 64-bit platforms.")
-  }
-  
-  method <- match.arg(method)
-  
-  # unroll version
-  ver <- parse_torch_version(version, cuda_version, channel)
-  
-  version <- ver$version
-  gpu <- ver$gpu
-  package <- ver$package
-  cpu_gpu_packages <- ver$cpu_gpu_packages
-  channel <- ver$channel
-  
-  # Packages in this list should always be installed.
-  
-  default_packages <- c("numpy=1.20.2", 'matplotlib')
-  
-  # # Resolve torch probability version.
-  # if (!is.na(version) && substr(version, 1, 4) %in% c("1.1.0", "1.1", "1.1.0")) {
-  #   default_packages <- c(default_packages, "pandas")
-  #   # install pytorch-nightly
-  # } else if (is.na(version) ||(substr(version, 1, 4) %in% c("2.0.") || version == "nightly")) {
-  #   default_packages <- c(default_packages, "numpy")
-  # }
-  
-  extra_packages <- unique(c(cpu_gpu_packages, default_packages, extra_packages))
-  
-  if (dry_run) {
-    os <- ifelse(is_osx(), "osx",
-                 ifelse(is_linux(), "linux",
-                        ifelse(is_windows(), "windows", "None")))
-    out <- list(package = package, 
-                extra_packages = extra_packages,
-                envname = envname, 
-                conda = conda,
-                conda_python_version = conda_python_version,
-                channel = channel, 
-                pip = pip, 
-                os = os)
-    return(out)
-  }
-  
-  # Main OS verification.
-  if (is_osx() || is_linux()) {
-    
-    if (method == "conda") {
-      install_conda(
-        package = package,
-        extra_packages = extra_packages,
-        envname = envname,
-        conda = conda,
-        conda_python_version = conda_python_version,
-        channel = channel,
-        pip = pip,
-        ...
-      )
-    } else if (method == "virtualenv" || method == "auto") {
-      install_virtualenv(
-        package = package,
-        extra_packages = extra_packages,
-        envname = envname,
-        ...
-      )
-    }
-    
-  } else if (is_windows()) {
-    
-    if (method == "virtualenv") {
-      stop("Installing PyTorch into a virtualenv is not supported on Windows",
-           call. = FALSE)
-    } else if (method == "conda" || method == "auto") {
-      
-      install_conda(
-        package = package,
-        extra_packages = extra_packages,
-        envname = envname,
-        conda = conda,
-        conda_python_version = conda_python_version,
-        channel = channel,
-        pip = pip,
-        ...
-      )
-      
-    }
-    
-  } else {
-    stop("Unable to install PyTorch on this platform. ",
-         "Binary installation is available for Windows, OS X, and Linux")
-  }
-  
-  
-  
-  # Check if necessary packages are available in the current env
-  packageStartupMessage({"Checking configuration..."})
-  config <- pirat_config()
-  if(!config_isValid(config, requested_versions)){
-    packageStartupMessage({'Error in config: Please run install_pirat()'})
-    return()
-  } 
-  
-  
-  message("\nInstallation complete.\n\n")
-  
-  
-  is.rstudio <- function(){
-    .Platform$GUI == "RStudio"
-  }
-  
-  if (restart_session){
-    if (is.rstudio() &&
-        requireNamespace("rstudioapi", quietly = TRUE) &&
-        rstudioapi::hasFun("restartSession"))
-      rstudioapi::restartSession(command='library(Pirat)')
-    else
-      cat("Please restart the R session and reload the 'Pirat' package.")
-  }
-  
-  invisible(NULL)
-}
 
+      
+      method <- match.arg(method)
+      
+      # verify 64-bit
+      if (.Machine$sizeof.pointer != 8) {
+        stop("Unable to install TensorFlow on this platform.",
+             "Binary installation is only available for 64-bit platforms.")
+      }
+      
+      # some special handling for windows
+      if (is_windows()) {
+        
+        # avoid DLL in use errors
+        if (py_available()) {
+          stop("You should call install_tensorflow()/install_keras() only in a fresh ",
+               "R session that has not yet initialized Keras and TensorFlow (this is ",
+               "to avoid DLL in use errors during installation)")
+        }
+        
+        if(grepl("gpu", as.character(version), ignore.case = TRUE))
+          warning("Caution: TensorFlow 2.10 was the last TensorFlow release that supported GPU on native-Windows. Starting with TensorFlow 2.11, you will need to install TensorFlow in WSL2, or install a CPU-only version of TensorFlow.",
+                  if(identical(.Platform$GUI, "RStudio")) " For a guide on how to use RStudio with WSL2, see https://support.posit.co/hc/en-us/articles/360049776974-Using-RStudio-Server-in-Windows-WSL2")
+        
+      }
+      
+      
+      can_use_gpu <- FALSE
+      if (is.null(cuda)) {
+        
+        can_use_gpu <-
+          is_linux() &&
+          (version %in% c("default", "release") ||
+             isTRUE(extract_numeric_version(version) >= "2.14")) &&
+          tryCatch(as.logical(length(system("lspci | grep -i nvidia", intern = TRUE))),
+                   warning = function(w) FALSE) # warning emitted by system for non-0 exit stat
+        
+        cuda <- can_use_gpu
+        
+      }
+      
+      tf_package_spec <- parse_tensorflow_version(version)
+      
+      if(isTRUE(cuda) && !grepl("^.*\\.whl$", tf_package_spec)) {
+        tf_package_spec <- sub("([^=<>!]*)(.*)", "\\1[and-cuda]\\2",
+                               tf_package_spec)
+      }
+      
+      default_packages <- c("numpy==1.20.2", 'matplotlib')
+      packages <- unique(c(
+        #tf_package_spec,
+        #as.character(extra_packages),
+        default_packages
+      ))
+      
+      
+      # if (isTRUE(metal)) repeat {
+      #   tf_ver <- extract_numeric_version(tf_package_spec)
+      #   if(is.na(tf_ver))
+      #     break
+      #
+      #   if(tf_ver >= "2.14")
+      #     metal <- "tensorflow-metal>1.0.1"
+      #   else if (tf_ver >= "2.13")
+      #     metal <- "tensorflow-metal>=1.0.1"
+      #   else if (tf_ver >= "2.12")
+      #     metal <- "tensorflow-metal==0.8.*"
+      #   else
+      #     # https://pypi.org/project/tensorflow-metal/
+      #     metal <- "tensorflow-metal"
+      #
+      #   break
+      # }
+      
+      python_version <- python_version %||% conda_python_version
+      if(method %in% c("auto", "virtualenv") &&
+         is.null(python_version)) {
+        
+        # virtualenv_starter() picks the most recent version available, but older
+        # versions of tensorflow typically don't work with the latest Python
+        # release. In general, we're better off picking the oldest Python version available
+        # that works with the current release of tensorflow.
+        # TF 2.13 is compatible with Python <=3.11,>=3.8
+        
+        available <- reticulate::virtualenv_starter(version = ">=3.9", all = TRUE)
+        # pick the smallest minor version, ignoring patchlevel
+        if(nrow(available))
+          python_version <- min(available$version[, 1:2])
+      }
+      
+      if (isTRUE(new_env)) {
+        
+        if (method %in% c("auto", "virtualenv") &&
+            reticulate::virtualenv_exists(envname))
+          reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
+        
+        if (method %in% c("auto", "conda")) {
+          if (!is.null(tryCatch(conda_python(envname, conda = conda),
+                                error = function(e) NULL)))
+            reticulate::conda_remove(envname, conda = conda)
+        }
+        
+      }
+      
+      py_install_args <- list(
+        packages       = packages,
+        envname        = envname,
+        method         = method,
+        conda          = conda,
+        python_version = python_version,
+        pip            = TRUE,
+        pip_ignore_installed = pip_ignore_installed,
+        ...
+      )
+      
+      # now ignored, superseded by `cuda`
+      py_install_args$configure_cudnn <- NULL
+      
+      do.call(reticulate::py_install, py_install_args)
+      
+      if(is_string(metal)) {
+        py_install_args$packages <- metal
+        tryCatch(do.call(reticulate::py_install, py_install_args),
+                 error = function(e) {
+                   message(e)
+                   message("No suitable version of the 'tensorflow-metal' found. You can ",
+                           "use TensorFlow with CPU only, or install a previous release ",
+                           "of tensorflow that has GPU support on ARM macs with ",
+                           "`tensorflow::install_tensorflow(version = '2.13')`")
+                 })
+      }
+      
+      cat("\nInstallation complete.\n\n")
+      
+      if (restart_session &&
+          requireNamespace("rstudioapi", quietly = TRUE) &&
+          rstudioapi::hasFun("restartSession"))
+        rstudioapi::restartSession()
+      
+      invisible(NULL)
+    }
 
 
 install_conda <- function(package, 
@@ -315,4 +332,62 @@ install_torch_extras <- function(packages, conda = "auto") {
   message("Extra packages not installed (this function is deprecated). \n",
           "Use the extra_packages argument to install_pytorch() to ",
           "install additional packages.")
+}
+
+
+
+
+
+
+
+
+
+
+default_version <- numeric_version("2.14")
+
+parse_tensorflow_version <- function(version) {
+  # returns unquoted string directly passable to pip, e.g 'tensorflow==2.5.*'
+  
+  if(is.null(version) || is.na(version) || version %in% c("", "release"))
+    return("tensorflow")
+  
+  version <- as.character(version) # if numeric_version()
+  
+  if(version == "release-cpu")
+    return("tensorflow-cpu")
+  
+  # full path to whl.
+  if (grepl("^.*\\.whl$", version))
+    return(normalizePath(version))
+  
+  if (grepl("nightly", version)) {
+    if(!startsWith(version, "tf-"))
+      version <- paste0("tf-", version)
+    return(version)
+  }
+  
+  package <- "tensorflow"
+  if(grepl(".*(cpu|gpu)$", version)) {
+    # append {-cpu,-gpu} suffix to package
+    package <- sprintf("%s-%s", package, sub(".*-(cpu|gpu)$", "\\1", version))
+    
+    # strip -?{cpu,gpu} suffix from version
+    version <- sub("(.*?)-?([cg]pu)$", "\\1", version)
+  }
+  
+  if(version %in% c("default", ""))
+    version <- default_version
+  
+  if(!grepl("[><=]", version))
+    version <- sprintf("==%s.*", version)
+  
+  paste0(package, version)
+}
+
+
+extract_numeric_version <- function(x, strict = FALSE) {
+  x <- gsub("[^0-9.]+", "", as.character(x), perl = TRUE)
+  x <- sub("^\\.+", "", x)
+  x <- sub("\\.+$", "", x)
+  numeric_version(x, strict = strict)
 }

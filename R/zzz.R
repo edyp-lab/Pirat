@@ -7,46 +7,42 @@
 #' library(your_package). onLoad will also run when somebody loads but doesn't 
 #' attach your package by calling your_package::your_function.
 #'
-#' @aliases Piratpackage
+#' @docType package
+#' @aliases Pirat-package
 #' @name Pirat
-NULL
+"_PACKAGE"
 
 
 
 msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
-.onAttach <- function(libname, pkgname) {
+.onLoad <- function(libname, pkgname) {
   
-  pirat_envname <- 'r-reticulate'
-  # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-  # config <- reticulate::py_discover_config()
-  # 
-  # if (py_version(config$version_string) != '3.9.5'){
-  #   packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
-  #   return()
-  # }
-  
-  packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
-  
-  #reticulate::use_python(config$python)
+  # if TENSORFLOW_PYTHON is defined then forward it to RETICULATE_PYTHON
+  torch_python <- Sys.getenv("TORCH_PYTHON", unset = NA)
+  if (!is.na(torch_python))
+    Sys.setenv(RETICULATE_PYTHON = torch_python)
   
    tryCatch({
-    packageStartupMessage({"Loading Python env..."})
-      pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
-      pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
+     
+    #  
+    #  
+    # packageStartupMessage({"Loading Python env..."})
+    #   pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+    #   #pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
+    # 
+    # 
+    #   if (!pirat_conda_exists){
+    #     packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
+    #     packageStartupMessage({"You should install one first by running: install_pirat()"})
+    #     Pirat::install_pirat()
+    #   } 
   
-  
-      if (!pirat_conda_exists && !pirat_venv_exists){
-        packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
-        packageStartupMessage({"You should install one first by running: install_pirat()"})
-        Pirat::install_pirat()
-      } 
-  
-      if (pirat_conda_exists)
-        reticulate::use_condaenv(pirat_envname)
-      else if (pirat_venv_exists)
-        reticulate::use_virtualenv(pirat_envname)
+      #if (pirat_conda_exists)
+     #   reticulate::use_condaenv('r-reticulate', required = TRUE)
+      #else if (pirat_venv_exists)
+      #  reticulate::use_virtualenv(pirat_envname)
   
       # Now, source custom Python scripts
       packageStartupMessage({"Sourcing custom Python scripts..."})
@@ -58,14 +54,31 @@ packageStartupMessage(msg)
       ##packageStartupMessage({"done"})
   
       packageStartupMessage({"Finalizing loading..."})
-      py <- reticulate::import("torch")
+      #py <- reticulate::import("torch", delay_load = TRUE)
       #packageStartupMessage({"done"})
-    },
+      
+      py <<- import("torch", 
+                    delay_load = list(
+                      priority = 5, # keras sets priority = 10
+                      environment = "r-pirat",
+                      # before_load = function() {
+                      # },
+                      on_load = function() {},
+                      on_error = function(e) {
+                        stop(tf_config_error_message(), call. = FALSE)
+                        }
+                      ))
+   },
     warning = function(w){packageStartupMessage({w})},
-    error = function(e){packageStartupMessage({e})}
-    )
+python.builtin.ModuleNotFoundError = function(e) {
+  warning(e$message, "\n",
+          "Restart the R session and load the tensorflow R package before ",
+          "reticulate has initialized Python, or ensure reticulate initialized ",
+          "a Python installation where the tensorflow module is installed.", call. = FALSE)
 }
+    )
 
+}
 
 
 #' @title xxx
@@ -98,6 +111,12 @@ Get_active_env <- function(){
   
   active_env
 }
+
+
+is_string <- function(x) {
+  is.character(x) && length(x) == 1L && !is.na(x)
+}
+
 
 #' Pirat configuration information
 #'
