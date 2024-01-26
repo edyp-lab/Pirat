@@ -70,39 +70,15 @@ install_pirat <- function(method = "conda",
   # You can specify a specific __PyTorch__ version with 
   # `version="1.2"`, or `version="1.6"`.
   version <- requested_versions$torch
+  reticulate::install_python("3.9.5")
+  reticulate::install_miniconda()
+  reticulate::conda_create(version = "3.9.5")
+  
+  #virtualenv_create("r-pirat", version = version)
   
   
-  #install Python if not installed
-  # config <- NULL
-  # tryCatch({
-  #   config <- reticulate::py_discover_config()
-  # },
-  # warning = function(w){ cat(w)},
-  # error = function(e){
-  #   cat('could not find a Python environment')
-  #   })
-  # 
-  # if (is.null(config)){
-  #   cat("Python is not installed.")
-  #   cat("Launch installation...")
-  #   reticulate::install_python(version="3.9.5")
-  # } else if (py_version(config$version_string) != '3.9.5'){
-  #   cat("Python version 3.9.5 is not installed. Launch installation...")
-  #   reticulate::install_python(version="3.9.5")
-  # }
-  # 
-  # # Install miniconda
-  # 
-  # tryCatch({
-  #   reticulate::conda_version()
-  # },
-  # warning = function(w){packageStartupMessage({w})},
-  # error = function(e){
-  #   packageStartupMessage({e})
-  #   cat("Installing miniconda ...")
-  #   reticulate::install_miniconda()
-  # }
-  # )
+  #use_virtualenv("r-pirat")
+  use_condaenv("r-reticulate")
   conda_python_version <- '3.9.5'
   
   # verify 64-bit
