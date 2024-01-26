@@ -142,7 +142,7 @@ estimate_psi_df = function(obs2NApep) {
 #'
 #' @examples
 #' data(bouyssie)
-#'  
+#' pipeline_llkimpute(bouyssie)
 #' 
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,

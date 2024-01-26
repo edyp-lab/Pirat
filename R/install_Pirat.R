@@ -65,6 +65,7 @@ install_pirat <- function(method = "conda",
     python = '3.9.5'
   )
   
+  envname <- 'r-reticulate'
   # PyTorch version to install. The "default" version is __1.10.0__. 
   # You can specify a specific __PyTorch__ version with 
   # `version="1.2"`, or `version="1.6"`.
@@ -102,7 +103,7 @@ install_pirat <- function(method = "conda",
   #   reticulate::install_miniconda()
   # }
   # )
-  
+  conda_python_version <- '3.9.5'
   
   # verify 64-bit
   if (.Machine$sizeof.pointer != 8) {
