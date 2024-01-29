@@ -20,14 +20,14 @@ packageStartupMessage(msg)
 .onLoad <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
-  packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-  exist <- reticulate::condaenv_exists(envname = 'r-pirat', conda = "auto")
+  packageStartupMessage({'Checking if r-pirat is installed...'})
+  exist <- reticulate::condaenv_exists(pirat_envname)
   if (!exist){
-    packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
+    packageStartupMessage({"'r-pirat' is not installed. Please install it before using Pirat"})
     return()
   }
   
-  packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
+  packageStartupMessage({'r-pirat is installed...'})
   
   
   tryCatch({
@@ -42,11 +42,9 @@ packageStartupMessage(msg)
     reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
     reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
     setwd(dir.backup)
-    ##packageStartupMessage({"done"})
     
     packageStartupMessage({"Finalizing loading..."})
     py <- reticulate::import("torch")
-    #packageStartupMessage({"done"})
   },
   warning = function(w){packageStartupMessage({w})},
   error = function(e){packageStartupMessage({e})}
@@ -104,7 +102,7 @@ is_string <- function(x) {
 pirat_config <- function() {
   
   
-  pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+  pirat_conda_exists <- reticulate::condaenv_exists(envname = 'r-pirat')
   pkgs <- reticulate::py_list_packages(envname = 'r-pirat')
   # get version
   torch_version <- pkgs[which(pkgs$package=='pytorch'),]$version

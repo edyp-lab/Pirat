@@ -62,31 +62,15 @@ install_pirat <- function(method = "conda",
     python = '3.9.5'
   )
   
-  #browser()
+  default_packages <- c("pytorch==1.10.0", "numpy=1.20.2", 'matplotlib')
   
-  # PyTorch version to install. The "default" version is __1.10.0__. 
-  # You can specify a specific __PyTorch__ version with 
-  # `version="1.2"`, or `version="1.6"`.
-  version <- requested_versions$torch
-  
-  conda_python_version <- requested_versions$python
   envname <- 'r-pirat'
-  #restart_R_session('Pirat::install_pirat()')
   
-  # Install miniconda
   
-  # tryCatch({
-  #   reticulate::conda_version()
-  # },
-  # warning = function(w){packageStartupMessage({w})},
-  # error = function(e){
-  #   packageStartupMessage({e})
-  #   cat("Installing miniconda ...")
-  #   reticulate::install_miniconda()
-  # }
-  # )
-  
-  if(force){
+  r.pirat.exists <- reticulate::condaenv_exists(envname)
+  if (r.pirat.exists && force){
+    remove_Pirat(envname)
+    cat('Pirat will be reinstalled...')
     reticulate::miniconda_uninstall(reticulate::miniconda_path())
   }
   
@@ -100,44 +84,6 @@ install_pirat <- function(method = "conda",
   
   method <- match.arg(method)
   
-  # # unroll version
-  # ver <- parse_torch_version(version, cuda_version, channel)
-  # 
-  # version <- ver$version
-  # gpu <- ver$gpu
-  # package <- ver$package
-  # cpu_gpu_packages <- ver$cpu_gpu_packages
-  # channel <- ver$channel
-  
-  # Packages in this list should always be installed.
-  
-  default_packages <- c("pytorch==1.10.0", "numpy=1.20.2", 'matplotlib')
-  
-  # # Resolve torch probability version.
-  # if (!is.na(version) && substr(version, 1, 4) %in% c("1.1.0", "1.1", "1.1.0")) {
-  #   default_packages <- c(default_packages, "pandas")
-  #   # install pytorch-nightly
-  # } else if (is.na(version) ||(substr(version, 1, 4) %in% c("2.0.") || version == "nightly")) {
-  #   default_packages <- c(default_packages, "numpy")
-  # }
-  
-  #extra_packages <- unique(c(cpu_gpu_packages, default_packages, extra_packages))
-  extra_packages <- default_packages
-  
-  # if (dry_run) {
-  #   os <- ifelse(is_osx(), "osx",
-  #                ifelse(is_linux(), "linux",
-  #                       ifelse(is_windows(), "windows", "None")))
-  #   out <- list(package = default_packages, 
-  #               #extra_packages = default_packages,
-  #               envname = envname, 
-  #               conda = conda,
-  #               conda_python_version = conda_python_version,
-  #               channel = channel, 
-  #               pip = pip, 
-  #               os = os)
-  #   return(out)
-  # }
   
   # Main OS verification.
   if (is_osx() || is_linux()) {
@@ -145,77 +91,34 @@ install_pirat <- function(method = "conda",
     if (method == "conda") {
       install_conda(
         package = default_packages,
-        #extra_packages = extra_packages,
         envname = envname,
         conda = conda,
         conda_python_version = conda_python_version,
         channel = channel,
         pip = pip)
     } 
-    # else if (method == "virtualenv" || method == "auto") {
-    #   install_virtualenv(
-    #     package = default_packages,
-    #     #extra_packages = extra_packages,
-    #     envname = envname,
-    #     ...
-    #   )
-    # }
-    
+
   } else if (is_windows()) {
-    
-    # if (method == "virtualenv") {
-    #   stop("Installing PyTorch into a virtualenv is not supported on Windows",
-    #        call. = FALSE)
-    # } else if (method == "conda" || method == "auto") {
-      
-      # install_conda(
-      #   package = package,
-      #   extra_packages = extra_packages,
-      #   envname = envname,
-      #   conda = conda,
-      #   conda_python_version = conda_python_version,
-      #   channel = channel,
-      #   pip = pip,
-      #   ...
-      # )
-      
-      remove_Pirat(envname)
-      
-      
-      message("Creating ", envname, " conda environment... \n")
+    message("Creating ", envname, " conda environment... \n")
       reticulate::conda_create(
         envname = envname, 
-        #conda = conda,
         packages = default_packages,
         pip = TRUE,       # always use pip since it's the recommend way.
         channel = channel,
         python_version = conda_python_version
       )
-      
-  #     
      }
-  #   
-  # } else {
-  #   stop("Unable to install PyTorch on this platform. ",
-  #        "Binary installation is available for Windows, OS X, and Linux")
-  # }
-  
+
   reticulate::use_condaenv('r-pirat')
   
-  #browser()
   # Check if necessary packages are available in the current env
   packageStartupMessage({"Checking configuration..."})
   config <- pirat_config()
   if(!config_isValid(config, requested_versions)){
     packageStartupMessage({'Error in config: Please run install_pirat()'})
     return()
-  } 
-  
-  
-  message("\nInstallation complete.\n\n")
-  
-  
-  
+  } else
+    message("\nInstallation complete.\n\n")
   
   if (restart_session)
     restart_R_session('library(Pirat)')
@@ -236,120 +139,6 @@ restart_R_session <- function(cmd = ''){
     rstudioapi::restartSession(command = cmd)
   else
     cat("Please restart the R session and reload the 'Pirat' package.")
-}
-
-# install_conda <- function(package, 
-#                           extra_packages, 
-#                           envname, 
-#                           conda,
-#                           conda_python_version, 
-#                           channel, 
-#                           pip, 
-#                           ...) {
-#   
-#   
-#   remove_Pirat(envname)
-#   
-#   
-#   message("Creating ", envname, " conda environment... \n")
-#   reticulate::conda_create(
-#     envname = envname, 
-#     #conda = conda,
-#     packages = c(package, extra_packages),
-#     pip = TRUE,       # always use pip since it's the recommend way.
-#     channel = channel,
-#     python_version = conda_python_version
-#   )
-#   
-#   # message("Installing python modules...\n")
-#   # # rTorch::conda_install(envname="r-torch-37", packages="pytorch-cpu",
-#   # #         channel = "pytorch", conda="auto", python_version = "3.7")
-#   # reticulate::conda_install(envname = envname,
-#   #                           packages = c(package, extra_packages),
-#   #                           conda = conda,
-#   #                           pip = pip,       # always use pip since it's the recommend way.
-#   #                           channel = channel,
-#   #                           python_version = conda_python_version)
-#   
-# }
-
-# install_virtualenv <- function(package, extra_packages, envname, ...) {
-#   
-#   remove_Pirat(envname)
-#   
-#   
-#   message("Creating ", envname, " virtualenv environment... \n")
-#   reticulate::virtualenv_create(envname = envname)
-#   
-#   message("Installing python modules...\n")
-#   reticulate::virtualenv_install(
-#     envname = envname,
-#     packages = c(package, extra_packages),
-#     ...
-#   )
-#   
-# }
-
-
-
-
-parse_torch_version <- function(version, cuda_version = NULL, channel = "stable") {
-  default_version <- "1.10.0"
-  # channel <- "pytorch"    # this is the channel
-  
-  ver <- list(
-    version = default_version,
-    gpu = FALSE,
-    package = NULL,
-    cuda_version = cuda_version,
-    cpu_gpu_packages = NULL,
-    channel = channel
-  )
-  
-  if (version == "default") {
-    ver$package <- paste0("pytorch==", ver$version)
-  } else {
-    ver$version <- version
-    ver$package <- paste0("pytorch==", ver$version)
-  }
-  
-  
-  if (is.null(ver$cuda_version)) {
-    ver$cpu_gpu_packages <- "cpuonly"
-  } else {
-    ver$cuda_version <- cuda_version
-    ver$cpu_gpu_packages <- paste0("cudatoolkit==", ver$cuda_version)
-  }
-  
-  if (channel == "stable") {
-    ver$channel <- "pytorch"
-  } else if (channel == "nightly") {
-    ver$channel <- "pytorch-nightly"
-  } else {
-    stop("not a valid channel")
-  }
-  
-  ver
-}
-
-
-
-#' Install additional Python packages alongside PyTorch
-#'
-#' This function is deprecated. Use the `extra_packages` argument in function
-#' `install_pytorch()` to install additional packages.
-#'
-#' @param packages Python packages to install
-#' @param conda Path to conda executable (or "auto" to find conda using the PATH
-#'   and other conventional install locations). Only used when PyTorch is
-#'   installed within a conda environment.
-#'
-#' @keywords internal
-#'
-install_torch_extras <- function(packages, conda = "auto") {
-  message("Extra packages not installed (this function is deprecated). \n",
-          "Use the extra_packages argument to install_pytorch() to ",
-          "install additional packages.")
 }
 
 
