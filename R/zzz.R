@@ -19,64 +19,38 @@ packageStartupMessage(msg)
 
 .onLoad <- function(libname, pkgname) {
   
-  # if TENSORFLOW_PYTHON is defined then forward it to RETICULATE_PYTHON
-  torch_python <- Sys.getenv("TORCH_PYTHON", unset = NA)
-  if (!is.na(torch_python))
-    Sys.setenv(RETICULATE_PYTHON = torch_python)
+  pirat_envname <- 'r-pirat'
+  packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
+  exist <- reticulate::condaenv_exists(envname = 'r-pirat', conda = "auto")
+  if (!exist){
+    packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
+    return()
+  }
   
-   tryCatch({
-     
-    #  
-    #  
-    # packageStartupMessage({"Loading Python env..."})
-    #   pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
-    #   #pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
-    # 
-    # 
-    #   if (!pirat_conda_exists){
-    #     packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
-    #     packageStartupMessage({"You should install one first by running: install_pirat()"})
-    #     Pirat::install_pirat()
-    #   } 
+  packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
   
-      #if (pirat_conda_exists)
-     #   reticulate::use_condaenv('r-pirat', required = TRUE)
-      #else if (pirat_venv_exists)
-      #  reticulate::use_virtualenv(pirat_envname)
   
-      # Now, source custom Python scripts
-      packageStartupMessage({"Sourcing custom Python scripts..."})
-      #dir.backup <- getwd()
-      #setwd(system.file(".", package="Pirat"))
-      reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-      reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-      #setwd(dir.backup)
-      ##packageStartupMessage({"done"})
-  
-      packageStartupMessage({"Finalizing loading..."})
-      #py <- reticulate::import("torch", delay_load = TRUE)
-      #packageStartupMessage({"done"})
-      
-      py <<- import("torch", 
-                    delay_load = list(
-                      priority = 5, # keras sets priority = 10
-                      environment = "r-pirat",
-                      # before_load = function() {
-                      # },
-                      on_load = function() {},
-                      on_error = function(e) {
-                        stop(tf_config_error_message(), call. = FALSE)
-                        }
-                      ))
-   },
-    warning = function(w){packageStartupMessage({w})},
-python.builtin.ModuleNotFoundError = function(e) {
-  warning(e$message, "\n",
-          "Restart the R session and load the Pirat R package before ",
-          "reticulate has initialized Python, or ensure reticulate initialized ",
-          "a Python installation where the Pirat module is installed.", call. = FALSE)
-}
-    )
+  tryCatch({
+    packageStartupMessage({"Loading Python env..."})
+    
+    reticulate::use_condaenv(pirat_envname)
+    
+    # Now, source custom Python scripts
+    packageStartupMessage({"Sourcing custom Python scripts..."})
+    dir.backup <- getwd()
+    setwd(system.file(".", package="Pirat"))
+    reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+    reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+    setwd(dir.backup)
+    ##packageStartupMessage({"done"})
+    
+    packageStartupMessage({"Finalizing loading..."})
+    py <- reticulate::import("torch")
+    #packageStartupMessage({"done"})
+  },
+  warning = function(w){packageStartupMessage({w})},
+  error = function(e){packageStartupMessage({e})}
+  )
 
 }
 
@@ -129,45 +103,24 @@ is_string <- function(x) {
 #' @export
 pirat_config <- function() {
   
-  # first check if we found pytorch
-  have_torch <- reticulate::py_module_available("torch")
   
-  # get py config
-  config <- reticulate::py_config()
-  
-  # found it!
-  if (have_torch) {
-    
-    # get version
-    ind <- which(reticulate::py_list_packages()$package=='pytorch')
-    torch_version <- reticulate::py_list_packages()[ind,]$version
-    
-    ind <- which(reticulate::py_list_packages()$package=='numpy')
-    numpy_version <- reticulate::py_list_packages()[ind,]$version
-    
-    ind <- which(reticulate::py_list_packages()$package=='matplotlib')
-    matplotlib_version <- reticulate::py_list_packages()[ind,]$version
+  pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+  pkgs <- reticulate::py_list_packages(envname = 'r-pirat')
+  # get version
+  torch_version <- pkgs[which(pkgs$package=='pytorch'),]$version
+  numpy_version <- pkgs[which(pkgs$package=='numpy'),]$version
+  matplotlib_version <- pkgs[which(pkgs$package=='matplotlib'),]$version
     
     
-    structure(class = "pirat_config", list(
-      available = TRUE,
-      acive_env = Get_active_env(),
-      torch_version = torch_version,
-      numpy_version = numpy_version,
-      matplotlib_version = matplotlib_version,
-      location = config$pythonhome,
-      python_version = py_version(config$version_string)
+  structure(class = "pirat_config", list(
+    available = TRUE,
+    acive_env = Get_active_env(),
+    torch_version = torch_version,
+    numpy_version = numpy_version,
+    matplotlib_version = matplotlib_version,
+    location = reticulate::py_config()$pythonhome,
+    python_version = unlist(strsplit(reticulate::py_config()$version_string, split=' '))[1]
     ))
-    
-    # didn't find it
-  } else {
-    structure(class = "pirat_config", list(
-      available = FALSE,
-      python_versions = config$python_versions,
-      #error_message = pirat_config_error_message()
-      error_message = NULL
-    ))
-  }
 }
 
 

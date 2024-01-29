@@ -5,15 +5,12 @@
 \title{Install Pirat package}
 \usage{
 install_pirat(
-  method = c("conda", "virtualenv", "auto"),
+  method = "conda",
   conda = "auto",
-  extra_packages = NULL,
   restart_session = TRUE,
   pip = FALSE,
-  channel = "stable",
-  cuda_version = NULL,
-  dry_run = FALSE,
-  ...
+  channel = c("pytorch", "stable"),
+  force = TRUE
 )
 }
 \arguments{
@@ -24,9 +21,6 @@ privilege the "system" method is available only on _Windows_.}
 
 \item{conda}{www}
 
-\item{extra_packages}{Additional Python packages to install along with
-PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.}
-
 \item{restart_session}{Restart R session after installing (note this will
 only occur within RStudio).}
 
@@ -34,6 +28,9 @@ only occur within RStudio).}
 
 \item{channel}{conda channel. The default channel is `stable`.
 The alternative channel is `nightly`.}
+
+\item{extra_packages}{Additional Python packages to install along with
+PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.}
 
 \item{cuda_version}{string for the cuda toolkit version to install. For example,
 to install a specific CUDA version use `cuda_version="10.2"`.}

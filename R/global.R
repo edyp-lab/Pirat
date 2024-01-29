@@ -4,4 +4,4 @@ requested_versions <- list(
   python = '3.9.5'
 )
 
-pirat_envname <- 'r-reticulate'
+pirat_envname <- 'r-pirat'
