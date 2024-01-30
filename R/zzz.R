@@ -33,11 +33,13 @@ packageStartupMessage(msg)
       packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
       return()
       }
+      
+      reticulate::use_python(config$python)
+      
     }
     
     packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
     
-    reticulate::use_python(config$python)
     
     
     
