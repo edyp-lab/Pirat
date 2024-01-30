@@ -28,7 +28,7 @@ packageStartupMessage(msg)
     packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
     config <- reticulate::py_discover_config()
     
-    if (py_version(config$version_string) != '3.9.5'){
+    if (unlist(strsplit(config$version_string, split = ' '))[1] != '3.9.5'){
       packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
       return()
     }
@@ -40,26 +40,36 @@ packageStartupMessage(msg)
     
     
     packageStartupMessage({'Checking if r-pirat is installed...'})
-    pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+    conda_exists <- !is.null(tryCatch(reticulate::conda_python(pirat_envname),
+                                          error = function(e) NULL))
+      
+    pirat_conda_exists <- FALSE
+    if (conda_exists)
+      pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+    
+    
     pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
     
     
     if (!pirat_conda_exists && !pirat_venv_exists){
       packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
       packageStartupMessage({"You should install one first by running: install_pirat()"})
-      Pirat::install_pirat2()
+      Pirat::install_pirat()
     } 
     
     
     packageStartupMessage({'r-pirat is installed...'})
     
-    packageStartupMessage({"Loading Python env..."})
     
     
-    if (pirat_conda_exists)
+    
+    if (pirat_conda_exists){
+      packageStartupMessage({"Loading conda env..."})
       reticulate::use_condaenv(pirat_envname)
-    else if (pirat_venv_exists)
+    } else if (pirat_venv_exists){
+      packageStartupMessage({"Loading virtual env..."})
       reticulate::use_virtualenv(pirat_envname)
+    }
     
     
     # Now, source custom Python scripts
@@ -70,7 +80,7 @@ packageStartupMessage(msg)
     reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
     setwd(dir.backup)
     
-    packageStartupMessage({"Finalizing loading..."})
+    packageStartupMessage({"Finalizing loading torhc package..."})
     py <- reticulate::import("torch", delay_load = TRUE)
   },
   warning = function(w){packageStartupMessage({w})},
