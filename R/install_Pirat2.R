@@ -1,112 +1,54 @@
-#' Install TensorFlow and its dependencies
+#' @title Install Pirat package
 #'
-#' `install_tensorflow()` installs just the tensorflow python package and it's
-#' direct dependencies. For a more complete installation that includes
-#' additional optional dependencies, use [`keras::install_keras()`].
+#' @description This script installs Python and PyTorch in the requested
+#' versions. It is largely inspired by wthe scripts in rTorch package
+#' (https://github.com/f0nzie/rTorch)
 #'
-#' @details You may be prompted to download and install miniconda if reticulate
-#'   did not find a non-system installation of python. Miniconda is the
-#'   recommended installation method for most users, as it ensures that the R
-#'   python installation is isolated from other python installations. All python
-#'   packages will by default be installed into a self-contained conda or venv
-#'   environment named "r-reticulate". Note that "conda" is the only supported
-#'   method on M1 Mac.
+#' @param method Installation method. By default, "auto" automatically finds a
+#'   method that will work in the local environment. Change the default to force
+#'   a specific installation method.  Note that since this command runs without
+#'   privilege the "system" method is available only on _Windows_.
 #'
-#'   If you initially declined the miniconda installation prompt, you can later
-#'   manually install miniconda by running [`reticulate::install_miniconda()`].
-#'
-#' @section Custom Installation: `install_tensorflow()` or
-#'   `keras::install_keras()` isn't required to use tensorflow with the package.
-#'   If you manually configure a python environment with the required
-#'   dependencies, you can tell R to use it by pointing reticulate at it,
-#'   commonly by setting an environment variable:
-#'
-#'   ``` R
-#'   Sys.setenv("RETICULATE_PYTHON" = "~/path/to/python-env/bin/python")
-#'   ```
-#'
-#' @section Apple Silicon: Beginning with Tensorflow version 2.13, the default
-#'   tensorflow package now works on Apple Silicon. See
-#'   \url{https://developer.apple.com/metal/tensorflow-plugin/} for instructions
-#'   on how to install older versions of Tensorflow on macOS. Please note that
-#'   not all operations are supported on Arm Mac GPUs. You can work around the
-#'   missing operations by pinning operations to CPU. For example:
-#'
-#'   ```` R
-#'   x <- array(runif(64*64), c(1, 64, 64))
-#'   keras::layer_random_rotation(x, .5)  # Error:
-#'   # No registered 'RngReadAndSkip' OpKernel for 'GPU' devices
-#'   # Pin the operation to the CPU to avoid the error
-#'   with(tf$device("CPU"), keras::layer_random_rotation(x, .5) ) # No Error
-#'   ````
-#'
-#' @section Additional Packages:
-#'
-#'   If you wish to add additional PyPI packages to your Keras / TensorFlow
-#'   environment you can either specify the packages in the `extra_packages`
-#'   argument of `install_tensorflow()` or `install_keras()`, or alternatively
-#'   install them into an existing environment using the
-#'   [reticulate::py_install()] function. Note that `install_keras()` includes a
-#'   set of additional python packages by default, see `?keras::install_keras`
-#'   for details.
-#'
-#' @md
-#'
-#' @inheritParams reticulate::py_install
-#'
-#' @param version TensorFlow version to install. Valid values include:
-#'
-#'   +  `"default"` installs  `r default_version`
-#'
-#'   + `"release"` installs the latest release version of tensorflow (which may
-#'   be incompatible with the current version of the R package)
-#'
-#'   + A version specification like `"2.4"` or `"2.4.0"`. Note that if the patch
-#'   version is not supplied, the latest patch release is installed (e.g.,
-#'   `"2.4"` today installs version "2.4.2")
-#'
-#'   + `nightly` for the latest available nightly build.
-#'
-#'   + To any specification, you can append "-cpu" to install the cpu version
-#'   only of the package (e.g., `"2.4-cpu"`)
-#'
-#'   + The full URL or path to a installer binary or python *.whl file.
-#'
+#' @param conda www
 #' @param extra_packages Additional Python packages to install along with
-#'   TensorFlow.
+#'   PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.
 #'
 #' @param restart_session Restart R session after installing (note this will
 #'   only occur within RStudio).
 #'
-#' @param python_version,conda_python_version Pass a string like "3.8" to
-#'   request that conda install a specific Python version. This is ignored when
-#'   attempting to install in a Python virtual environment. Note that the Python
-#'   version must be compatible with the requested Tensorflow version,
-#'   documented here:
-#'   <https://www.tensorflow.org/install/pip#system-requirements>
+#' @param pip logical
 #'
-#' @param cuda logical `TRUE` or `FALSE`. If `install_tensorflow()` detects the platform is
-#'   Linux, an Nvidia GPU is available, and the TensorFlow version is 2.14 (the
-#'   default), it will install also install the required CUDA libraries through pip.
+#' @param channel conda channel. The default channel is `stable`.
+#'   The alternative channel is `nightly`.
 #'
-#' @param metal Whether to install `tensorflow-metal` pip package on Arm Macs.
-#'   This enables tensorflow to use the GPU. Pass a string to install a specific
-#'   version like `"tensorflow-metal==0.7.*`.
+#' @param cuda_version string for the cuda toolkit version to install. For example,
+#'   to install a specific CUDA version use `cuda_version="10.2"`.
 #'
-#' @param pip_ignore_installed Whether pip should ignore installed python
-#'   packages and reinstall all already installed python packages.
+#' @param dry_run logical, set to TRUE for unit tests, otherwise will execute
+#'   the command.
 #'
-#' @param new_env If `TRUE`, any existing Python virtual environment and/or
-#'   conda environment specified by `envname` is deleted first.
+#' @param ... other arguments passed to [reticulate::conda_install()] or
+#'   [reticulate::virtualenv_install()].
 #'
-#' @param ... other arguments passed to [`reticulate::conda_install()`] or
-#'   [`reticulate::virtualenv_install()`], depending on the `method` used.
+#' @importFrom jsonlite fromJSON
+#' @examples
+#' \dontrun{
 #'
-#' @seealso
-#' -  [`keras::install_keras()`]
-#' -  <https://tensorflow.rstudio.com/reference/tensorflow/install_tensorflow>
+#' # install PyTorch 1.10.0 on Python 3.3.9.5 including pandas
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
+#' extra_packages = "pandas")
+#'
+#' # Install PyTorch 1.10.0, Python 3.9.5, pandas, matplotlib install from the console
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
+#' extra_packages = c("pandas", "matplotlib"))
+#'
+#' # Install PyTorch 1.10.0 on Python 3.9.5 including pandas, matplotlib
+#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
+#' extra_packages = c("pandas", "matplotlib"), dry_run = FALSE)
+#' }
 #'
 #' @export
+#'
 install_pirat <-
   function(method = c("auto", "virtualenv", "conda"),
            conda = "auto",

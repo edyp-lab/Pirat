@@ -31,7 +31,7 @@ packageStartupMessage(msg)
     if (!is.null(config)){
       if (unlist(strsplit(config$version_string, split = ' '))[1] != '3.9.5'){
       packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
-      return()
+      install_pirat()
       }
       
       reticulate::use_python(config$python)
