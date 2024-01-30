@@ -20,20 +20,47 @@ packageStartupMessage(msg)
 .onLoad <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
-  packageStartupMessage({'Checking if r-pirat is installed...'})
-  exist <- reticulate::condaenv_exists(pirat_envname)
-  if (!exist){
-    packageStartupMessage({"'r-pirat' is not installed. Please install it before using Pirat"})
-    return()
-  }
   
-  packageStartupMessage({'r-pirat is installed...'})
   
   
   tryCatch({
+    
+    packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
+    config <- reticulate::py_discover_config()
+    
+    if (py_version(config$version_string) != '3.9.5'){
+      packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
+      return()
+    }
+    
+    packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
+    
+    reticulate::use_python(config$python)
+    
+    
+    
+    packageStartupMessage({'Checking if r-pirat is installed...'})
+    pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
+    pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
+    
+    
+    if (!pirat_conda_exists && !pirat_venv_exists){
+      packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
+      packageStartupMessage({"You should install one first by running: install_pirat()"})
+      Pirat::install_pirat2()
+    } 
+    
+    
+    packageStartupMessage({'r-pirat is installed...'})
+    
     packageStartupMessage({"Loading Python env..."})
     
-    reticulate::use_condaenv(pirat_envname)
+    
+    if (pirat_conda_exists)
+      reticulate::use_condaenv(pirat_envname)
+    else if (pirat_venv_exists)
+      reticulate::use_virtualenv(pirat_envname)
+    
     
     # Now, source custom Python scripts
     packageStartupMessage({"Sourcing custom Python scripts..."})
@@ -44,7 +71,7 @@ packageStartupMessage(msg)
     setwd(dir.backup)
     
     packageStartupMessage({"Finalizing loading..."})
-    py <- reticulate::import("torch")
+    py <- reticulate::import("torch", delay_load = TRUE)
   },
   warning = function(w){packageStartupMessage({w})},
   error = function(e){packageStartupMessage({e})}
