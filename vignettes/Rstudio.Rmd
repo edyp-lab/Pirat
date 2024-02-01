@@ -41,7 +41,7 @@ Note that `bouyssie` is actually a list that contains two elements:
 
 You can then impute this dataset with the following line
 ```{r, eval=F}
-imp.res = pipeline_llkimpute(bouyssie)
+imp.res <- pipeline_llkimpute(bouyssie)
 ```
 
 The result `imp.res` is a list that contains:

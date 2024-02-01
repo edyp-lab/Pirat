@@ -87,60 +87,11 @@ install_pirat <-
              "to avoid DLL in use errors during installation)")
       }
       
-      #if(grepl("gpu", as.character(version), ignore.case = TRUE))
-      #  warning("Caution: TensorFlow 2.10 was the last TensorFlow release that supported GPU on native-Windows. Starting with TensorFlow 2.11, you will need to install TensorFlow in WSL2, or install a CPU-only version of TensorFlow.",
-      #          if(identical(.Platform$GUI, "RStudio")) " For a guide on how to use RStudio with WSL2, see https://support.posit.co/hc/en-us/articles/360049776974-Using-RStudio-Server-in-Windows-WSL2")
-      
-    }
+     }
     
-    
-    #can_use_gpu <- FALSE
-    #if (is.null(cuda)) {
-    #  
-    #  can_use_gpu <-
-    #    is_linux() &&
-    #    (version %in% c("default", "release") ||
-    #       isTRUE(extract_numeric_version(version) >= "2.14")) &&
-     #   tryCatch(as.logical(length(system("lspci | grep -i nvidia", intern = TRUE))),
-    #             warning = function(w) FALSE) # warning emitted by system for non-0 exit stat
-    #  
-    #  cuda <- can_use_gpu
-    #  
-    #}
-    
-    #tf_package_spec <- parse_tensorflow_version(version)
-    
-    #if(isTRUE(cuda) && !grepl("^.*\\.whl$", tf_package_spec)) {
-    #  tf_package_spec <- sub("([^=<>!]*)(.*)", "\\1[and-cuda]\\2",
-    #                         tf_package_spec)
-    #}
-    
-    #packages <- unique(c(
-    #  tf_package_spec,
-    #  as.character(extra_packages)
-    #))
-    
-    
-    #if (isTRUE(metal)) repeat {
-    #  tf_ver <- extract_numeric_version(tf_package_spec)
-    #  if(is.na(tf_ver))
-    #    break
-    #  
-    #  if(tf_ver >= "2.14")
-    #    metal <- "tensorflow-metal>1.0.1"
-    #  else if (tf_ver >= "2.13")
-     #   metal <- "tensorflow-metal>=1.0.1"
-    #  else if (tf_ver >= "2.12")
-    #    metal <- "tensorflow-metal==0.8.*"
-    #  else
-    #    # https://pypi.org/project/tensorflow-metal/
-    #    metal <- "tensorflow-metal"
-    #  
-    #  break
-    #}
+ 
     python_version <- python_version %||% conda_python_version
-    if(method %in% c("auto", "virtualenv") &&
-       is.null(python_version)) {
+    if(method %in% c("auto", "virtualenv") && is.null(python_version)) {
      # 
     #  # virtualenv_starter() picks the most recent version available, but older
     #  # versions of tensorflow typically don't work with the latest Python
@@ -168,7 +119,7 @@ install_pirat <-
       
     }
     
-    reticulate::install_python(version = '3.9.5')
+    reticulate::install_python(version = '3.9.5', force = TRUE)
     
     #browser()
     py_install_args <- list(
