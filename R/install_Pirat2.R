@@ -81,7 +81,7 @@ install_pirat <-
     if (is_windows()) {
       
       # avoid DLL in use errors
-      if (py_available()) {
+      if (reticulate::py_available()) {
         stop("You should call install_pirat() only in a fresh ",
              "R session that has not yet initialized Pirat (this is ",
              "to avoid DLL in use errors during installation)")
