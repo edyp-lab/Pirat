@@ -8,6 +8,8 @@ This version can be found here:
 https://www.python.org/downloads/release/python-395/
 
 
+
+
 ## Installation
 
 To install this package from Github:
@@ -24,13 +26,16 @@ Once the package has been installed, it is necessary to install a Python environ
 Pirat::install_pirat()
 
 ```
+If Python is not found by R during environment installation, you can either try
+```{r}
+reticulate::use_python("path_to_python_binary")
+
+```
+Or, if you are using RStudio, to set your RStudio Python interpreter to the one installed on your machine (in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter"). Then, retry to install the Python environment r-pirat.
+
 
 This will install all necessary Python modules and restart the R session. Infos about versions can be obtained with:
 
 ```
 pirat_config()
 ```
-
-### Anaconda users
-
-If you are already using Anaconda plugged to RStudio, change your RStudio Python interpreter to the one of the r-pirat anaconda environment that has been installed. To do so in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter".

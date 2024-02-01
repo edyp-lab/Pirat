@@ -118,7 +118,7 @@ estimate_psi_df = function(obs2NApep) {
 #' @param pep.ab.comp The pseudo-complete peptide or precursor abundance matrix, with samples in 
 #' row and peptides or precursors in column. Useful only in mask-and-impute 
 #' experiments, if one wants to impute solely peptides containing pseudo-MVs.
-#' @param alpha.factor Factor that multiplies the parameter alpha of the penalty in the
+#' @param alpha.factor Factor that multiplies the parameter alpha of the penalty described in the
 #' original paper. 
 #' @param rna.cond.mask Vector of indexes representing conditions of samples of mRNA table, only mandatory
 #' if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).
@@ -145,8 +145,18 @@ estimate_psi_df = function(obs2NApep) {
 #' @export
 #'
 #' @examples
+#' # Pirat classical mode
 #' data(bouyssie)
-#' pipeline_llkimpute(bouyssie)
+#' pipeline_llkimpute(bouyssie) 
+#' 
+#' # Pirat with transcriptomic integration for singleton PGs
+#' data(ropers)
+#' nsamples = nrow(ropers$peptides_ab)
+#' pipeline_llkimpute(ropers, 
+#'                    extension = "T",
+#'                    rna.cond.mask = 1:nsamples, 
+#'                    pep.cond.mask = 1:nsamples,
+#'                    max.pg.size.pirat.t = 1)
 #' 
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
@@ -335,10 +345,10 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   colnames(data.imputed) = colnames(data.pep.rna.mis$peptides_ab)
   rownames(data.imputed) = rownames(data.pep.rna.mis$peptides_ab)
   #  Format results
-  params = list(estimated.df = df,
-                estimated.psi = psi,
-                phi0 = phi0,
-                phi = phi)
+  params = list(alpha = df/2,
+                beta = psi/2,
+                gamma0 = phi0,
+                gamma1 = phi)
   
   return(list(data.imputed = data.imputed,
               params = params)

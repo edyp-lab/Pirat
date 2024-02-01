@@ -668,7 +668,8 @@ plot2hists <- function(d1,
 
 #' @title Empirical density of peptide correlations
 #' @description Plot empirical densities of correlations between peptides within
-#'  PG and at random, estimated by gaussian kernel.
+#'  PG and at random, estimated by gaussian kernel. Note that only correlations between fully
+#'  observed peptides are considered here.
 #'
 #' @param pep.data List representing dataset
 #' @param titlename Title of the graph displayed
@@ -713,7 +714,7 @@ plot_pep_correlations <- function(pep.data,
                                        rep("Random", length(all_cors_rand_vec)))))
   g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
-    geom_density(alpha=.2) +
+    geom_density(alpha=.2, na.rm = T) +
     theme(legend.title=element_blank(),
           # legend.position = c(0.8, 0.9),
           panel.background = element_blank(),
