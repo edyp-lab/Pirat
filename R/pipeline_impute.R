@@ -86,7 +86,11 @@ estimate_psi_df = function(obs2NApep) {
        freq = FALSE, 
        xlab ="Variance completely observed",
        main="Histogram of observed variance and fitted inverse-gamma curve")
-  resllk <- MASS::fitdistr( vars, f, list(a=1, b=0.1) )
+  print("OK")
+  resllk <- tryCatch(MASS::fitdistr( vars, f, list(a=1, b=0.1) ), error = function(e){NULL})
+  if (is.null(resllk)) {
+    return(NULL)
+  }
   alpha <- resllk$estimate[1]
   beta <- resllk$estimate[2]
   curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), 
@@ -179,7 +183,11 @@ pipeline_llkimpute = function(data.pep.rna.mis,
       ,colSums(data.pep.rna.mis$rnas_ab == 0) <= 0]
     
     est.psi.df.rna = estimate_psi_df(obs2NArna)
-    psi_rna = est.psi.df.rna$psi
+    if (is.null(est.psi.df.rna)) {
+      psi_rna = psi
+    } else {
+      psi_rna = est.psi.df.rna$psi
+    }
   }
   
   # Initial estimates of phi and phi0
@@ -251,7 +259,7 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     idx.pgs1 = which(colSums(data.pep.rna.mis$adj) == 1)
     
     if (length(idx.pgs1) != 0) {
-      idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1]) >= 1)
+      idx.pep.s1 = which(rowSums(data.pep.rna.mis$adj[, idx.pgs1, drop = F]) >= 1)
       imputed.data.wo.s1 = t(data.imputed[, -idx.pep.s1])
       peps1 = t(data.pep.rna.mis$peptides_ab[, idx.pep.s1])
       cov.imputed = cov(imputed.data.wo.s1)
@@ -261,11 +269,11 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     }
   }
   else if (extension == "T") {
-    if (is.null(rna.cond.mask) | is.null(pep.cond.mask)) {
-      stop("Experimental designed must be filled with Pirat-T in rna.cond.mask and pep.cond.mask")
-    }
     if (is.null(data.pep.rna.mis$rnas_ab) | is.null(data.pep.rna.mis$adj_rna_pg)) {
-      stop("With Pirat-T, data.pep.rna.mis must contain rnas_ab and adj_rna_pg")
+      stop("When using Pirat-T, data.pep.rna.mis must contain rnas_ab and adj_rna_pg")
+    }
+    if (is.null(rna.cond.mask) | is.null(pep.cond.mask)) {
+      stop("Experimental designed must be filled in rna.cond.mask and pep.cond.mask when using Pirat-T")
     }
     res_per_block_pirat = impute_block_llk_reset(data.pep.rna.mis,
                                                  psi = psi, 
@@ -316,15 +324,16 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                          max_ls = 500, 
                                                          eps_sig = 1e-4, 
                                                          nsamples = 1000)
-      data.imputed.pirat.t = impute_from_blocks(res_per_block, data.pep.rna.mis)
-      combined <- array(c(m1, m2), dim = c(dim(m1), 2))
+      data.imputed.pirat.t = impute_from_blocks(res_per_block_pirat_t, data.pep.rna.mis)
+      combined <- array(c(data.imputed.pirat, data.imputed.pirat.t), dim = c(dim(data.imputed.pirat), 2))
       data.imputed = apply(combined, c(1, 2), function(x) mean(x, na.rm = TRUE))
     }
     else {
       data.imputed = data.imputed.pirat
     }
   }
-  
+  colnames(data.imputed) = colnames(data.pep.rna.mis$peptides_ab)
+  rownames(data.imputed) = rownames(data.pep.rna.mis$peptides_ab)
   #  Format results
   params = list(estimated.df = df,
                 estimated.psi = psi,

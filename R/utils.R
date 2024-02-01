@@ -168,7 +168,7 @@ split_large_pg = function(adj,
     idx_adj2bind = 1
     for (i in 1:length(idx_pg_too_large)) {
       cur_pg_idx = idx_pg_too_large[i]
-      cur_pg = adj[, cur_pg_idx]
+      cur_pg = adj[, cur_pg_idx, drop = F]
       idx_pg_pep = which(cur_pg == 1)
       n_groups = ceiling(sum(cur_pg) / size_max)
       groups_idx_pg_pep = suppressWarnings(
@@ -234,7 +234,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   begtime = Sys.time()
   if (min.pg.size2imp > 1) { # If need to remove too small PGs, change adj and PG indexes
     pg.idxs = which(colSums(adj) >= min.pg.size2imp)
-    adj = adj[, pg.idxs]
+    adj = adj[, pg.idxs, drop = F]
     prot.idxs = 1:ncol(adj)
   }
   n_params = sum(colSums(adj)^2)
@@ -331,9 +331,9 @@ split_large_pg_PG = function(adj,
     adj_rna_pg_2bind = matrix(NA, nrow = nrnas, ncol = 0)
     for (i in 1:length(idx_pg_too_large)) {
       cur_pg_idx = idx_pg_too_large[i]
-      cur_pg = adj[, cur_pg_idx]
+      cur_pg = adj[, cur_pg_idx, drop = F]
       idx_pg_pep = which(cur_pg == 1)
-      cur_rna_pg = matrix(adj_rna_pg[, cur_pg_idx], ncol = 1)
+      cur_rna_pg = matrix(adj_rna_pg[, cur_pg_idx, drop = F], ncol = 1)
       colnames(cur_rna_pg) = colnames(adj_rna_pg)[cur_pg_idx]
       n_rna_cur_pg = sum(cur_rna_pg)
       stopifnot("Size max of pg too low when including RNA expression" =
@@ -429,11 +429,11 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
   }
   if (!is.null(max.pg.size2imp)) {
     pg.idxs = which(colSums(adj) <= max.pg.size2imp)
-    adj = adj[, pg.idxs]
-    adj_rna_pg = adj_rna_pg[, pg.idxs]
+    adj = adj[, pg.idxs, drop = F]
+    adj_rna_pg = adj_rna_pg[, pg.idxs, drop = F]
     prot.idxs = 1:ncol(adj)
   }
-  n_params = sum((colSums(adj[, prot.idxs]) + 1)^2)
+  n_params = sum((colSums(adj[, prot.idxs, drop = F]) + 1)^2)
   pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
                          total = n_params,
                          complete = "=",   # Completion bar character
@@ -536,13 +536,12 @@ impute_from_blocks = function(logs.blocks,
       if (!is.null(cur.block$Xhat)) {
         pep.imputed[, idxpeps] = pep.imputed[, idxpeps] + cur.block$Xhat
         n_imputations[, idxpeps] = n_imputations[, idxpeps] + 1
-      }  else { # Case were all observations of peptide group are available
-        pep.imputed[, idxpeps] = data.pep.rna$peptides_ab[, idxpeps]
-        n_imputations[, idxpeps] = 1
       }
     }
   }
-  return(pep.imputed / n_imputations)
+  pep.imputed = pep.imputed / pmax(n_imputations, 1)
+  pep.imputed[pep.imputed == 0] = data.pep.rna$peptides_ab[pep.imputed == 0]
+  return(pep.imputed)
 }
 
 
@@ -613,7 +612,7 @@ plot_pep_correlations <- function(pep.data,
                                   xlabel = "Correlations") {
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
-    pep.idx = which(pep.data$adj[, i] == 1)
+    pep.idx = which(pep.data$adj[, i, drop = F] == 1)
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
       cor_pg = cor(pep_abs_pg)
