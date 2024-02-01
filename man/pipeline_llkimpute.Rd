@@ -63,6 +63,6 @@ parameters. Finally, it imputes the peptide/precursor-level dataset with desired
 }
 \examples{
 data(bouyssie)
-res.mle.transp <- pipeline_llkimpute(bouyssie)
+pipeline_llkimpute(bouyssie)
 
 }

@@ -1,23 +1,99 @@
+
+#! @export
+"%||%" <- function(x, y) if (is.null(x)) y else x
+
+#! @export
+is_windows <- function() {
+  identical(.Platform$OS.type, "windows")
+}
+
+#! @export
+is_unix <- function() {
+  identical(.Platform$OS.type, "unix")
+}
+
+#! @export
+is_osx <- function() {
+  Sys.info()["sysname"] == "Darwin"
+}
+
+#! @export
+is_linux <- function() {
+  identical(tolower(Sys.info()[["sysname"]]), "linux")
+}
+
+#! @export
+is_ubuntu <- function() {
+  # check /etc/lsb-release
+  if (is_unix() && file.exists("/etc/lsb-release")) {
+    lsbRelease <- readLines("/etc/lsb-release")
+    any(grepl("Ubuntu", lsbRelease))
+  } else {
+    FALSE
+  }
+}
+
+#! @export
+is_mac_arm64 <- function() {
+  sys_info <- Sys.info()
+  sys_info[["sysname"]] == "Darwin" &&
+    sys_info[["machine"]] == "arm64"
+}
+
+#! @export
+dir_exists <- function(x) {
+  utils::file_test('-d', x)
+}
+
+#! @export
+ensure_loaded <- function() {
+  invisible(tf$`__version__`)
+}
+
+#! @export
+aliased <- function(path) {
+  sub(Sys.getenv("HOME"), "~", path)
+}
+
+
+#! @export
+call_hook <- function(name, ...) {
+  hooks <- getHook(name)
+  if (!is.list(hooks))
+    hooks <- list(hooks)
+  response <- FALSE
+  lapply(hooks, function(hook) {
+    if (isTRUE(hook(...)))
+      response <<- TRUE
+  })
+  response
+}
+
+
+
 #' @title xxx
 #' @description xxx
 #'
+#' @export
 #' @return A boolean
-#' 
+#' @export
 is_windows <- function() {
   identical(.Platform$OS.type, "windows")
 }
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
-#' 
+#' @export
 is_unix <- function() {
   identical(.Platform$OS.type, "unix")
 }
 
 #' @title xxx
 #' @description xxx
+#' 
+#' @export
 #'
 #' @return A boolean
 #' 
@@ -27,7 +103,7 @@ is_osx <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_linux <- function() {
@@ -36,7 +112,7 @@ is_linux <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_ubuntu <- function() {
@@ -51,7 +127,7 @@ is_ubuntu <- function() {
 
 #' @title xxx
 #' @description xxx
-#'
+#' @export
 #' @return A boolean
 #' 
 is_debian <- function() {
