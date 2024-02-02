@@ -714,7 +714,7 @@ plot_pep_correlations <- function(pep.data,
                                        rep("Random", length(all_cors_rand_vec)))))
   g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
-    geom_density(alpha=.2, na.rm = T) +
+    geom_density(alpha=.2, na.rm = T) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),
           # legend.position = c(0.8, 0.9),
           panel.background = element_blank(),
@@ -724,6 +724,5 @@ plot_pep_correlations <- function(pep.data,
   if (!is.null(titlename)) {
     g <- g + ggtitle(titlename)
   }
-  print(g)
   g
 }

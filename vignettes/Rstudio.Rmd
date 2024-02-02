@@ -49,7 +49,7 @@ The result `imp.res` is a list that contains:
 1. `data.imputed`, the imputed log-2 abundance matrix.
 2. `params`, a list containing parameters $\Gamma$ and hyperparameters $\alpha$ and $\beta$.
 
-Check the imputed dataset here...
+You can check the imputed values here...
 ```{r}
 head(imp.res$data.imputed[1:5])
 ```
@@ -63,8 +63,36 @@ is present in the dataset.
 
 ## Intra-PG correlation analysis
 
-Pirat has a diagnosis tool that compares distributions of correlations 
+Pirat has a diagnosis tool that compares distributions of correlations at random and intra-PG.
+We use it here on a subset of Ropers2021 dataset, with only 10 PGs and 50 peptides. Note that 
+the correlations are computed only on fully observed peptides.
+```{r}
+data("ropers")
+plot_pep_correlations(ropers, titlename = "Ropers sub-set")
+```
+ We see here that the blue distribution has more weights on high correlations than the red one,
+ indicating that making PGs should help for imputation.
+ 
+ ## Pirat extensions
+ 
+ To handle singleton PGs, Pirat proposes three extentions, on top of the classical Pirat approach.
+ Note that the -T extensions can be applied to up to an arbitrary PG size. 
+ 
+ ### -2, the 2-peptide rule
+ 
+ The -2 extension simply consists in not imputing singleton PGs. It can be used as following.
+```{r}
+imp.res = pipeline_llkimpute(ropers, extension = "2")
+```
+We can then check that singleton peptides are not imputed (yet some may be already fully observed).
+```{r}
+idx.sing.pg = which(colSums(ropers$adj) == 1)
+imp.res$data.imputed[, idx.sing.pg]
+```
 
+ 
+ 
+ 
 
 
 
