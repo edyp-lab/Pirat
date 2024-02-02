@@ -21,61 +21,27 @@ packageStartupMessage(msg)
   
   pirat_envname <- 'r-pirat'
   
-  
-  
-  tryCatch({
-    
-    packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-    config <- reticulate::py_discover_config()
-    
-    if (!is.null(config)){
-      if (unlist(strsplit(config$version_string, split = ' '))[1] != '3.9.5'){
-      packageStartupMessage({"Python 3.9.5 is not installed. Please install it before using Pirat"})
-      #install_pirat()
-      }
-      
-      reticulate::use_python(config$python)
-      
-    }
-    
-    packageStartupMessage({'Configuring Pirat to use Python 3.9.5...'})
-    
-    
-    
-    
+  packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
+  if (is.null(tryCatch(reticulate::use_python_version(version='3.9.5'),
+                        error = function(e) NULL))){
+    packageStartupMessage({"Python 3.9.5 is not installed. Please install it with install_pirat()"})
+    return(NULL)
+  } else {
+    packageStartupMessage({"configuring Pirat to use python 3.9.5."})
+    reticulate::use_python_version(version='3.9.5')
+  }
+
     packageStartupMessage({'Checking if r-pirat is installed...'})
-    conda_exists <- !is.null(tryCatch(reticulate::conda_python(pirat_envname),
-                                          error = function(e) NULL))
-      
-    pirat_conda_exists <- FALSE
-    if (conda_exists)
-      pirat_conda_exists <- pirat_envname %in% reticulate::conda_list()$name
-    
-    
-    pirat_venv_exists <- reticulate::virtualenv_exists(pirat_envname)
-    
-    
-    if (!pirat_conda_exists && !pirat_venv_exists){
-      packageStartupMessage({paste0("Any ", pirat_envname, " environment exists. ")})
-      packageStartupMessage({"You should install one first by running: install_pirat()"})
-      #Pirat::install_pirat()
-    } 
-    
-    
-    packageStartupMessage({'r-pirat is installed...'})
-    
-    
-    
-    
-    if (pirat_conda_exists){
+    if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
+                                          error = function(e) NULL))){
+      packageStartupMessage({"env r-pirat not found. You should use install_pirat()"})
+      return(NULL)
+    } else{
       packageStartupMessage({"Loading conda env..."})
       reticulate::use_condaenv(pirat_envname)
-    } else if (pirat_venv_exists){
-      packageStartupMessage({"Loading virtual env..."})
-      reticulate::use_virtualenv(pirat_envname)
     }
-    
-    
+      
+    tryCatch({
     # Now, source custom Python scripts
     packageStartupMessage({"Sourcing custom Python scripts..."})
     dir.backup <- getwd()
