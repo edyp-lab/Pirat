@@ -50,11 +50,11 @@
 #' @export
 #'
 install_pirat <-
-  function(method = c("auto", "virtualenv", "conda"),
+  function(method = "conda",
            conda = "auto",
            envname = "r-pirat",
            restart_session = TRUE,
-           channel = c("pytorch", "stable"),
+           channel = c("pytorch", "stable", "torch"),
            pip_ignore_installed = FALSE,
            new_env = identical(envname, "r-pirat")
            ) {
@@ -67,8 +67,14 @@ install_pirat <-
       python = '3.9.5'
     )
     
-    packages <- c('torch==1.10.0', 'numpy==1.20.2', 'matplotlib')
-    #packages <- c('pytorch', 'numpy', 'matplotlib')
+    packages <- c('numpy==1.20.2', 'matplotlib')
+    if (is_windows()) {
+      packages <- c(packages, 'torch==1.10.0')
+    } else if (is_linux()) {
+      packages <- c(packages, 'pytorch==1.10.0')
+    } else if (is_osx()){
+      packages <- c(packages, 'pytorch==1.10.0')
+    }
     python_version <- '3.9.5'
     
     # verify 64-bit
@@ -91,25 +97,25 @@ install_pirat <-
     
  
     python_version <- python_version %||% conda_python_version
-    if(method %in% c("auto", "virtualenv") && is.null(python_version)) {
-     # 
-    #  # virtualenv_starter() picks the most recent version available, but older
-    #  # versions of tensorflow typically don't work with the latest Python
-    # # # release. In general, we're better off picking the oldest Python version available
-    #  # that works with the current release of tensorflow.
-    #  # TF 2.13 is compatible with Python <=3.11,>=3.8
-      
-      available <- reticulate::virtualenv_starter(version = ">=3.9", all = TRUE)
-    #  # pick the smallest minor version, ignoring patchlevel
-      if(nrow(available))
-        python_version <- min(available$version[, 1:2])
-    }
+    # if(method %in% c("auto", "virtualenv") && is.null(python_version)) {
+    #  # 
+    # #  # virtualenv_starter() picks the most recent version available, but older
+    # #  # versions of tensorflow typically don't work with the latest Python
+    # # # # release. In general, we're better off picking the oldest Python version available
+    # #  # that works with the current release of tensorflow.
+    # #  # TF 2.13 is compatible with Python <=3.11,>=3.8
+    #   
+    #   available <- reticulate::virtualenv_starter(version = ">=3.9", all = TRUE)
+    # #  # pick the smallest minor version, ignoring patchlevel
+    #   if(nrow(available))
+    #     python_version <- min(available$version[, 1:2])
+    # }
     
     if (isTRUE(new_env)) {
       
-      if (method %in% c("auto", "virtualenv") &&
-          reticulate::virtualenv_exists(envname))
-        reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
+      # if (method %in% c("auto", "virtualenv") &&
+      #     reticulate::virtualenv_exists(envname))
+      #   reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
       
       if (method %in% c("auto", "conda")) {
         if (!is.null(tryCatch(conda_python(envname, conda = conda),
