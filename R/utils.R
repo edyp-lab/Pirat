@@ -700,7 +700,7 @@ plot_pep_correlations <- function(pep.data,
   all_cors_PG_vec = unlist(allcors)
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
-    pep.idx = as.integer(runif(10, 1, ncol(pep.data$adj) + 1))
+    pep.idx = sample(nrow(pep.data$adj), sum(pep.data$adj[, i, drop = F]))
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
       cor_pg = cor(pep_abs_pg)

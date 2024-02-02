@@ -22,9 +22,43 @@ knitr::opts_chunk$set(
 
 1. [Pirat installation](#dunno)
 
-## Pirat installation
+### Pirat installation
 
-Pirat requires a particular Python environment to work. Follow instructions in the README file to install Pirat correctly.
+### Prerequest
+
+The functions in Pirat use some Python libraries. Before installing Pirat, it is necessary to have Python 3.9.5 installed on the computer.
+This version can be found here:
+https://www.python.org/downloads/release/python-395/
+
+
+### Installation
+
+To install this package from Github:
+
+```{r, eval=F}
+library(remotes)
+remotes::install_github('prostarproteomics/Pirat')
+
+```
+
+Once the package has been installed, it is necessary to install a Python environment (called r-pirat in the package) with specific versions of Python libraries. For this purpose, run: 
+
+```{r, eval=F}
+Pirat::install_pirat()
+
+```
+If Python is not found by R during environment installation, you can either execute
+```{r, eval=F}
+reticulate::use_python("path_to_python_binary")
+```
+Or, if you are using RStudio, set your RStudio Python interpreter to the one installed on your machine (in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter"). Then, retry to install the Python environment r-pirat.
+
+
+This will install all necessary Python modules and restart the R session. Infos about versions can be obtained with:
+```{r, eval=F}
+pirat_config()
+```
+
 
 ## Standard imputation with Pirat
 
@@ -63,83 +97,76 @@ is present in the dataset.
 
 ## Intra-PG correlation analysis
 
-Pirat has a diagnosis tool that compares distributions of correlations at random and intra-PG.
-We use it here on a subset of Ropers2021 dataset, with only 10 PGs and 50 peptides. Note that 
-the correlations are computed only on fully observed peptides.
+Pirat has a diagnosis tool that compares distributions of correlations at random and those from same peptide groups (PGs).
+We use it here on the complete Ropers2021 dataset.
 ```{r}
 data("ropers")
-plot_pep_correlations(ropers, titlename = "Ropers sub-set")
+plot_pep_correlations(ropers, titlename = "Ropers2021")
 ```
- We see here that the blue distribution has more weights on high correlations than the red one,
- indicating that making PGs should help for imputation.
+ We see here that the blue distribution has much more weights on high correlations than the red one,
+ indicating that making PGs should clearly help for imputation.
  
  ## Pirat extensions
  
  To handle singleton PGs, Pirat proposes three extentions, on top of the classical Pirat approach.
- Note that the -T extensions can be applied to up to an arbitrary PG size. 
+ Note that the -T extensions can be applied to up to an arbitrary PG size.
+ To illustrate our examples, we use a subset of Ropers2021 dataset.
  
  ### -2, the 2-peptide rule
  
  The -2 extension simply consists in not imputing singleton PGs. It can be used as following.
 ```{r}
-imp.res = pipeline_llkimpute(ropers, extension = "2")
+data("subropers")
+imp.res = pipeline_llkimpute(subropers, extension = "2")
 ```
 We can then check that singleton peptides are not imputed (yet some may be already fully observed).
 ```{r}
+idx.sing.pg = which(colSums(subropers$adj) == 1)
+idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
+imp.res$data.imputed[, idx.sing.pep]
+```
+
+### -S, samples-wise correlations
+
+Pirat can leverage sample-wise correlations to impute the singleton peptides as following:
+```{r}
+imp.res = pipeline_llkimpute(subropers, extension = "S")
+```
+Here singleton peptides are impute after the rest of the dataset, using sample-wise correlations obtained.
+```{r}
+idx.sing.pg = which(colSums(subropers$adj) == 1)
+idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
+imp.res$data.imputed[, idx.sing.pep]
+```
+
+### -T, transcriptomic integration
+
+The last extension consists in using correlations between peptides and gene/transcript expression obtained from a related transcriptomic analysis. To use this extension, the list of the dataset must contain:
+
+* `rnas_ab`, an log2-normalized-count table of gene or transcript expression, for which samples are either paired or related (*i.e.*, from the same experimental/biological conditions).
+* `adj_rna_pg`, a adjacency matrix between transcripts or genes and PGs, containing either booleans or 0s and 1s.
+
+`ropers` proteomic and transcriptomic samples are paired (*i.e.* the same biological samples were used for each type of analysis). Thus Pirat-T can be used as following:
+```{r}
+imp.res = pipeline_llkimpute(subropers,
+                             extension = "T",
+                             rna.cond.mask = 1:nrow(ropers$peptides_ab),
+                             pep.cond.mask = 1:nrow(ropers$peptides_ab),
+                             max.pg.size.pirat.t = +Inf)
+```
+
+And gives following imputed singletons:
+```{r}
 idx.sing.pg = which(colSums(ropers$adj) == 1)
-imp.res$data.imputed[, idx.sing.pg]
+idx.sing.pep = which(rowSums(ropers$adj[, idx.sing.pg]) >= 1)
+imp.res$data.imputed[, idx.sing.pep]
 ```
-
- 
- 
- 
-
-
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+On the other hand, if proteomic and transcriptomic samples are not paired but are derived from a same biological/experimental condition. Pirat-T can be use by adapting the mask related to samples in each type of analysis (here, both proteomic and transcriptomic samples 6 different conditions with 3 replicates each, and conditions appear in the same order):
+```{r}
+imp.res = pipeline_llkimpute(ropers,
+                             extension = "T",
+                             rna.cond.mask = rep(1:6, each = 3),
+                             pep.cond.mask = rep(1:6, each = 3))
 ```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+Also, it is possible to apply transcriptomic integration up to an arbitrary size of PG, simply by 
+changing parameter `max.pg.size.pirat.t` in `pipeline_llkimpute` to the desired PG size (*e.g.* `+Inf` if one wants to use for whole dataset).
