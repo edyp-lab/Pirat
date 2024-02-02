@@ -24,7 +24,7 @@ packageStartupMessage(msg)
   packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
   if (is.null(tryCatch(reticulate::use_python_version(version='3.9.5'),
                         error = function(e) NULL))){
-    packageStartupMessage({"Python 3.9.5 is not installed. Please install it with install_pirat()"})
+    packageStartupMessage({"Python 3.9.5 is not installed. Please install it with Pirat::install_pirat()"})
     return(NULL)
   } else {
     packageStartupMessage({"configuring Pirat to use python 3.9.5."})
