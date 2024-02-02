@@ -77,26 +77,21 @@ install_pirat <-
     }
     python_version <- '3.9.5'
     
-    # verify 64-bit
-    if (.Machine$sizeof.pointer != 8) {
-      stop("Unable to install TensorFlow on this platform.",
-           "Binary installation is only available for 64-bit platforms.")
-    }
     
     # some special handling for windows
-    if (is_windows()) {
-      
-      # avoid DLL in use errors
-      if (reticulate::py_available()) {
-        stop("You should call install_pirat() only in a fresh ",
-             "R session that has not yet initialized Pirat (this is ",
-             "to avoid DLL in use errors during installation)")
-      }
-      
-     }
+    # if (is_windows()) {
+    #   
+    #   # avoid DLL in use errors
+    #   if (reticulate::py_available()) {
+    #     stop("You should call install_pirat() only in a fresh ",
+    #          "R session that has not yet initialized Pirat (this is ",
+    #          "to avoid DLL in use errors during installation)")
+    #   }
+    #   
+    #  }
     
  
-    python_version <- python_version %||% conda_python_version
+    #python_version <- python_version %||% conda_python_version
     # if(method %in% c("auto", "virtualenv") && is.null(python_version)) {
     #  # 
     # #  # virtualenv_starter() picks the most recent version available, but older
@@ -131,9 +126,9 @@ install_pirat <-
     py_install_args <- list(
       packages       = packages,
       envname        = envname,
-      method         = method,
+      method         = 'conda',
       channel        = channel,
-      conda          = conda,
+      conda          = 'auto',
       python_version = python_version,
       pip            = FALSE)
     
