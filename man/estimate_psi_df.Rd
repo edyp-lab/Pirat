@@ -18,12 +18,13 @@ Estimate the inverse scale factor and degrees of freedom of
 the distribution of columns-wise variances of an abundance table
 }
 \examples{
-data(bouyssie)
-obj <- bouyssie
+\dontrun{
+data(subbouyssie)
+obj <- subbouyssie
 idx <- get_indexes_embedded_prots(obj$adj)
 obj <- rm_pg_from_idx_merge_pg(obj, idx)
 obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0]
 estimate_psi_df(obs2NApep)
-
+}
 
 }

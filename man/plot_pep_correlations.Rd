@@ -22,7 +22,7 @@ Plot empirical densities of correlations between peptides within
  observed peptides are considered here.
 }
 \examples{
-data(bouyssie)
-plot_pep_correlations(bouyssie, 'test')
+data(subbouyssie)
+plot_pep_correlations(subbouyssie, 'test')
 
 }

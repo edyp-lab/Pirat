@@ -18,7 +18,9 @@ A list
 Estimate missingness parameters Gamma
 }
 \examples{
-data(bouyssie)
-estimate_gamma(bouyssie$peptides_ab)
+\dontrun{
+data(subbouyssie)
+estimate_gamma(subbouyssie$peptides_ab)
+}
 
 }

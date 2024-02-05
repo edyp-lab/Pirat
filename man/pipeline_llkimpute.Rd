@@ -62,11 +62,14 @@ inverse-Wishart prior). Second, it estimates the missingness mechanism
 parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.
 }
 \examples{
+\dontrun{
 # Pirat classical mode
+library(Pirat)
 data(subbouyssie)
 pipeline_llkimpute(subbouyssie) 
 
 # Pirat with transcriptomic integration for singleton PGs
+library(Pirat)
 data(ropers)
 nsamples = nrow(ropers$peptides_ab)
 pipeline_llkimpute(ropers, 
@@ -74,5 +77,6 @@ pipeline_llkimpute(ropers,
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
+}
 
 }

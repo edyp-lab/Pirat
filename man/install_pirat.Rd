@@ -4,43 +4,7 @@
 \alias{install_pirat}
 \title{Install Pirat package}
 \usage{
-install_pirat(
-  method = "conda",
-  conda = "auto",
-  envname = "r-pirat",
-  restart_session = TRUE,
-  channel = c("pytorch", "stable", "torch"),
-  pip_ignore_installed = FALSE,
-  new_env = identical(envname, "r-pirat")
-)
-}
-\arguments{
-\item{method}{Installation method. By default, "auto" automatically finds a
-method that will work in the local environment. Change the default to force
-a specific installation method.  Note that since this command runs without
-privilege the "system" method is available only on _Windows_.}
-
-\item{conda}{www}
-
-\item{restart_session}{Restart R session after installing (note this will
-only occur within RStudio).}
-
-\item{channel}{conda channel. The default channel is `stable`.
-The alternative channel is `nightly`.}
-
-\item{extra_packages}{Additional Python packages to install along with
-PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.}
-
-\item{pip}{logical}
-
-\item{cuda_version}{string for the cuda toolkit version to install. For example,
-to install a specific CUDA version use `cuda_version="10.2"`.}
-
-\item{dry_run}{logical, set to TRUE for unit tests, otherwise will execute
-the command.}
-
-\item{...}{other arguments passed to [reticulate::conda_install()] or
-[reticulate::virtualenv_install()].}
+install_pirat()
 }
 \description{
 This script installs Python and PyTorch in the requested

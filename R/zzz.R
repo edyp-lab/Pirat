@@ -64,6 +64,7 @@ packageStartupMessage(msg)
 #' @description xxx
 #' 
 #' @param config xxx
+#' @param requested_versions xxx
 #' 
 #' @export
 #' 

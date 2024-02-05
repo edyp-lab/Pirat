@@ -20,7 +20,7 @@ This function converts the original dataset structure into
 a SummarizedExperiment .
 }
 \examples{
-data(bouyssie)
-pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
+data(subbouyssie)
+pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
 
 }

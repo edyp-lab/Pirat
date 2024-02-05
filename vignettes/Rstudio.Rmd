@@ -47,11 +47,11 @@ Once the package has been installed, it is necessary to install a Python environ
 Pirat::install_pirat()
 
 ```
-If Python is not found by R during environment installation, you can either execute
-```{r, eval=F}
-reticulate::use_python("path_to_python_binary")
-```
-Or, if you are using RStudio, set your RStudio Python interpreter to the one installed on your machine (in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter"). Then, retry to install the Python environment r-pirat.
+<!-- If Python is not found by R during environment installation, you can either execute -->
+<!-- ```{r, eval=F} -->
+<!-- reticulate::use_python("path_to_python_binary") -->
+<!-- ``` -->
+<!-- Or, if you are using RStudio, set your RStudio Python interpreter to the one installed on your machine (in your RStudio window, go in "Global Options" -> "Python" -> "python interpreter"). Then, retry to install the Python environment r-pirat. -->
 
 
 This will install all necessary Python modules and restart the R session. Infos about versions can be obtained with:
@@ -65,17 +65,17 @@ pirat_config()
 Load Pirat package and a reduced part of Bouyssie2020 dataset in the environment.
 ```{r, eval=F}
 library(Pirat)
-data("bouyssie")
+data("subbouyssie")
 ```
 
-Note that `bouyssie` is actually a list that contains two elements:
+Note that `subbouyssie` is actually a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows and peptides in columns.
 2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s.
 
 You can then impute this dataset with the following line
-```{r, eval=F}
-imp.res <- pipeline_llkimpute(bouyssie)
+```{r test, eval=F}
+imp.res <- pipeline_llkimpute(subbouyssie)
 ```
 
 The result `imp.res` is a list that contains:
@@ -84,12 +84,12 @@ The result `imp.res` is a list that contains:
 2. `params`, a list containing parameters $\Gamma$ and hyperparameters $\alpha$ and $\beta$.
 
 You can check the imputed values here...
-```{r}
+```{r test1, eval=F}
 head(imp.res$data.imputed[1:5])
 ```
 
 ...and the computed parameters here.
-```{r}
+```{r, eval=F}
 imp.res$params
 ```
 Note that a positive value for $\gamma_1$ indicates that a random left-truncation mechanism
@@ -99,7 +99,7 @@ is present in the dataset.
 
 Pirat has a diagnosis tool that compares distributions of correlations at random and those from same peptide groups (PGs).
 We use it here on the complete Ropers2021 dataset.
-```{r}
+```{r, eval=F}
 data("ropers")
 plot_pep_correlations(ropers, titlename = "Ropers2021")
 ```
@@ -115,12 +115,12 @@ plot_pep_correlations(ropers, titlename = "Ropers2021")
  ### -2, the 2-peptide rule
  
  The -2 extension simply consists in not imputing singleton PGs. It can be used as following.
-```{r}
+```{r, eval=F}
 data("subropers")
 imp.res = pipeline_llkimpute(subropers, extension = "2")
 ```
 We can then check that singleton peptides are not imputed (yet some may be already fully observed).
-```{r}
+```{r, eval=F}
 idx.sing.pg = which(colSums(subropers$adj) == 1)
 idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
 imp.res$data.imputed[, idx.sing.pep]
@@ -129,11 +129,11 @@ imp.res$data.imputed[, idx.sing.pep]
 ### -S, samples-wise correlations
 
 Pirat can leverage sample-wise correlations to impute the singleton peptides as following:
-```{r}
+```{r, eval=F}
 imp.res = pipeline_llkimpute(subropers, extension = "S")
 ```
 Here singleton peptides are impute after the rest of the dataset, using sample-wise correlations obtained.
-```{r}
+```{r, eval=F}
 idx.sing.pg = which(colSums(subropers$adj) == 1)
 idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
 imp.res$data.imputed[, idx.sing.pep]
@@ -147,7 +147,7 @@ The last extension consists in using correlations between peptides and gene/tran
 * `adj_rna_pg`, a adjacency matrix between transcripts or genes and PGs, containing either booleans or 0s and 1s.
 
 `ropers` proteomic and transcriptomic samples are paired (*i.e.* the same biological samples were used for each type of analysis). Thus Pirat-T can be used as following:
-```{r}
+```{r, eval=F}
 imp.res = pipeline_llkimpute(subropers,
                              extension = "T",
                              rna.cond.mask = 1:nrow(ropers$peptides_ab),
@@ -156,13 +156,13 @@ imp.res = pipeline_llkimpute(subropers,
 ```
 
 And gives following imputed singletons:
-```{r}
+```{r, eval=F}
 idx.sing.pg = which(colSums(ropers$adj) == 1)
 idx.sing.pep = which(rowSums(ropers$adj[, idx.sing.pg]) >= 1)
 imp.res$data.imputed[, idx.sing.pep]
 ```
 On the other hand, if proteomic and transcriptomic samples are not paired but are derived from a same biological/experimental condition. Pirat-T can be use by adapting the mask related to samples in each type of analysis (here, both proteomic and transcriptomic samples 6 different conditions with 3 replicates each, and conditions appear in the same order):
-```{r}
+```{r, eval=F}
 imp.res = pipeline_llkimpute(ropers,
                              extension = "T",
                              rna.cond.mask = rep(1:6, each = 3),
