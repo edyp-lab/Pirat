@@ -1,13 +1,19 @@
 Package: Pirat
 Type: Package
-Title: What the Package Does (Title Case)
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: Precursor or Peptide Imputation under Random Truncation
+Description: Pirat enables the imputation of missing values (either MNARs or 
+  MCARs) in bottom-up LC-MS/MS proteomics data using a penalized maximum 
+  likelihood strategy. It does not require any parameter tuning, it models 
+  the instrument censorship from the data available, it accounts for sibling
+  peptides correlations and it can leverage complementary transcriptomics
+  measurements. 
 Version: 0.1.0
 Author: c(
     person("Lucas", "Etourneau", email = "lucas.etourneau@univ-grenoble-alpes.fr", role = c("cre", "aut")),
+    person("Laura", "Fancello", email = " laura.fancello@cea.fr", role = c("cre", "aut")),
+    person("Samuel", "Wieczorek", email = "samuel.wieczorek@cea.fr",  role = c("cre", "aut"))
+    person("Nelle", "Varoquaux", email = " nelle.varoquaux@univ-grenoble-alpes.fr", role = c("cre", "aut")),
     person("Thomas", "Burger", email = "thomas.burger@cea.fr",  role = c("cre", "aut"))
-    person("Samuel", "Wieczorek", email = "samuel.wieczorek@cea.fr",  role = "cont")
     )
 Maintainer: Lucas Etourneau <lucas.etourneau@univ-grenoble-alpes.fr>
 License: GPL-2
