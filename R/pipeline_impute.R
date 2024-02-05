@@ -253,8 +253,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            nu_factor = alpha.factor, 
                                            max_pg_size = 30, 
                                            min.pg.size2imp = 2,
-                                           phi0 = phi0, 
-                                           phi = phi, 
+                                           phi0 = gamma_0, 
+                                           phi = gamma_1, 
                                            eps_chol = 1e-4, 
                                            eps_phi = 1e-5, 
                                            tol_obj = 1e-7, 
@@ -314,7 +314,6 @@ pipeline_llkimpute = function(data.pep.rna.mis,
     } 
     idx.pgs1 = which(colSums(data.pep.rna.mis$adj) <= max.pg.size.pirat.t)
     if (length(idx.pgs1) != 0) {
-      print('Coucou1')
       res_per_block_pirat_t <- impute_block_llk_reset_PG(data.pep.rna.mis,
                                                          df = df,
                                                          nu_factor = alpha.factor, 
@@ -325,8 +324,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                          max_pg_size = 30,
                                                          pep_ab_or = pep.ab.comp, 
                                                          max.pg.size2imp = max.pg.size.pirat.t, 
-                                                         phi0 = phi0, 
-                                                         phi = phi, 
+                                                         phi0 = gamma_0, 
+                                                         phi = gamma_1, 
                                                          eps_chol = 1e-4, 
                                                          eps_phi = 1e-5, 
                                                          tol_obj = 1e-7,
@@ -355,8 +354,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   #  Format results
   params = list(alpha = df/2,
                 beta = psi/2,
-                gamma0 = phi0,
-                gamma1 = phi)
+                gamma0 = gamma_0,
+                gamma1 = gamma_1)
   
   return(list(data.imputed = data.imputed,
               params = params)

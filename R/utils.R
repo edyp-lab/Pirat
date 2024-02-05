@@ -473,8 +473,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      max_pg_size = NULL,
                                      max.pg.size2imp = 1,
                                      ...) {
-  print("Coucou")
-  
+
   if (!is.null(max_pg_size)) {
     adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
                              data.pep.rna.crop$adj_rna_pg)
@@ -518,7 +517,6 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                          current = ">",    # Current bar character
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
-  print(prot.idxs)
   for (i in prot.idxs) {
     # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)

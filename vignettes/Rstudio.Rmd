@@ -67,7 +67,8 @@ Pirat::pirat_config()
 
 ## 2. Standard imputation with Pirat <a name="siwp"></a>
 
-Load Pirat package and a subset of Bouyssie2020 dataset in the environment.
+Pirat is a single imputation pipeline including a novel statistical approach dedicated to bottom-up proteomics data. All the technical details and the validation procedure of this method in available on the corresponding preprint @Etourneau2023 .
+To demonstrate its usage, we first load Pirat package and a subset of Bouyssie2020 dataset in the environment.
 ```{r}
 library(Pirat)
 data("subbouyssie")
@@ -76,9 +77,9 @@ data("subbouyssie")
 Note that `subbouyssie` is actually a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows and peptides in columns.
-2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s.
+2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s (not preprocessing or simplification is needed for this matrix, Pirat will automatically build the PGs from it).
 
-You can then impute this dataset with the following line
+One can then impute this dataset with the following line
 ```{r}
 imp.res <- pipeline_llkimpute(subbouyssie)
 ```
@@ -93,14 +94,14 @@ The result `imp.res` is a list that contains:
 
 You can check the imputed values here...
 ```{r test1}
-head(imp.res$data.imputed[1:5])
+head(imp.res$data.imputed[,1:5])
 ```
 
 ...and the computed parameters here.
 ```{r}
 imp.res$params
 ```
-Note that a positive value for $\gamma_1$ indicates that a random left-truncation mechanism
+Note that a positive value for $\gamma1$ indicates that a random left-truncation mechanism
 is present in the dataset.
 
 ## 3. Intra-PG correlation analysis <a name="ipgca"></a>
@@ -112,7 +113,7 @@ data("ropers")
 plot_pep_correlations(ropers, titlename = "Ropers2021")
 ```
  We see here that the blue distribution has much more weights on high correlations than the red one,
- indicating that making PGs should clearly help for imputation.
+ indicating that PGs should clearly help for imputation.
  
 ## 4. Pirat extensions <a name="pe"></a>
  
