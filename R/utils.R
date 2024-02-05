@@ -473,6 +473,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      max_pg_size = NULL,
                                      max.pg.size2imp = 1,
                                      ...) {
+  print("Coucou")
   
   if (!is.null(max_pg_size)) {
     adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
