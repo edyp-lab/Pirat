@@ -700,7 +700,7 @@ plot_pep_correlations <- function(pep.data,
   all_cors_PG_vec = unlist(allcors)
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
-    pep.idx = as.integer(runif(10, 1, ncol(pep.data$adj) + 1))
+    pep.idx = sample(nrow(pep.data$adj), sum(pep.data$adj[, i, drop = F]))
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
       cor_pg = cor(pep_abs_pg)
@@ -714,7 +714,7 @@ plot_pep_correlations <- function(pep.data,
                                        rep("Random", length(all_cors_rand_vec)))))
   g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
-    geom_density(alpha=.2, na.rm = T) +
+    geom_density(alpha=.2, na.rm = T) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),
           # legend.position = c(0.8, 0.9),
           panel.background = element_blank(),
@@ -724,6 +724,5 @@ plot_pep_correlations <- function(pep.data,
   if (!is.null(titlename)) {
     g <- g + ggtitle(titlename)
   }
-  print(g)
   g
 }
