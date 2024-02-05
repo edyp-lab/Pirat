@@ -67,7 +67,7 @@ install_pirat <-
     #   python = '3.9.5'
     # )
     
-    packages <- c('numpy==1.20.2', 'matplotlib', 'pytorch==1.10.0')
+    packages <- c('numpy==1.20.2', 'matplotlib', 'pytorch==1.10.0', 'cpuonly')
     # if (is_windows()) {
     #   packages <- c(packages, 'pytorch==1.10.0')
     # } else if (is_linux()) {
