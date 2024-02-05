@@ -13,8 +13,8 @@
 #' @export
 #' 
 #' @examples
-#' data(bouyssie)
-#' pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, bouyssie$mask_pep_diff )
+#' data(subbouyssie)
+#' pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
@@ -55,9 +55,9 @@ pirat2SE <- function(peptides_ab,
 #' @export
 #' 
 #' @examples
-#' data(bouyssie)
-#' obj <- pirat2SE(bouyssie$peptides_ab, bouyssie$adj, bouyssie$mask_prot_diff, 
-#' bouyssie$mask_pep_diff )
+#' data(subbouyssie)
+#' obj <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, 
+#' subbouyssie$mask_pep_diff )
 #' res <- wrapper_pipeline_llkimpute(obj)
 #' 
 

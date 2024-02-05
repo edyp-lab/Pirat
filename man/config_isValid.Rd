@@ -8,6 +8,8 @@ config_isValid(config, requested_versions)
 }
 \arguments{
 \item{config}{xxx}
+
+\item{requested_versions}{xxx}
 }
 \description{
 xxx

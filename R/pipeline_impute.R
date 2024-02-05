@@ -7,8 +7,10 @@
 #' @export
 #'
 #' @examples
-#' data(bouyssie)
-#' estimate_gamma(bouyssie$peptides_ab)
+#' \dontrun{
+#' data(subbouyssie)
+#' estimate_gamma(subbouyssie$peptides_ab)
+#' }
 #' 
 estimate_gamma = function(pep.ab.table,
                           mcar = FALSE) {
@@ -67,13 +69,14 @@ estimate_gamma = function(pep.ab.table,
 #' @export
 #'
 #' @examples
-#' data(bouyssie)
-#' obj <- bouyssie
+#' \dontrun{
+#' data(subbouyssie)
+#' obj <- subbouyssie
 #' idx <- get_indexes_embedded_prots(obj$adj)
 #' obj <- rm_pg_from_idx_merge_pg(obj, idx)
 #' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0]
 #' estimate_psi_df(obs2NApep)
-#'
+#' }
 #' 
 estimate_psi_df = function(obs2NApep) {
   f <- function(x, a, b)
@@ -144,11 +147,14 @@ estimate_psi_df = function(obs2NApep) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Pirat classical mode
-#' data(bouyssie)
-#' pipeline_llkimpute(bouyssie) 
+#' library(Pirat)
+#' data(subbouyssie)
+#' pipeline_llkimpute(subbouyssie) 
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
+#' library(Pirat)
 #' data(ropers)
 #' nsamples = nrow(ropers$peptides_ab)
 #' pipeline_llkimpute(ropers, 
@@ -156,6 +162,7 @@ estimate_psi_df = function(obs2NApep) {
 #'                    rna.cond.mask = 1:nsamples, 
 #'                    pep.cond.mask = 1:nsamples,
 #'                    max.pg.size.pirat.t = 1)
+#' }
 #' 
 pipeline_llkimpute = function(data.pep.rna.mis,
                               pep.ab.comp = NULL,

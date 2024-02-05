@@ -4,31 +4,6 @@
 #' versions. It is largely inspired by wthe scripts in rTorch package
 #' (https://github.com/f0nzie/rTorch)
 #'
-#' @param method Installation method. By default, "auto" automatically finds a
-#'   method that will work in the local environment. Change the default to force
-#'   a specific installation method.  Note that since this command runs without
-#'   privilege the "system" method is available only on _Windows_.
-#'
-#' @param conda www
-#' @param extra_packages Additional Python packages to install along with
-#'   PyTorch. Default are `c("numpy=1.20.2", "matplotlib")`.
-#'
-#' @param restart_session Restart R session after installing (note this will
-#'   only occur within RStudio).
-#'
-#' @param pip logical
-#'
-#' @param channel conda channel. The default channel is `stable`.
-#'   The alternative channel is `nightly`.
-#'
-#' @param cuda_version string for the cuda toolkit version to install. For example,
-#'   to install a specific CUDA version use `cuda_version="10.2"`.
-#'
-#' @param dry_run logical, set to TRUE for unit tests, otherwise will execute
-#'   the command.
-#'
-#' @param ... other arguments passed to [reticulate::conda_install()] or
-#'   [reticulate::virtualenv_install()].
 #'
 #' @importFrom jsonlite fromJSON
 #' @examples
@@ -49,32 +24,35 @@
 #'
 #' @export
 #'
-install_pirat <-
-  function(method = "conda",
-           conda = "auto",
-           envname = "r-pirat",
-           restart_session = TRUE,
-           channel = c("pytorch", "stable", "torch"),
-           pip_ignore_installed = FALSE,
-           new_env = identical(envname, "r-pirat")
-           ) {
+install_pirat <- function() {
     
-    method <- match.arg(method)
+    method = "conda"
+    conda = "auto"
+    restart_session = TRUE
+    pip_ignore_installed = FALSE
+    envname = "r-pirat"
+    channel = c("pytorch", "stable", "torch")
+    new_env = identical(envname, "r-pirat")
     
-    requested_versions <- list(
-      torch = '1.10.0',
-      numpy = '1.20.2',
-      python = '3.9.5'
-    )
     
-    packages <- c('numpy==1.20.2', 'matplotlib')
-    if (is_windows()) {
-      packages <- c(packages, 'torch==1.10.0')
-    } else if (is_linux()) {
-      packages <- c(packages, 'pytorch==1.10.0')
-    } else if (is_osx()){
-      packages <- c(packages, 'pytorch==1.10.0')
-    }
+    # requested_versions <- list(
+    #   torch = '1.10.0',
+    #   numpy = '1.20.2',
+    #   python = '3.9.5'
+    # )
+    
+    packages <- c('numpy==1.20.2', 
+                  'matplotlib', 
+                  'pytorch==1.10.0', 
+                  'cpuonly')
+    
+    # if (is_windows()) {
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # } else if (is_linux()) {
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # } else if (is_osx()){
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # }
     python_version <- '3.9.5'
     
     
@@ -120,8 +98,8 @@ install_pirat <-
       
     }
     
-    reticulate::install_python(version = '3.9.5', force = TRUE)
-    
+    #reticulate::install_python(version = '3.9.5', force = TRUE)
+    reticulate::install_miniconda(force = TRUE)
     #browser()
     py_install_args <- list(
       packages       = packages,
@@ -135,8 +113,8 @@ install_pirat <-
     # now ignored, superseded by `cuda`
     #py_install_args$configure_cudnn <- NULL
     
-    do.call(reticulate::py_install, py_install_args)
-    
+    #do.call(reticulate::py_install, py_install_args)
+    do.call(reticulate::conda_install, py_install_args)
     #if(is_string(metal)) {
     #  py_install_args$packages <- metal
     #  tryCatch(do.call(reticulate::py_install, py_install_args),
