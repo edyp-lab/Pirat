@@ -31,10 +31,10 @@ packageStartupMessage(msg)
   #   reticulate::use_python_version(version='3.9.5')
   # }
 
-    packageStartupMessage({'Checking if r-pirat is installed...'})
+    packageStartupMessage({'Checking if Pirat is installed...'})
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
                                           error = function(e) NULL))){
-      packageStartupMessage({"env r-pirat not found. You should use install_pirat()"})
+      packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
       return(NULL)
     } else{
       packageStartupMessage({"Loading conda env..."})
