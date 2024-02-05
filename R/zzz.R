@@ -21,15 +21,15 @@ packageStartupMessage(msg)
   
   pirat_envname <- 'r-pirat'
   
-  packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-  if (is.null(tryCatch(reticulate::use_python_version(version='3.9.5'),
-                        error = function(e) NULL))){
-    packageStartupMessage({"Python 3.9.5 is not installed. Please install it with Pirat::install_pirat()"})
-    return(NULL)
-  } else {
-    packageStartupMessage({"configuring Pirat to use python 3.9.5."})
-    reticulate::use_python_version(version='3.9.5')
-  }
+  # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
+  # if (is.null(tryCatch(reticulate::use_python_version(version='3.9.5'),
+  #                       error = function(e) NULL))){
+  #   packageStartupMessage({"Python 3.9.5 is not installed. Please install it with Pirat::install_pirat()"})
+  #   return(NULL)
+  # } else {
+  #   packageStartupMessage({"configuring Pirat to use python 3.9.5."})
+  #   reticulate::use_python_version(version='3.9.5')
+  # }
 
     packageStartupMessage({'Checking if r-pirat is installed...'})
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
@@ -50,8 +50,8 @@ packageStartupMessage(msg)
     reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
     setwd(dir.backup)
     
-    packageStartupMessage({"Finalizing loading torhc package..."})
-    py <- reticulate::import("torch", delay_load = TRUE)
+    packageStartupMessage({"Finalizing loading torch package..."})
+    py <- reticulate::import("pytorch", delay_load = TRUE)
   },
   warning = function(w){packageStartupMessage({w})},
   error = function(e){packageStartupMessage({e})}
@@ -112,7 +112,7 @@ pirat_config <- function() {
   pirat_conda_exists <- reticulate::condaenv_exists(envname = 'r-pirat')
   pkgs <- reticulate::py_list_packages(envname = 'r-pirat')
   # get version
-  torch_version <- pkgs[which(pkgs$package=='pytorch'),]$version
+  torch_version <- pkgs[which(pkgs$package=='torch'),]$version
   numpy_version <- pkgs[which(pkgs$package=='numpy'),]$version
   matplotlib_version <- pkgs[which(pkgs$package=='matplotlib'),]$version
     
@@ -152,7 +152,7 @@ print.pirat_config <- function(x, ...) {
     aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
     cat("Python v", x$python_version, " (location: ", aliased(x$location), "\n", sep = "")
     cat("Active env: ", x$acive_env, "\n", sep = "")
-    cat("PyTorch v", x$torch_version, "\n", sep = "")
+    cat("torch v", x$torch_version, "\n", sep = "")
     cat("NumPy v", x$numpy_version, "\n", sep = "")
     cat("matplotlib v", x$matplotlib_version, "\n", sep = "")
     

@@ -61,20 +61,20 @@ install_pirat <-
     
     method <- match.arg(method)
     
-    requested_versions <- list(
-      torch = '1.10.0',
-      numpy = '1.20.2',
-      python = '3.9.5'
-    )
+    # requested_versions <- list(
+    #   torch = '1.10.0',
+    #   numpy = '1.20.2',
+    #   python = '3.9.5'
+    # )
     
-    packages <- c('numpy==1.20.2', 'matplotlib')
-    if (is_windows()) {
-      packages <- c(packages, 'torch==1.10.0')
-    } else if (is_linux()) {
-      packages <- c(packages, 'pytorch==1.10.0')
-    } else if (is_osx()){
-      packages <- c(packages, 'pytorch==1.10.0')
-    }
+    packages <- c('numpy==1.20.2', 'matplotlib', 'pytorch==1.10.0')
+    # if (is_windows()) {
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # } else if (is_linux()) {
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # } else if (is_osx()){
+    #   packages <- c(packages, 'pytorch==1.10.0')
+    # }
     python_version <- '3.9.5'
     
     
@@ -120,8 +120,8 @@ install_pirat <-
       
     }
     
-    reticulate::install_python(version = '3.9.5', force = TRUE)
-    
+    #reticulate::install_python(version = '3.9.5', force = TRUE)
+    reticulate::install_miniconda(force = TRUE)
     #browser()
     py_install_args <- list(
       packages       = packages,
@@ -135,8 +135,8 @@ install_pirat <-
     # now ignored, superseded by `cuda`
     #py_install_args$configure_cudnn <- NULL
     
-    do.call(reticulate::py_install, py_install_args)
-    
+    #do.call(reticulate::py_install, py_install_args)
+    do.call(reticulate::conda_install, py_install_args)
     #if(is_string(metal)) {
     #  py_install_args$packages <- metal
     #  tryCatch(do.call(reticulate::py_install, py_install_args),
