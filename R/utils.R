@@ -517,7 +517,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                          current = ">",    # Current bar character
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
-  
+  print(prot.idxs)
   for (i in prot.idxs) {
     # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)

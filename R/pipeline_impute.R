@@ -41,7 +41,6 @@ estimate_gamma = function(pep.ab.table,
   }
   sort_mean_abund = sort(mean_abund)
   
-  plot(sort_mean_abund, exp(-(phi0 + phi*sort_mean_abund)))
   
   # print(paste("Gamma0 estimated = ", phi0))
   # print(paste("Gamma1 estimated = ", phi))

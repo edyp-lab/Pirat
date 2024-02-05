@@ -9,6 +9,8 @@ vignette: >
   %\VignetteIndexEntry{Pirat}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography:
+  - biblio_vignette.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -20,7 +22,10 @@ knitr::opts_chunk$set(
 
 ## Table of content
 
-1. [Pirat installation](#dunno)
+1. [Pirat installation](#pi)
+2. [Standard imputation with Pirat](#siwp)
+3. [Intra-PG correlation analysis](#ipgca)
+4. [Pirat extensions](#pe)
 
 ### Pirat installation
 
@@ -38,15 +43,14 @@ To install this package from Github:
 ```{r, eval=F}
 library(remotes)
 remotes::install_github('prostarproteomics/Pirat')
-
 ```
 
 Once the package has been installed, it is necessary to install a Python environment (called r-pirat in the package) with specific versions of Python libraries. For this purpose, run: 
 
 ```{r, eval=F}
 Pirat::install_pirat()
-
 ```
+
 If Python is not found by R during environment installation, you can either execute
 ```{r, eval=F}
 reticulate::use_python("path_to_python_binary")
@@ -56,27 +60,29 @@ Or, if you are using RStudio, set your RStudio Python interpreter to the one ins
 
 This will install all necessary Python modules and restart the R session. Infos about versions can be obtained with:
 ```{r, eval=F}
-pirat_config()
+Pirat::pirat_config()
 ```
 
 
 ## Standard imputation with Pirat
 
-Load Pirat package and a reduced part of Bouyssie2020 dataset in the environment.
-```{r, eval=F}
+Load Pirat package and a subset of Bouyssie2020 dataset in the environment.
+```{r}
 library(Pirat)
-data("bouyssie")
+data("subbouyssie")
 ```
 
-Note that `bouyssie` is actually a list that contains two elements:
+Note that `subbouyssie` is actually a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows and peptides in columns.
 2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s.
 
 You can then impute this dataset with the following line
-```{r, eval=F}
-imp.res <- pipeline_llkimpute(bouyssie)
+```{r}
+imp.res <- pipeline_llkimpute(subbouyssie)
 ```
+The first plot represents the goodness of fit of the inverse-gamma distribution, whereas the second one
+represents the goodness of fit of the missingness mechanism (details on method used is given in @Etourneau2023). Note that only few peptides have been used to fit these distributions in both cases, as we use a subset from the original Bouyssie2020 dataset.
 
 The result `imp.res` is a list that contains:
 
@@ -152,7 +158,7 @@ imp.res = pipeline_llkimpute(subropers,
                              extension = "T",
                              rna.cond.mask = 1:nrow(ropers$peptides_ab),
                              pep.cond.mask = 1:nrow(ropers$peptides_ab),
-                             max.pg.size.pirat.t = +Inf)
+                             max.pg.size.pirat.t = 1)
 ```
 
 And gives following imputed singletons:
@@ -166,7 +172,8 @@ On the other hand, if proteomic and transcriptomic samples are not paired but ar
 imp.res = pipeline_llkimpute(ropers,
                              extension = "T",
                              rna.cond.mask = rep(1:6, each = 3),
-                             pep.cond.mask = rep(1:6, each = 3))
+                             pep.cond.mask = rep(1:6, each = 3),
+                             max.pg.size.pirat.t = 1)
 ```
 Also, it is possible to apply transcriptomic integration up to an arbitrary size of PG, simply by 
-changing parameter `max.pg.size.pirat.t` in `pipeline_llkimpute` to the desired PG size (*e.g.* `+Inf` if one wants to use for whole dataset).
+changing parameter `max.pg.size.pirat.t` in `pipeline_llkimpute` to the desired limit PG size (*e.g.* `+Inf` for whole dataset).
