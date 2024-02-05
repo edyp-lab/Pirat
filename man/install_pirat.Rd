@@ -5,11 +5,11 @@
 \title{Install Pirat package}
 \usage{
 install_pirat(
-  method = c("auto", "virtualenv", "conda"),
+  method = "conda",
   conda = "auto",
   envname = "r-pirat",
   restart_session = TRUE,
-  channel = c("pytorch", "stable"),
+  channel = c("pytorch", "stable", "torch"),
   pip_ignore_installed = FALSE,
   new_env = identical(envname, "r-pirat")
 )

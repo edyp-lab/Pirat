@@ -29,7 +29,7 @@ adjacency matrix n_mrna and proteins containing 0 and 1, or TRUE and FALSE;}
 row and peptides or precursors in column. Useful only in mask-and-impute 
 experiments, if one wants to impute solely peptides containing pseudo-MVs.}
 
-\item{alpha.factor}{Factor that multiplies the parameter alpha of the penalty in the
+\item{alpha.factor}{Factor that multiplies the parameter alpha of the penalty described in the
 original paper.}
 
 \item{rna.cond.mask}{Vector of indexes representing conditions of samples of mRNA table, only mandatory
@@ -62,7 +62,17 @@ inverse-Wishart prior). Second, it estimates the missingness mechanism
 parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.
 }
 \examples{
-data(bouyssie)
-pipeline_llkimpute(bouyssie)
+# Pirat classical mode
+data(subbouyssie)
+pipeline_llkimpute(subbouyssie) 
+
+# Pirat with transcriptomic integration for singleton PGs
+data(ropers)
+nsamples = nrow(ropers$peptides_ab)
+pipeline_llkimpute(ropers, 
+                   extension = "T",
+                   rna.cond.mask = 1:nsamples, 
+                   pep.cond.mask = 1:nsamples,
+                   max.pg.size.pirat.t = 1)
 
 }

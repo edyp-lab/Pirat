@@ -50,8 +50,8 @@ packageStartupMessage(msg)
     reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
     setwd(dir.backup)
     
-    packageStartupMessage({"Finalizing loading torch package..."})
-    py <- reticulate::import("pytorch", delay_load = TRUE)
+    packageStartupMessage({"Loading torch package..."})
+    py <- reticulate::import("torch", delay_load = TRUE)
   },
   warning = function(w){packageStartupMessage({w})},
   error = function(e){packageStartupMessage({e})}

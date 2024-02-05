@@ -146,8 +146,8 @@ estimate_psi_df = function(obs2NApep) {
 #'
 #' @examples
 #' # Pirat classical mode
-#' data(bouyssie)
-#' pipeline_llkimpute(bouyssie) 
+#' data(subbouyssie)
+#' pipeline_llkimpute(subbouyssie) 
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
 #' data(ropers)
