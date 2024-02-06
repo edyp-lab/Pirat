@@ -25,7 +25,7 @@ Depends:
   R (>= 4.3.0)
 Imports:
     reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
-    graphics, rstudioapi, jsonlite, SummarizedExperiment, S4Vectors
+    graphics, rstudioapi, SummarizedExperiment, S4Vectors
 Suggests: knitr
 VignetteBuilder: knitr
 URL: http://www.prostar-proteomics.org/

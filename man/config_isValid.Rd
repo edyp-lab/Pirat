@@ -2,14 +2,12 @@
 % Please edit documentation in R/zzz.R
 \name{config_isValid}
 \alias{config_isValid}
-\title{xxx}
+\title{Check the validity of the r-pirat environment}
 \usage{
-config_isValid(config, requested_versions)
+config_isValid()
 }
-\arguments{
-\item{config}{xxx}
-
-\item{requested_versions}{xxx}
+\value{
+A boolean indicating if the r-pirat if well configured
 }
 \description{
 xxx

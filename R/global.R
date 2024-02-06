@@ -1,3 +1,6 @@
+#' @title List of versions for Python packages needed by the package Pirat
+#' @return A list
+#' @export
 requested_versions <- list(
   torch = '1.10.0',
   numpy = '1.20.2',

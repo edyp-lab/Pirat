@@ -60,92 +60,62 @@ packageStartupMessage(msg)
 }
 
 
-#' @title xxx
+#' @title Check the validity of the r-pirat environment
 #' @description xxx
 #' 
-#' @param config xxx
-#' @param requested_versions xxx
+#' @return A boolean indicating if the r-pirat if well configured
 #' 
 #' @export
 #' 
-config_isValid <- function(config, requested_versions){
-  is.valid <- (config$torch_version == requested_versions$torch &&
+config_isValid <- function(){
+  
+  config <- pirat_config()
+  is.valid <- config$torch_version == requested_versions$torch &&
       config$numpy_version == requested_versions$numpy &&
-      config$python_version == requested_versions$python)
+      config$python_version == requested_versions$python
 
     return(is.valid)
 }
 
 
-#' @title xxx
-#' @description xxx
-#' 
-#' 
-#' @export
-#' 
-Get_active_env <- function(){
-  
-  py_home <- reticulate::py_config()$pythonhome
-  tmp <- strsplit(py_home, split="/")[[1]]
-  active_env <- tmp[length(tmp)]
-  
-  active_env
-}
-
-
-is_string <- function(x) {
-  is.character(x) && length(x) == 1L && !is.na(x)
-}
-
 
 #' Pirat configuration information
 #'
-#' @return List with information on the current configuration of TensorFlow.
-#'   You can determine whether TensorFlow was found using the `available`
-#'   member (other members vary depending on whether `available` is `TRUE`
-#'   or `FALSE`)
+#' @return List with information on the current configuration of Pirat
 #'
 #' @keywords internal
 #' @export
 pirat_config <- function() {
   
+  if (reticulate::condaenv_exists(envname = 'r-pirat'))
+    use_condaenv('r-pirat')
+  else {
+    cat("r-pirat not found.")
+    return()
+  }
   
-  pirat_conda_exists <- reticulate::condaenv_exists(envname = 'r-pirat')
-  pkgs <- reticulate::py_list_packages(envname = 'r-pirat')
+  
+  
+  Get_active_env <- function(){
+    py_home <- reticulate::py_config()$pythonhome
+    tmp <- strsplit(py_home, split="/")[[1]]
+    active_env <- tmp[length(tmp)]
+    active_env
+  }
+  
+  
+  pkgs <- reticulate::py_list_packages()
   # get version
-  torch_version <- pkgs[which(pkgs$package=='torch'),]$version
-  numpy_version <- pkgs[which(pkgs$package=='numpy'),]$version
-  matplotlib_version <- pkgs[which(pkgs$package=='matplotlib'),]$version
-    
-    
   structure(class = "pirat_config", list(
     available = TRUE,
     acive_env = Get_active_env(),
-    torch_version = torch_version,
-    numpy_version = numpy_version,
-    matplotlib_version = matplotlib_version,
+    torch_version = pkgs[which(pkgs$package=='pytorch'),]$version,
+    numpy_version = pkgs[which(pkgs$package=='numpy'),]$version,
+    matplotlib_version = pkgs[which(pkgs$package=='matplotlib'),]$version,
     location = reticulate::py_config()$pythonhome,
     python_version = unlist(strsplit(reticulate::py_config()$version_string, split=' '))[1]
     ))
 }
-
-
-#' @rdname pirat_config
-#' @keywords internal
-#' @export
-torch_version <- function() {
-  config <- pirat_config()
-  if (config$available)
-    config$torch_version
-  else
-    NULL
-}
-
-
-py_version <- function(x)
-  strsplit(x, split = ' | ')[[1]][1]
-
-
 
 #' @export
 print.pirat_config <- function(x, ...) {
@@ -153,7 +123,7 @@ print.pirat_config <- function(x, ...) {
     aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
     cat("Python v", x$python_version, " (location: ", aliased(x$location), "\n", sep = "")
     cat("Active env: ", x$acive_env, "\n", sep = "")
-    cat("torch v", x$torch_version, "\n", sep = "")
+    cat("pytorch v", x$torch_version, "\n", sep = "")
     cat("NumPy v", x$numpy_version, "\n", sep = "")
     cat("matplotlib v", x$matplotlib_version, "\n", sep = "")
     
@@ -164,14 +134,14 @@ print.pirat_config <- function(x, ...) {
 
 
 
-# Build error message for TensorFlow configuration errors
+# Build error message for Pirat configuration errors
 pirat_config_error_message <- function() {
   message <- "Valid installation of Pirat not found."
   config <- pirat_config()
   if (!is.null(config)) {
     if (length(config$python_versions) > 0) {
       message <- paste0(message,
-                        "\n\nPython environments searched for 'tensorflow' package:\n")
+                        "\n\nPython environments searched for 'Pirat' package:\n")
       python_versions <- paste0(" ", normalizePath(config$python_versions, mustWork = FALSE),
                                 collapse = "\n")
       message <- paste0(message, python_versions, sep = "\n")
@@ -179,7 +149,7 @@ pirat_config_error_message <- function() {
   }
   
   python_error <- tryCatch({
-    import("tensorflow")
+    import("Pirat")
     list(message = NULL)
   },
   error = function(e) {
@@ -192,6 +162,6 @@ pirat_config_error_message <- function() {
                     python_error$message, "\n")
   
   message <- paste0(message,
-                    "\nYou can install TensorFlow using the install_tensorflow() function.\n")
+                    "\nYou can install Pirat using the install_pirat() function.\n")
   message
 }
