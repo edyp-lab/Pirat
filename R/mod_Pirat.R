@@ -7,6 +7,7 @@
 #' @param id xxx
 #' @param obj xxx
 #' @param reset xxx
+#' @param verbose xxx
 #' 
 #' @name mod_Pirat
 #'

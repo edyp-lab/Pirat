@@ -25,6 +25,8 @@ mod_Pirat_server(
 \item{obj}{xxx}
 
 \item{reset}{xxx}
+
+\item{verbose}{xxx}
 }
 \description{
 ## To be customized ##
