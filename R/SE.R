@@ -14,7 +14,11 @@
 #' 
 #' @examples
 #' data(subbouyssie)
-#' pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
+#' peptides_ab <- subbouyssie$peptides_ab
+#' adj <- subbouyssie$adj
+#' mask_prot_diff <- subbouyssie$mask_prot_diff
+#' mask_pep_diff <- subbouyssie$mask_pep_diff
+#' pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
@@ -47,7 +51,7 @@ pirat2SE <- function(peptides_ab,
 #' @title xxx
 #' @description xxx
 #' 
-#' @param se xxx
+#' @param se An instance of the class SummarizedExperiment
 #' @param ... Additional arguments to pass to `pipeline_llkimpute()`
 #' 
 #' @import SummarizedExperiment

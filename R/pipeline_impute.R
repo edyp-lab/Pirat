@@ -147,7 +147,7 @@ estimate_psi_df = function(pep.ab.table) {
 #' @param max.pg.size.pirat.t When extension == "T", the maximum PG size for 
 #' which transcriptomic information is used for imputation. 
 #' @param verbose A boolean (FALSE as default) which indicates whether to 
-#' display more details ont the process
+#' display more details on the process
 #'
 #' @import progress
 #' @import MASS

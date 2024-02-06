@@ -2,7 +2,7 @@
 
 "%||%" <- function(x, y) if (is.null(x)) y else x
 
-
+#' @export
 is_windows <- function() {
   identical(.Platform$OS.type, "windows")
 }

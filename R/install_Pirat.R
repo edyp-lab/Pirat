@@ -34,19 +34,6 @@ install_pirat <- function(force = FALSE) {
     
     python_version <- '3.9.5'
     
-    
-    # some special handling for windows
-    if (is_windows()) {
-
-      # avoid DLL in use errors
-      if (reticulate::py_available()) {
-        stop("You should call install_pirat() only in a fresh ",
-             "R session that has not yet initialized Pirat (this is ",
-             "to avoid DLL in use errors during installation)")
-      }
-
-     }
-    
     if (!is.null(tryCatch(conda_python(envname, conda = conda),
                               error = function(e) NULL))){
       if (force){

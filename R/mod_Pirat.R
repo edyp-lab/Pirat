@@ -4,10 +4,11 @@
 #' @description 
 #' ## To be customized ##
 #' 
-#' @param id xxx
-#' @param obj xxx
+#' @param id The id of the module
+#' @param obj An list of two items
 #' @param reset xxx
-#' @param verbose xxx
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details on the process
 #' 
 #' @name mod_Pirat
 #'
