@@ -23,3 +23,20 @@ This will install all necessary Python modules and restart the R session. Infos 
 ```
 pirat_config()
 ```
+
+
+## Test
+
+```
+library(Pirat)
+data(subbouyssie)
+pipeline_llkimpute(subbouyssie) 
+
+data(subropers)
+nsamples = nrow(subropers$peptides_ab)
+pipeline_llkimpute(subropers, 
+                    extension = "T",
+                    rna.cond.mask = 1:nsamples, 
+                   pep.cond.mask = 1:nsamples,
+                    max.pg.size.pirat.t = 1)
+```

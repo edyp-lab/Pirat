@@ -7,7 +7,7 @@
 wrapper_pipeline_llkimpute(se, ...)
 }
 \arguments{
-\item{se}{xxx}
+\item{se}{An instance of the class SummarizedExperiment}
 
 \item{...}{Additional arguments to pass to `pipeline_llkimpute()`}
 }

@@ -20,13 +20,14 @@ mod_Pirat_server(
 )
 }
 \arguments{
-\item{id}{xxx}
+\item{id}{The id of the module}
 
-\item{obj}{xxx}
+\item{obj}{An list of two items}
 
 \item{reset}{xxx}
 
-\item{verbose}{xxx}
+\item{verbose}{A boolean (FALSE as default) which indicates whether to 
+display more details on the process}
 }
 \description{
 ## To be customized ##

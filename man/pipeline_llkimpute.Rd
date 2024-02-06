@@ -67,7 +67,7 @@ experimental purposes.}
 which transcriptomic information is used for imputation.}
 
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
-display more details ont the process}
+display more details on the process}
 }
 \value{
 The imputed **data.pep.rna.mis$peptides_ab** table.
@@ -88,9 +88,9 @@ pipeline_llkimpute(subbouyssie)
 
 # Pirat with transcriptomic integration for singleton PGs
 library(Pirat)
-data(ropers)
-nsamples = nrow(ropers$peptides_ab)
-pipeline_llkimpute(ropers, 
+data(subropers)
+nsamples = nrow(subropers$peptides_ab)
+pipeline_llkimpute(subropers, 
                    extension = "T",
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,

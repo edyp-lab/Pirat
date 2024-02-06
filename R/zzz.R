@@ -20,15 +20,17 @@ packageStartupMessage(msg)
 .onLoad <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
+  Sys.unsetenv("RETICULATE_PYTHON")
   
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-  # if (is.null(tryCatch(reticulate::use_python_version(version='3.9.5'),
-  #                       error = function(e) NULL))){
-  #   packageStartupMessage({"Python 3.9.5 is not installed. Please install it with Pirat::install_pirat()"})
-  #   return(NULL)
-  # } else {
-  #   packageStartupMessage({"configuring Pirat to use python 3.9.5."})
-  #   reticulate::use_python_version(version='3.9.5')
+   if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
+                         error = function(e) 'error'))){
+     packageStartupMessage({"Conda not found"})
+     return(NULL)
+   }
+  #else {
+     packageStartupMessage({"configuring Pirat to use python 3.9.5."})
+     #reticulate::use_python(version='3.9.5')
   # }
 
     packageStartupMessage({'Checking if Pirat is installed...'})
@@ -38,6 +40,7 @@ packageStartupMessage(msg)
       return(NULL)
     } else{
       packageStartupMessage({"Loading conda env..."})
+      reticulate::use_python(reticulate::conda_python(pirat_envname))
       reticulate::use_condaenv(pirat_envname)
     }
       
@@ -49,7 +52,7 @@ packageStartupMessage(msg)
     reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
     reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
     setwd(dir.backup)
-    
+    browser()
     packageStartupMessage({"Loading torch package..."})
     py <- reticulate::import("torch", delay_load = TRUE)
   },

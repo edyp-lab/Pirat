@@ -167,9 +167,9 @@ estimate_psi_df = function(pep.ab.table) {
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
 #' library(Pirat)
-#' data(ropers)
-#' nsamples = nrow(ropers$peptides_ab)
-#' pipeline_llkimpute(ropers, 
+#' data(subropers)
+#' nsamples = nrow(subropers$peptides_ab)
+#' pipeline_llkimpute(subropers, 
 #'                    extension = "T",
 #'                    rna.cond.mask = 1:nsamples, 
 #'                    pep.cond.mask = 1:nsamples,
