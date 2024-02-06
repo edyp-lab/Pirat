@@ -1,9 +1,9 @@
 #' @title Estimate missingness parameters Gamma
 #'
-#' @param pep.ab.table xxx
-#' @param mcar xxx
+#' @param pep.ab.table The peptide or precrursor abundance matrix, with molecules in columns and samples in row.
+#' @param mcar If TRUE, forces gamma_1 = 0.
 #'
-#' @return A list
+#' @return A list of the containing missingness parameters gamma_0 and gamma_1.
 #' @export
 #'
 #' @examples
@@ -43,7 +43,6 @@ estimate_gamma = function(pep.ab.table,
   }
   sort_mean_abund = sort(mean_abund)
   
-  plot(sort_mean_abund, exp(-(phi0 + phi*sort_mean_abund)))
   
   # print(paste("Gamma0 estimated = ", phi0))
   # print(paste("Gamma1 estimated = ", phi))
@@ -51,45 +50,41 @@ estimate_gamma = function(pep.ab.table,
   #             mean(pep.ab.table <= -phi0/phi, na.rm = T)))
   # print(paste("Nb abundances values for which pmis = 1 : ", 
   #             sum(pep.ab.table <= -phi0/phi, na.rm = T)))
-  return(list(phi0 = phi0, phi=phi))
+  return(list(gamma_0 = phi0, gamma_1 = phi))
 }
 
 
 #' @title Estimate psi and degrees of freedom
 #' 
-#' @description Estimate the inverse scale factor and degrees of freedom of 
-#' the distribution of columns-wise variances of an abundance table
+#' @description Estimate the inverse-gamma parameters from the ditribution of observed peptide variances in an abundance table.
 #'
-#' @param obs2NApep Peptide abundance matrix (can contain missing values)
+#' @param pep.ab.table The peptide or precrursor abundance matrix, with molecules in columns and samples in row (can contain missing values).
 #' 
 #' @import MASS
 #' @import invgamma
 #'
-#' @return List containing estimated parameters df (degrees of freedom) and 
-#' psi (inverse scale)
+#' @return List containing estimated fitted hyperparameters df (degrees of freedom) and 
+#' psi (inverse scale).
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' data(subbouyssie)
 #' obj <- subbouyssie
-#' idx <- get_indexes_embedded_prots(obj$adj)
-#' obj <- rm_pg_from_idx_merge_pg(obj, idx)
-#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0]
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] # Keep only fully observed peptides
 #' estimate_psi_df(obs2NApep)
 #' }
 #' 
-estimate_psi_df = function(obs2NApep) {
+estimate_psi_df = function(pep.ab.table) {
   f <- function(x, a, b)
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
   
-  vars = sort(apply(obs2NApep, MARGIN = 2, FUN = var, na.rm = TRUE))
+  vars = sort(apply(pep.ab.table, MARGIN = 2, FUN = var, na.rm = TRUE))
   hist(vars, 
        30, 
        freq = FALSE, 
        xlab ="Variance completely observed",
        main="Histogram of observed variance and fitted inverse-gamma curve")
-  print("OK")
   resllk <- tryCatch(MASS::fitdistr( vars, f, list(a=1, b=0.1) ), error = function(e){NULL})
   if (is.null(resllk)) {
     return(NULL)
@@ -209,8 +204,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   
   # Initial estimates of phi and phi0
   est.phi.phi0 = estimate_gamma(data.pep.rna.mis$peptides_ab, mcar)
-  phi = est.phi.phi0$phi
-  phi0 = est.phi.phi0$phi0
+  gamma_1 = est.phi.phi0$gamma_1
+  gamma_0 = est.phi.phi0$gamma_0
   nsamples = nrow(data.pep.rna.mis$peptides_ab)
   
   
@@ -233,8 +228,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            nu_factor = alpha.factor,
                                            max_pg_size = 30,
                                            min.pg.size2imp = min.pg.size2imp,
-                                           phi0 = phi0, 
-                                           phi = phi, 
+                                           phi0 = gamma_0, 
+                                           phi = gamma_1, 
                                            eps_chol = 1e-4, 
                                            eps_phi = 1e-5, 
                                            tol_obj = 1e-7, 
@@ -258,8 +253,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            nu_factor = alpha.factor, 
                                            max_pg_size = 30, 
                                            min.pg.size2imp = 2,
-                                           phi0 = phi0, 
-                                           phi = phi, 
+                                           phi0 = gamma_0, 
+                                           phi = gamma_1, 
                                            eps_chol = 1e-4, 
                                            eps_phi = 1e-5, 
                                            tol_obj = 1e-7, 
@@ -301,8 +296,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                    max_pg_size = 30, 
                                                    min.pg.size2imp = max.pg.size.pirat.t + 1,
                                                    pep_ab_or = pep.ab.comp,
-                                                   phi0 = phi0, 
-                                                   phi = phi, 
+                                                   phi0 = gamma_0, 
+                                                   phi = gamma_1, 
                                                    eps_chol = 1e-4, 
                                                    eps_phi = 1e-5, 
                                                    tol_obj = 1e-7, 
@@ -329,8 +324,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                          max_pg_size = 30,
                                                          pep_ab_or = pep.ab.comp, 
                                                          max.pg.size2imp = max.pg.size.pirat.t, 
-                                                         phi0 = phi0, 
-                                                         phi = phi, 
+                                                         phi0 = gamma_0, 
+                                                         phi = gamma_1, 
                                                          eps_chol = 1e-4, 
                                                          eps_phi = 1e-5, 
                                                          tol_obj = 1e-7,
@@ -359,8 +354,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   #  Format results
   params = list(alpha = df/2,
                 beta = psi/2,
-                gamma0 = phi0,
-                gamma1 = phi)
+                gamma0 = gamma_0,
+                gamma1 = gamma_1)
   
   return(list(data.imputed = data.imputed,
               params = params)
