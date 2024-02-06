@@ -15,6 +15,7 @@ impute_block_llk_reset_PG(
   nu_factor = 1,
   max_pg_size = NULL,
   max.pg.size2imp = 1,
+  verbose = FALSE,
   ...
 )
 }
@@ -41,6 +42,9 @@ such that imputation will by done only for pseudo-MVs. This will accelerate impu
 \item{max_pg_size}{Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.}
 
 \item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
+
+\item{verbose}{A boolean (FALSE as default) which indicates whether to 
+display more details ont the process}
 
 \item{...}{xxx}
 }

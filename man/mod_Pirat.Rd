@@ -15,7 +15,8 @@ mod_Pirat_server(
  }),
   reset = reactive({
      NULL
- })
+ }),
+  verbose = FALSE
 )
 }
 \arguments{

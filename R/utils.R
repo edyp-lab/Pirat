@@ -267,23 +267,35 @@ split_large_pg = function(adj,
 }
 
 # TODO: Rename this function in code. 
-# TODO: Impfunc shoud not be passed as parameter, by we should directly call "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to remove them
+# TODO: Impfunc shoud not be passed as parameter, by we should directly call 
+# TODO: "estimate params & impute.
+# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to 
+# TODO: remove them
 #' @title Impute each PG.
 #' @description Imputes each PG separately and return the results for each PG. 
 #'
 #' @param data.pep.rna.crop A list representing dataset
 # #' @param impfunc Imputation function
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
-#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
-#' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
-#' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
+#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide
+#'  the ground truth abundance table, 
+#' such that imputation will by done only for pseudo-MVs. This will accelerate 
+#' imputation algorithm.
+#' @param df Estimate degree of freedom of the IG distribution fitted on 
+#' observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
-#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
-#' @param min.pg.size2imp Minimum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
+#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is 
+#' plitted if its size is above this threshold.
+#' @param min.pg.size2imp Minimum PG size to impute after splitting. PGs for 
+#' which size is greater are not imputed. Should be lower than max_pg_size to 
+#' have effect. 
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details ont the process
 #' @param ... xxx
 #'
-#' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
+#' @return A list containing imputation results for each PG, the execution time,
+#'  and adjacency matrix between peptides and PGs corresponding to the 
+#'  imputed PGs.
 #' @export
 #'
 #' @examples
@@ -296,6 +308,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
                                   nu_factor = 2,
                                   max_pg_size = NULL,
                                   min.pg.size2imp = 1,
+                                  verbose = FALSE,
                                   ...) {
   
   adj = data.pep.rna.crop$adj
@@ -324,7 +337,8 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   
   for (i in prot.idxs) {
     #message("##### peptide group=", i, "#####")
-    message("Peptide_group ", i," of ", ncol(adj))
+    if(verbose)
+      message("Peptide_group ", i," of ", ncol(adj))
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick(length(idx_cur_pep)^2)
     cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], nrow = nsamples)
@@ -456,6 +470,8 @@ split_large_pg_PG = function(adj,
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
 #' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
 #' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details ont the process
 #' @param ... xxx
 #'
 #' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
@@ -472,6 +488,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      nu_factor = 1,
                                      max_pg_size = NULL,
                                      max.pg.size2imp = 1,
+                                     verbose = FALSE,
                                      ...) {
 
   if (!is.null(max_pg_size)) {
@@ -518,6 +535,9 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
   for (i in prot.idxs) {
+    if(verbose)
+      message("Peptide_group ", i," of ", ncol(adj))
+    
     # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick((length(idx_cur_pep) + 1)^2)
@@ -711,7 +731,8 @@ plot_pep_correlations <- function(pep.data,
   data.hist = data.frame(values = c(all_cors_PG_vec, all_cors_rand_vec),
                         group = factor(c(rep("Within PG", length(all_cors_PG_vec)),
                                        rep("Random", length(all_cors_rand_vec)))))
-  g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
+  g <- ggplot2::ggplot(data.hist, 
+                       ggplot2::aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
     geom_density(alpha=.2, na.rm = T) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),

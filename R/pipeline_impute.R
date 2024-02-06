@@ -104,34 +104,50 @@ estimate_psi_df = function(pep.ab.table) {
 #' @description Imputation pipeline of Pirat. First, it creates PGs. Then,
 #' it estimates parameters of the penalty term (that amounts to an
 #' inverse-Wishart prior). Second, it estimates the missingness mechanism
-#' parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.  
+#' parameters. Finally, it imputes the peptide/precursor-level dataset with 
+#' desired extension.  
 #'
-#' @param data.pep.rna.mis A list containing important elements of the dataset to impute. Must contain:
-#' **peptides_ab**, the peptide or precursor abundance matrix to impute, with samples in 
-#' row and peptides or precursors in column; **adj**, a n_peptide x n_protein 
-#' adjacency matrix between peptides and proteins containing 0 and 1, 
-#' or TRUE and FALSE. Can contain: **rnas_ab**, the mRNA normalized count matrix, with samples in 
-#' row and mRNAs in column; **adj_rna_pg**, a n_mrna x n_protein 
-#' adjacency matrix n_mrna and proteins containing 0 and 1, or TRUE and FALSE; 
-#' @param pep.ab.comp The pseudo-complete peptide or precursor abundance matrix, with samples in 
-#' row and peptides or precursors in column. Useful only in mask-and-impute 
-#' experiments, if one wants to impute solely peptides containing pseudo-MVs.
-#' @param alpha.factor Factor that multiplies the parameter alpha of the penalty described in the
-#' original paper. 
-#' @param rna.cond.mask Vector of indexes representing conditions of samples of mRNA table, only mandatory
-#' if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).
-#' @param pep.cond.mask Vector of indexes representing conditions of samples of mRNA table, only mandatory
-#' if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).
-#' @param extension If NULL (default), classical Pirat is applied. If "2", only imputes
-#' PGs containing at least 2 peptides or precursors, and remaining peptides are left unchanged.
-#' If "S", Pirat-S is applied, considering sample-wise correlations only for singleton PGs.
+#' @param data.pep.rna.mis A list containing important elements of the dataset 
+#' to impute. Must contain:
+#' **peptides_ab**, the peptide or precursor abundance matrix to impute, with 
+#' samples in row and peptides or precursors in column; 
+#' **adj**, a n_peptide x n_protein adjacency matrix between peptides and 
+#' proteins containing 0 and 1, or TRUE and FALSE.
+#' Can contain: 
+#' **rnas_ab**, the mRNA normalized count matrix, with samples in 
+#' row and mRNAs in column;
+#' **adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
+#' containing 0 and 1, or TRUE and FALSE; 
+#' @param pep.ab.comp The pseudo-complete peptide or precursor abundance matrix,
+#'  with samples in row and peptides or precursors in column. Useful only in 
+#'  mask-and-impute experiments, if one wants to impute solely peptides 
+#'  containing pseudo-MVs.
+#' @param alpha.factor Factor that multiplies the parameter alpha of the 
+#' penalty described in the original paper. 
+#' @param rna.cond.mask Vector of indexes representing conditions of samples 
+#' of mRNA table, only mandatory if extension == "T". For paired proteomic and 
+#' transcriptomic tables, should be c(1:n_samples).
+#' @param pep.cond.mask Vector of indexes representing conditions of samples 
+#' of mRNA table, only mandatory if extension == "T". For paired proteomic 
+#' and transcriptomic tables, should be c(1:n_samples).
+#' @param extension If NULL (default), classical Pirat is applied. If "2", 
+#' only imputes PGs containing at least 2 peptides or precursors, and 
+#' remaining peptides are left unchanged.
+#' If "S", Pirat-S is applied, considering sample-wise correlations only for
+#'  singleton PGs.
 #' It "T", Pirat-T is applied, thus requiring **rnas_ab** and **adj_rna_pg** 
-#' in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and **pep.cond.mask**.
-#' Also, the maximum size of PGs for which transcriptomic data can be used is controlled with **max.pg.size.pirat.t**.
+#' in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and 
+#' **pep.cond.mask**.
+#' Also, the maximum size of PGs for which transcriptomic data can be used is 
+#' controlled with **max.pg.size.pirat.t**.
 #' @param mcar If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is considered.
-#' @param degenerated If TRUE, applies Pirat-Degenerated (i.e. its univariate alternative) as described in original paper.
-#' Should not be TRUE unless for experimental purposes.
-#' @param max.pg.size.pirat.t When extension == "T", the maximum PG size for which transcriptomic information is used for imputation. 
+#' @param degenerated If TRUE, applies Pirat-Degenerated (i.e. its univariate 
+#' alternative) as described in original paper. Should not be TRUE unless for 
+#' experimental purposes.
+#' @param max.pg.size.pirat.t When extension == "T", the maximum PG size for 
+#' which transcriptomic information is used for imputation. 
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details ont the process
 #'
 #' @import progress
 #' @import MASS
@@ -168,15 +184,18 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                               extension = 'base',
                               mcar = FALSE,
                               degenerated = FALSE,
-                              max.pg.size.pirat.t = 1) {
+                              max.pg.size.pirat.t = 1,
+                              verbose = FALSE) {
   
   set.seed(98765)
   psi_rna = NULL
   
-  print("Remove nested prots...")
+  if( verbose)
+    cat("Remove nested prots...")
   idx.emb.prots = get_indexes_embedded_prots(data.pep.rna.mis$adj)
   data.pep.rna.mis = rm_pg_from_idx_merge_pg(data.pep.rna.mis, idx.emb.prots)
-  print("Data ready for boarding with Pirat")
+  if( verbose)
+    cat("Data ready for boarding with Pirat")
   
   # Estimate Gamma distrib peptides
   obs2NApep = data.pep.rna.mis$peptides_ab[
@@ -186,8 +205,10 @@ pipeline_llkimpute = function(data.pep.rna.mis,
   df = est.psi.df$df
   psi = est.psi.df$psi
   
-  print(paste(c("Estimated DF", df)))
-  print(paste(c("Estimated psi", psi)))
+  if( verbose){
+    cat(paste(c("Estimated DF", df)))
+    cat(paste(c("Estimated psi", psi)))
+  }
   
   # Estimate Gamma distrib RNA
   if (!is.null(rna.cond.mask)) {
@@ -241,7 +262,8 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            max_try = 50, 
                                            max_ls = 500, 
                                            eps_sig = 1e-4, 
-                                           nsamples = 1000)
+                                           nsamples = 1000,
+                                           verbose = verbose)
     
     data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis)
   }
@@ -266,7 +288,9 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                            max_try = 50, 
                                            max_ls = 500, 
                                            eps_sig = 1e-4, 
-                                           nsamples = 1000)
+                                           nsamples = 1000,
+                                           verbose = verbose)
+    
     data.imputed = impute_from_blocks(res_per_block, data.pep.rna.mis)
     idx.pgs1 = which(colSums(data.pep.rna.mis$adj) == 1)
     
@@ -309,7 +333,9 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                    max_try = 50, 
                                                    max_ls = 500, 
                                                    eps_sig = 1e-4, 
-                                                   nsamples = 1000)
+                                                   nsamples = 1000,
+                                                   verbose = verbose)
+      
       data.imputed.pirat = impute_from_blocks(res_per_block_pirat, data.pep.rna.mis)
     } 
     idx.pgs1 = which(colSums(data.pep.rna.mis$adj) <= max.pg.size.pirat.t)
@@ -337,7 +363,9 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                                                          max_try = 50, 
                                                          max_ls = 500, 
                                                          eps_sig = 1e-4, 
-                                                         nsamples = 1000)
+                                                         nsamples = 1000,
+                                                         verbose = verbose)
+      
       data.imputed.pirat.t = impute_from_blocks(res_per_block_pirat_t, data.pep.rna.mis)
     }
     if (!isPG2imp.w.pirat) {
