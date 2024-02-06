@@ -7,12 +7,12 @@
 estimate_gamma(pep.ab.table, mcar = FALSE)
 }
 \arguments{
-\item{pep.ab.table}{xxx}
+\item{pep.ab.table}{The peptide or precrursor abundance matrix, with molecules in columns and samples in row.}
 
-\item{mcar}{xxx}
+\item{mcar}{If TRUE, forces gamma_1 = 0.}
 }
 \value{
-A list
+A list of the containing missingness parameters gamma_0 and gamma_1.
 }
 \description{
 Estimate missingness parameters Gamma
