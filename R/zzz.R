@@ -26,7 +26,7 @@ packageStartupMessage(msg)
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
    if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
                          error = function(e) 'error'))){
-     packageStartupMessage({"Conda not found"})
+     cat("Conda not found")
      return(NULL)
    }
   #else {
@@ -34,25 +34,25 @@ packageStartupMessage(msg)
      #reticulate::use_python(version='3.9.5')
   # }
 
-    packageStartupMessage({'Checking if Pirat is installed...'})
+    cat('Checking if Pirat is installed...')
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
                                           error = function(e) NULL))){
-      packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
+      cat("Pirat not found. You should use by running: install_pirat()")
       return(NULL)
     } 
     
     browser()
     
-    packageStartupMessage({"Loading conda env..."})
+    cat("Loading conda env...")
     if (is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
                          error = function(e) NULL,
                          warning = function(w) NULL))){
-      packageStartupMessage({"Env cannot be launched"})
+      cat("Env cannot be launched")
       return(NULL)
     }
       
     
-    packageStartupMessage({"Sourcing custom Python scripts..."})
+    cat("Sourcing custom Python scripts...")
     tryCatch({
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
@@ -61,12 +61,12 @@ packageStartupMessage(msg)
         reticulate::source_python(system.file("python", i, package = "Pirat"))
       setwd(dir.backup)
       },
-      warning = function(w){packageStartupMessage({w})},
-      error = function(e){packageStartupMessage({e})}
+      warning = function(w) cat(w),
+      error = function(e) cat(e)
       )
     
     
-    packageStartupMessage({"Loading torch package..."})
+    cat("Loading torch package...")
     tryCatch({
       py <- reticulate::import("torch", delay_load = TRUE)
       },
