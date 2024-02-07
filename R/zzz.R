@@ -22,6 +22,8 @@ packageStartupMessage(msg)
   pirat_envname <- 'r-pirat'
   Sys.unsetenv("RETICULATE_PYTHON")
   
+  browser()
+  
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
    if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
                          error = function(e) 'error'))){
@@ -41,19 +43,21 @@ packageStartupMessage(msg)
     } 
     
     packageStartupMessage({"Loading conda env..."})
-    if (is.null(tryCatch(reticulate::use_condaenv(pirat_envname),
-                         error = function(e) NULL))){
+    if (is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
+                         error = function(e) NULL,
+                         warning = function(w) NULL))){
       packageStartupMessage({"Env cannot be launched"})
       return(NULL)
     }
       
-    browser()
+    
     packageStartupMessage({"Sourcing custom Python scripts..."})
     tryCatch({
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
-      reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-      reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+      custom_scripts <- c("LBFGS.py", "llk_maximize.py")
+      for (i in custom_scripts)
+        reticulate::source_python(system.file("python", i, package = "Pirat"))
       setwd(dir.backup)
       },
       warning = function(w){packageStartupMessage({w})},
