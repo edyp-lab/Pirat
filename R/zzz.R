@@ -29,7 +29,7 @@ packageStartupMessage(msg)
      return(NULL)
    }
   #else {
-     packageStartupMessage({"configuring Pirat to use python 3.9.5."})
+     #packageStartupMessage({"Configuring Pirat to use python 3.9.5."})
      #reticulate::use_python(version='3.9.5')
   # }
 
@@ -38,27 +38,38 @@ packageStartupMessage(msg)
                                           error = function(e) NULL))){
       packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
       return(NULL)
-    } else{
-      packageStartupMessage({"Loading conda env..."})
-      reticulate::use_python(reticulate::conda_python(pirat_envname))
-      reticulate::use_condaenv(pirat_envname)
+    } 
+    
+    packageStartupMessage({"Loading conda env..."})
+    if (is.null(tryCatch(reticulate::use_condaenv(pirat_envname),
+                         error = function(e) NULL))){
+      packageStartupMessage({"Env cannot be launched"})
+      return(NULL)
     }
       
-    tryCatch({
-    # Now, source custom Python scripts
-    packageStartupMessage({"Sourcing custom Python scripts..."})
-    dir.backup <- getwd()
-    setwd(system.file(".", package="Pirat"))
-    reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
-    reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
-    setwd(dir.backup)
     browser()
-    packageStartupMessage({"Loading torch package..."})
-    py <- reticulate::import("torch", delay_load = TRUE)
-  },
-  warning = function(w){packageStartupMessage({w})},
-  error = function(e){packageStartupMessage({e})}
-  )
+    
+    tryCatch({
+      packageStartupMessage({"Sourcing custom Python scripts..."})
+      dir.backup <- getwd()
+      setwd(system.file(".", package="Pirat"))
+      reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
+      reticulate::source_python(system.file("python", "llk_maximize.py", package = "Pirat"))
+      setwd(dir.backup)
+      },
+      warning = function(w){packageStartupMessage({w})},
+      error = function(e){packageStartupMessage({e})}
+      )
+    
+    
+    
+    tryCatch({
+      packageStartupMessage({"Loading torch package..."})
+      py <- reticulate::import("torch", delay_load = TRUE)
+      },
+      warning = function(w){packageStartupMessage({w})},
+      error = function(e){packageStartupMessage({e})}
+      )
 
 }
 
