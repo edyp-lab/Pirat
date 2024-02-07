@@ -44,10 +44,11 @@ packageStartupMessage(msg)
     browser()
     
     cat("Loading conda env...")
-    if (is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
-                         error = function(e) NULL,
-                         warning = function(w) NULL))){
+    if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
+                         error = function(e) e,
+                         warning = function(w) w))){
       cat("Env cannot be launched")
+      
       return(NULL)
     }
       
