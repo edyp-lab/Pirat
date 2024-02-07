@@ -12,6 +12,7 @@
 #' @export
 #' 
 #' @examples
+#' library(SummarizedExperiment)
 #' data(subbouyssie)
 #' peptides_ab <- subbouyssie$peptides_ab
 #' adj <- subbouyssie$adj
@@ -25,10 +26,10 @@ pirat2SE <- function(peptides_ab,
                      mask_prot_diff, 
                      mask_pep_diff){
   
-  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
-    stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
-  }
-
+  # if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+  #   stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
+  # }
+require(SummarizedExperiment)
  obj <- SummarizedExperiment::SummarizedExperiment(
    assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
    colData = data.frame(Condition = colnames(t(peptides_ab)),
