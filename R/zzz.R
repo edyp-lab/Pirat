@@ -26,7 +26,7 @@ packageStartupMessage(msg)
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
    if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
                          error = function(e) 'error'))){
-     cat("Conda not found")
+     packageStartupMessage({"Conda not found"})
      return(NULL)
    }
   #else {
@@ -34,26 +34,26 @@ packageStartupMessage(msg)
      #reticulate::use_python(version='3.9.5')
   # }
 
-    cat('Checking if Pirat is installed...')
+  packageStartupMessage({'Checking if Pirat is installed...'})
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
                                           error = function(e) NULL))){
-      cat("Pirat not found. You should use by running: install_pirat()")
+      packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
       return(NULL)
     } 
     
     browser()
     
-    cat("Loading conda env...")
+    packageStartupMessage({"Loading conda env..."})
     if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
                          error = function(e) e,
                          warning = function(w) w))){
-      cat("Env cannot be launched")
+      packageStartupMessage({"Env cannot be launched"})
       
       return(NULL)
     }
       
     
-    cat("Sourcing custom Python scripts...")
+    packageStartupMessage({"Sourcing custom Python scripts..."})
     tryCatch({
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
@@ -62,8 +62,8 @@ packageStartupMessage(msg)
         reticulate::source_python(system.file("python", i, package = "Pirat"))
       setwd(dir.backup)
       },
-      warning = function(w) cat(w),
-      error = function(e) cat(e)
+      warning = function(w) packageStartupMessage({w}),
+      error = function(e) packageStartupMessage({e})
       )
     
     
