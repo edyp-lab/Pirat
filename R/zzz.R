@@ -48,9 +48,8 @@ packageStartupMessage(msg)
     }
       
     browser()
-    
+    packageStartupMessage({"Sourcing custom Python scripts..."})
     tryCatch({
-      packageStartupMessage({"Sourcing custom Python scripts..."})
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
       reticulate::source_python(system.file("python", "LBFGS.py", package = "Pirat"))
@@ -62,9 +61,8 @@ packageStartupMessage(msg)
       )
     
     
-    
+    packageStartupMessage({"Loading torch package..."})
     tryCatch({
-      packageStartupMessage({"Loading torch package..."})
       py <- reticulate::import("torch", delay_load = TRUE)
       },
       warning = function(w){packageStartupMessage({w})},
