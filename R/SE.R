@@ -8,7 +8,6 @@
 #' @param mask_pep_diff xxx
 #' 
 #' @import SummarizedExperiment
-#' @import S4Vectors
 #' 
 #' @export
 #' 
@@ -18,7 +17,8 @@
 #' adj <- subbouyssie$adj
 #' mask_prot_diff <- subbouyssie$mask_prot_diff
 #' mask_pep_diff <- subbouyssie$mask_pep_diff
-#' pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
+#' obj <- pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
+#' obj
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
@@ -28,19 +28,17 @@ pirat2SE <- function(peptides_ab,
   if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
     stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
   }
-  if (!requireNamespace("S4Vectors", quietly = TRUE)) {
-    stop("Please install S4Vectors: BiocManager::install('S4Vectors')")
-  }
-  
- obj <- SummarizedExperiment(assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
-                       colData = S4Vectors::DataFrame(Condition = colnames(t(peptides_ab)),
-                                         Sample = colnames(t(peptides_ab)),
-                                         row.names = colnames(t(peptides_ab)))
-  )
+
+ obj <- SummarizedExperiment::SummarizedExperiment(
+   assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
+   colData = data.frame(Condition = colnames(t(peptides_ab)),
+                        Sample = colnames(t(peptides_ab)),
+                        row.names = colnames(t(peptides_ab)))
+   )
  
- S4Vectors::metadata(obj)$adj <- adj
- S4Vectors::metadata(obj)$mask_prot_diff <- mask_prot_diff
- S4Vectors::metadata(obj)$mask_pep_diff <- mask_pep_diff
+ metadata(obj)$adj <- adj
+ metadata(obj)$mask_prot_diff <- mask_prot_diff
+ metadata(obj)$mask_pep_diff <- mask_pep_diff
   
   obj
 }
