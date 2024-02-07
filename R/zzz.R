@@ -22,8 +22,7 @@ packageStartupMessage(msg)
   pirat_envname <- 'r-pirat'
   Sys.unsetenv("RETICULATE_PYTHON")
   
-  browser()
-  
+   
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
    if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
                          error = function(e) 'error'))){
@@ -41,6 +40,8 @@ packageStartupMessage(msg)
       packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
       return(NULL)
     } 
+    
+    browser()
     
     packageStartupMessage({"Loading conda env..."})
     if (is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
