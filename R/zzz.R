@@ -35,7 +35,7 @@ packageStartupMessage(msg)
   packageStartupMessage('Checking if Pirat is installed...')
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
                                           error = function(e) NULL))){
-      packageStartupMessage("Pirat not found. You should use by running: install_pirat()")
+      cat("Pirat not found. You should use by running: install_pirat()")
       return(NULL)
     }
   
@@ -49,7 +49,7 @@ packageStartupMessage(msg)
     if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname, required = TRUE),
                          error = function(e) e,
                          warning = function(w) w))){
-      packageStartupMessage("Env cannot be launched")
+      cat("Env cannot be launched")
       
       return(NULL)
     }
@@ -64,8 +64,8 @@ packageStartupMessage(msg)
         reticulate::source_python(system.file("python", i, package = "Pirat"))
       setwd(dir.backup)
       },
-      warning = function(w) packageStartupMessage(w),
-      error = function(e) packageStartupMessage(e)
+      warning = function(w) w,
+      error = function(e) e
       )
     
     
@@ -73,8 +73,8 @@ packageStartupMessage(msg)
     tryCatch({
       py <- reticulate::import("torch", delay_load = FALSE)
       },
-      warning = function(w) packageStartupMessage(w),
-      error = function(e) packageStartupMessage(e)
+      warning = function(w) w,
+      error = function(e) e
       )
 
 }
