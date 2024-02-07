@@ -45,12 +45,7 @@ packageStartupMessage(msg)
   my_python <- reticulate::conda_python(pirat_envname)
   Sys.setenv(RETICULATE_PYTHON = my_python)
   
-  
-  
-    
-    browser()
-    
-    packageStartupMessage("Loading conda env...")
+      packageStartupMessage("Loading conda env...")
     if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname, required = TRUE),
                          error = function(e) e,
                          warning = function(w) w))){
