@@ -22,38 +22,45 @@ packageStartupMessage(msg)
   pirat_envname <- 'r-pirat'
   Sys.unsetenv("RETICULATE_PYTHON")
   
+  
    
   # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-   if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
-                         error = function(e) 'error'))){
-     packageStartupMessage({"Conda not found"})
-     return(NULL)
-   }
-  #else {
-     #packageStartupMessage({"Configuring Pirat to use python 3.9.5."})
-     #reticulate::use_python(version='3.9.5')
-  # }
+   # if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
+   #                       error = function(e) 'error'))){
+   #   packageStartupMessage("Conda not found")
+   #   return(NULL)
+   # }
+  
 
-  packageStartupMessage({'Checking if Pirat is installed...'})
+  packageStartupMessage('Checking if Pirat is installed...')
     if (is.null(tryCatch(reticulate::conda_python(pirat_envname),
                                           error = function(e) NULL))){
-      packageStartupMessage({"Pirat not found. You should use by running: install_pirat()"})
+      packageStartupMessage("Pirat not found. You should use by running: install_pirat()")
       return(NULL)
-    } 
+    }
+  
+  
+  # Force reticulate to use pyhton in the r-pirat env
+  conda <- reticulate::conda_list()
+  my_python <- reticulate::conda_python(pirat_envname)
+  Sys.setenv(RETICULATE_PYTHON = my_python)
+  
+  
+  
     
     browser()
     
-    packageStartupMessage({"Loading conda env..."})
-    if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname),
+    packageStartupMessage("Loading conda env...")
+    if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname, required = TRUE),
                          error = function(e) e,
                          warning = function(w) w))){
-      packageStartupMessage({"Env cannot be launched"})
+      packageStartupMessage("Env cannot be launched")
       
       return(NULL)
     }
       
     
-    packageStartupMessage({"Sourcing custom Python scripts..."})
+    packageStartupMessage("Sourcing custom Python scripts...")
     tryCatch({
       dir.backup <- getwd()
       setwd(system.file(".", package="Pirat"))
@@ -62,17 +69,17 @@ packageStartupMessage(msg)
         reticulate::source_python(system.file("python", i, package = "Pirat"))
       setwd(dir.backup)
       },
-      warning = function(w) packageStartupMessage({w}),
-      error = function(e) packageStartupMessage({e})
+      warning = function(w) packageStartupMessage(w),
+      error = function(e) packageStartupMessage(e)
       )
     
     
-    cat("Loading torch package...")
+    packageStartupMessage("Loading torch package...")
     tryCatch({
-      py <- reticulate::import("torch", delay_load = TRUE)
+      py <- reticulate::import("torch", delay_load = FALSE)
       },
-      warning = function(w){packageStartupMessage({w})},
-      error = function(e){packageStartupMessage({e})}
+      warning = function(w) packageStartupMessage(w),
+      error = function(e) packageStartupMessage(e)
       )
 
 }
