@@ -35,15 +35,16 @@ install_pirat <- function(force = FALSE) {
     
     python_version <- '3.9.5'
     
-    if (!is.null(tryCatch(reticulate::conda_python(envname, conda = conda),
+    if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
                               error = function(e) NULL))){
-      if (force){
+      if (!force){
       cat('Pirat is already installed. To force a new installation, 
       set the argument force = TRUE. This will erase the current installation.')
       return()
-      }
+      } else {
       reticulate::conda_remove(envname, conda = conda)
       }
+    }
 
     #reticulate::install_python(version = '3.9.5', force = TRUE)
     reticulate::install_miniconda(path = miniconda_path(),
