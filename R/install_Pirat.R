@@ -42,7 +42,7 @@ install_pirat <- function(force = FALSE,
   python_version <- '3.9.5'
     
   if(verbose)
-    cat('Checks for Pirat...')
+    cat('Checks for Pirat...\n')
   if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
                               error = function(e) NULL))){
       if (!force){
@@ -50,13 +50,13 @@ install_pirat <- function(force = FALSE,
         erase the current one, set the argument force = TRUE.')
         #return(NULL)
       } else {
-        cat('Removing previous installation of Pirat...')
+        cat('Removing previous installation of Pirat...\n')
         reticulate::conda_remove(envname, conda = conda)
       }
     }
     
    if(verbose)
-     cat('Installing miniconda...')
+     cat('Installing miniconda...\n')
     tryCatch({
       reticulate::install_miniconda(path = miniconda_path(), force = TRUE)
       },
@@ -80,7 +80,7 @@ install_pirat <- function(force = FALSE,
     cat("\nInstallation complete.\n\n")
     
    restart_session(cmd = 'library(Pirat)',
-                   msg = "Please restart the R session and reload the 'Pirat' package.")
+                   alternate.msg = "Please restart the R session and reload the 'Pirat' package.")
     
     invisible(NULL)
 }
@@ -88,7 +88,7 @@ install_pirat <- function(force = FALSE,
 
 
 restart_session <- function(cmd = NULL,
-                            msg = NULL){
+                            alternate.msg = NULL){
   is.rstudio <- function(){
     .Platform$GUI == "RStudio"
   }
@@ -99,6 +99,6 @@ restart_session <- function(cmd = NULL,
         rstudioapi::hasFun("restartSession"))
       rstudioapi::restartSession(command=cmd)
     else
-      cat(msg)
+      cat(paste0('\n', alternate.msg, '\n\n'))
   #}
 }
