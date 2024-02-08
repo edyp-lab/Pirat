@@ -12,7 +12,8 @@ a current installation of the package Pirat.}
 
 \item{silent}{A boolean (default is TRUE) xxx}
 
-\item{verbose}{A b}
+\item{verbose}{A boolean (default is TRUE) to indicate whether to show details 
+or not.}
 }
 \description{
 This script installs Python and PyTorch in their requested
