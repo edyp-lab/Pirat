@@ -44,7 +44,8 @@ install_pirat <- function(force = FALSE,
   if(verbose)
     cat('Checks for Pirat...\n')
   if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
-                              error = function(e) NULL))){
+                              error = function(e) NULL)) ||
+      reticulate::condaenv_exists(envname) == TRUE){
       if (!force){
         stop('Pirat is already installed. To force a new installation and 
         erase the current one, set the argument force = TRUE.')
