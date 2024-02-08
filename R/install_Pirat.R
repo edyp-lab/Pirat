@@ -8,6 +8,8 @@
 #'
 #' @param force A boolean (default value is FALSE) indicating whether to erase 
 #' a current installation of the package Pirat.
+#' @param silent A boolean (default is TRUE) xxx
+#' @param verbose A b
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -19,7 +21,8 @@
 #' @export
 #'
 install_pirat <- function(force = FALSE, 
-                          silent = TRUE) {
+                          silent = TRUE,
+                          verbose = TRUE) {
     
   
   require(reticulate)
@@ -38,12 +41,13 @@ install_pirat <- function(force = FALSE,
     
   python_version <- '3.9.5'
     
-  cat('Checks for Pirat...')
+  if(verbose)
+    cat('Checks for Pirat...')
   if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
                               error = function(e) NULL))){
       if (!force){
-        stop('Pirat is already installed. To force a new installation, 
-        set the argument force = TRUE. This will erase the current installation.')
+        stop('Pirat is already installed. To force a new installation and 
+        erase the current one, set the argument force = TRUE.')
         #return(NULL)
       } else {
         cat('Removing previous installation of Pirat...')
@@ -51,7 +55,8 @@ install_pirat <- function(force = FALSE,
       }
     }
     
-   
+   if(verbose)
+     cat('Installing miniconda...')
     tryCatch({
       reticulate::install_miniconda(path = miniconda_path(), force = TRUE)
       },

@@ -4,11 +4,15 @@
 \alias{install_pirat}
 \title{Install the package Pirat}
 \usage{
-install_pirat(force = FALSE)
+install_pirat(force = FALSE, silent = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{force}{A boolean (default value is FALSE) indicating whether to erase 
 a current installation of the package Pirat.}
+
+\item{silent}{A boolean (default is TRUE) xxx}
+
+\item{verbose}{A b}
 }
 \description{
 This script installs Python and PyTorch in their requested
