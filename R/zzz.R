@@ -21,18 +21,8 @@ packageStartupMessage(msg)
   
   #require(reticulate)
   pirat_envname <- 'r-pirat'
-  #Sys.unsetenv("RETICULATE_PYTHON")
+  Sys.unsetenv("RETICULATE_PYTHON")
   
-  
-   
-  # packageStartupMessage({'Checking if Python 3.9.5 is installed...'})
-   # if (!is.null(tryCatch(reticulate::use_miniconda(reticulate::miniconda_path(), required = T),
-   #                       error = function(e) 'error'))){
-   #   packageStartupMessage("Conda not found")
-   #   return(NULL)
-   # }
-  
-
   packageStartupMessage('Checking if Pirat is installed...')
     if (is.null(tryCatch(reticulate::conda_list(),
                          error = function(e) NULL))){

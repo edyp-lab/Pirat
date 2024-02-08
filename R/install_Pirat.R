@@ -9,7 +9,8 @@
 #' @param force A boolean (default value is FALSE) indicating whether to erase 
 #' a current installation of the package Pirat.
 #' @param silent A boolean (default is TRUE) xxx
-#' @param verbose A b
+#' @param verbose A boolean (default is TRUE) to indicate whether to show details 
+#' or not.
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -44,7 +45,7 @@ install_pirat <- function(force = FALSE,
   if(verbose)
     cat('Checks for Pirat...\n')
   if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
-                              error = function(e) NULL)) ||
+                              error = function(e) NULL)) &&
       reticulate::condaenv_exists(envname) == TRUE){
       if (!force){
         stop('Pirat is already installed. To force a new installation and 
