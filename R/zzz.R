@@ -36,11 +36,11 @@ packageStartupMessage(msg)
   packageStartupMessage('Checking if Pirat is installed...')
     if (is.null(tryCatch(reticulate::conda_list(),
                          error = function(e) NULL))){
-      stop("Pirat not found. You should use by running: install_pirat()")
+      cat("Pirat not found. You should use by running: install_pirat()")
       return(NULL)
     } else {
       if (!(pirat_envname %in% reticulate::conda_list()$name))
-        stop("Pirat not found. You should use by running: install_pirat()")
+        cat("Pirat not found. You should use by running: install_pirat()")
     }
   
   
