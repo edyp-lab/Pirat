@@ -19,9 +19,9 @@ packageStartupMessage(msg)
 
 .onAttach <- function(libname, pkgname) {
   
-  require(reticulate)
+  #require(reticulate)
   pirat_envname <- 'r-pirat'
-  Sys.unsetenv("RETICULATE_PYTHON")
+  #Sys.unsetenv("RETICULATE_PYTHON")
   
   
    
@@ -39,7 +39,7 @@ packageStartupMessage(msg)
       stop("Pirat not found. You should use by running: install_pirat()")
       return(NULL)
     } else {
-      if (!(pirat_envname %in% conda_list()$name))
+      if (!(pirat_envname %in% reticulate::conda_list()$name))
         stop("Pirat not found. You should use by running: install_pirat()")
     }
   

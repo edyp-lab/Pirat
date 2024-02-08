@@ -25,7 +25,7 @@ install_pirat <- function(force = FALSE,
                           verbose = TRUE) {
     
   
-  require(reticulate)
+  #require(reticulate)
   Sys.unsetenv("RETICULATE_PYTHON")
   method = "conda"
   conda = "auto"
@@ -58,14 +58,15 @@ install_pirat <- function(force = FALSE,
    if(verbose)
      cat('Installing miniconda...\n')
     tryCatch({
-      reticulate::install_miniconda(path = miniconda_path(), force = TRUE)
+      reticulate::install_miniconda(path = reticulate::miniconda_path(), 
+                                    force = TRUE)
       },
       error = function(e) {
         if(!silent){
           user_input <- readline("The R session must be restarted. Do you want to proceed ? (Y/n)  ")
           if(user_input == 'n') stop('Exiting...')
           restart_session(cmd = 'Pirat::install_pirat()',
-                    msg = "Please restart manually the R session.")
+                    alternate.msg = "Please restart manually the R session.")
         }
       })
     
