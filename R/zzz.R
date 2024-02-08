@@ -17,7 +17,7 @@
 msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   
   pirat_envname <- 'r-pirat'
   Sys.unsetenv("RETICULATE_PYTHON")
