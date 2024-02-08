@@ -17,7 +17,7 @@
 msg <- paste0("This is Pirat v", utils::packageVersion("Pirat"))
 packageStartupMessage(msg)
 
-.onAttach <- function(libname, pkgname) {
+.onLoad <- function(libname, pkgname) {
   
   #require(reticulate)
   pirat_envname <- 'r-pirat'
