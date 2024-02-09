@@ -7,7 +7,7 @@ Description: Pirat enables the imputation of missing values (either MNARs or
   the instrument censorship from the data available, it accounts for sibling
   peptides correlations and it can leverage complementary transcriptomics
   measurements. 
-Version: 0.1.0
+Version: 0.99.0
 Author: c(
     person("Lucas", "Etourneau", email = "lucas.etourneau@univ-grenoble-alpes.fr", role = c("cre", "aut")),
     person("Laura", "Fancello", email = " laura.fancello@cea.fr", role = c("cre", "aut")),
@@ -15,7 +15,7 @@ Author: c(
     person("Nelle", "Varoquaux", email = " nelle.varoquaux@univ-grenoble-alpes.fr", role = c("cre", "aut")),
     person("Thomas", "Burger", email = "thomas.burger@cea.fr",  role = c("cre", "aut"))
     )
-Maintainer: Lucas Etourneau <lucas.etourneau@univ-grenoble-alpes.fr>
+Maintainer: Samuel Wieczorek <samul.wieczorek@cea.fr>
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
