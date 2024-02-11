@@ -7,21 +7,24 @@
 estimate_psi_df(pep.ab.table)
 }
 \arguments{
-\item{pep.ab.table}{The peptide or precrursor abundance matrix, with molecules in columns and samples in row (can contain missing values).}
+\item{pep.ab.table}{The peptide or precursor abundance matrix, with 
+molecules in columns and samples in row (can contain missing values).}
 }
 \value{
-List containing estimated fitted hyperparameters df (degrees of freedom) and 
-psi (inverse scale).
+List containing estimated fitted hyperparameters df (degrees of 
+freedom) and psi (inverse scale).
 }
 \description{
-Estimate the inverse-gamma parameters from the ditribution of observed peptide variances in an abundance table.
+Estimate the inverse-gamma parameters from the distribution of 
+observed peptide variances in an abundance table.
 }
 \examples{
-\dontrun{
+library(Pirat)
 data(subbouyssie)
 obj <- subbouyssie
-obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] # Keep only fully observed peptides
+# Keep only fully observed peptides
+obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
 estimate_psi_df(obs2NApep)
-}
+
 
 }

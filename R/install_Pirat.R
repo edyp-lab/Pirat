@@ -9,13 +9,15 @@
 #' @param force A boolean (default value is FALSE) indicating whether to erase 
 #' a current installation of the package Pirat.
 #' @param silent A boolean (default is TRUE) xxx
-#' @param verbose A boolean (default is TRUE) to indicate whether to show details 
-#' or not.
+#' @param verbose A boolean (default is TRUE) to indicate whether to 
+#' show details or not.
 #' 
 #' @author Samuel Wieczorek
 #' 
+#' @return NULL
+#' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' install_pirat()
 #' }
 #'
@@ -65,7 +67,8 @@ install_pirat <- function(force = FALSE,
       },
       error = function(e) {
         if(!silent){
-          user_input <- readline("The R session must be restarted. Do you want to proceed ? (Y/n)  ")
+          user_input <- readline("The R session must be restarted. 
+                                 Do you want to proceed ? (Y/n)  ")
           if(user_input == 'n') stop('Exiting...')
           restart_session(cmd = 'Pirat::install_pirat()',
                     alternate.msg = "Please restart manually the R session.")
@@ -83,7 +86,8 @@ install_pirat <- function(force = FALSE,
     cat("\nInstallation complete.\n\n")
     
    restart_session(cmd = 'library(Pirat)',
-                   alternate.msg = "Please restart the R session and reload the 'Pirat' package.")
+                   alternate.msg = "Please restart the R session and 
+                   reload the 'Pirat' package.")
     
     invisible(NULL)
 }
@@ -100,7 +104,7 @@ restart_session <- function(cmd = NULL,
     if (is.rstudio() &&
         requireNamespace("rstudioapi", quietly = TRUE) &&
         rstudioapi::hasFun("restartSession"))
-      rstudioapi::restartSession(command=cmd)
+      rstudioapi::restartSession(command = cmd)
     else
       cat(paste0('\n', alternate.msg, '\n\n'))
   #}

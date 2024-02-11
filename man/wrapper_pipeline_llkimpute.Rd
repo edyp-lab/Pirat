@@ -11,6 +11,9 @@ wrapper_pipeline_llkimpute(se, ...)
 
 \item{...}{Additional arguments to pass to `pipeline_llkimpute()`}
 }
+\value{
+See pipeline_llkimpute() function
+}
 \description{
 xxx
 }

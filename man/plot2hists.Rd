@@ -19,9 +19,15 @@ plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = TRUE)
 
 \item{xlab}{X-axis label}
 
-\item{freq}{If True, bins heights correspond to raw counts, otherwise bins are normalized.}
+\item{freq}{If True, bins heights correspond to raw counts, otherwise bins 
+are normalized.}
 }
 \description{
 Plot 2 histograms on the same graph.
 xxxxx
+}
+\examples{
+NULL
+
+
 }

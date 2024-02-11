@@ -12,4 +12,8 @@ List with information on the current configuration of Pirat
 \description{
 Pirat configuration information
 }
+\examples{
+pirat_config()
+
+}
 \keyword{internal}

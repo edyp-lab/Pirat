@@ -12,3 +12,8 @@ A boolean indicating if the r-pirat if well configured
 \description{
 xxx
 }
+\examples{
+config_isValid()
+
+
+}

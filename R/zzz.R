@@ -37,10 +37,11 @@ packageStartupMessage(msg)
   # Force reticulate to use pytoon in the r-pirat env
   conda <- reticulate::conda_list()
   my_python <- reticulate::conda_python(pirat_envname)
-  Sys.setenv(RETICULATE_PYTHON = my_python)
+  #Sys.setenv(RETICULATE_PYTHON = my_python)
   
       packageStartupMessage("Loading conda env...")
-    if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname, required = TRUE),
+    if (!is.null(tryCatch(reticulate::use_miniconda(pirat_envname, 
+                                                    required = TRUE),
                          error = function(e) e,
                          warning = function(w) w))){
       cat("Env cannot be launched")
@@ -81,6 +82,10 @@ packageStartupMessage(msg)
 #' 
 #' @export
 #' 
+#' @examples
+#' config_isValid()
+#' 
+#' 
 config_isValid <- function(){
   
   config <- pirat_config()
@@ -99,6 +104,12 @@ config_isValid <- function(){
 #'
 #' @keywords internal
 #' @export
+#' 
+#' @examples
+#' pirat_config()
+#' 
+#' @return NULL
+#' 
 pirat_config <- function() {
   
   if (reticulate::condaenv_exists(envname = 'r-pirat'))
@@ -119,6 +130,8 @@ pirat_config <- function() {
   
   
   pkgs <- reticulate::py_list_packages()
+  .ver <- reticulate::py_config()$version_string
+  
   # get version
   structure(class = "pirat_config", list(
     available = TRUE,
@@ -127,7 +140,7 @@ pirat_config <- function() {
     numpy_version = pkgs[which(pkgs$package=='numpy'),]$version,
     matplotlib_version = pkgs[which(pkgs$package=='matplotlib'),]$version,
     location = reticulate::py_config()$pythonhome,
-    python_version = unlist(strsplit(reticulate::py_config()$version_string, split=' '))[1]
+    python_version <- unlist(strsplit(.ver, split = ' '))[1]
     ))
 }
 
@@ -135,7 +148,8 @@ pirat_config <- function() {
 print.pirat_config <- function(x, ...) {
   if (x$available) {
     aliased <- function(path) sub(Sys.getenv("HOME"), "~", path)
-    cat("Python v", x$python_version, " (location: ", aliased(x$location), "\n", sep = "")
+    cat("Python v", x$python_version, " (location: ", 
+        aliased(x$location), "\n", sep = "")
     cat("Active env: ", x$acive_env, "\n", sep = "")
     cat("pytorch v", x$torch_version, "\n", sep = "")
     cat("NumPy v", x$numpy_version, "\n", sep = "")
@@ -155,8 +169,11 @@ pirat_config_error_message <- function() {
   if (!is.null(config)) {
     if (length(config$python_versions) > 0) {
       message <- paste0(message,
-                        "\n\nPython environments searched for 'Pirat' package:\n")
-      python_versions <- paste0(" ", normalizePath(config$python_versions, mustWork = FALSE),
+                        "\n\nPython environments searched for 
+                        'Pirat' package:\n")
+      python_versions <- paste0(" ", 
+                                normalizePath(config$python_versions, 
+                                              mustWork = FALSE),
                                 collapse = "\n")
       message <- paste0(message, python_versions, sep = "\n")
     }
@@ -176,6 +193,7 @@ pirat_config_error_message <- function() {
                     python_error$message, "\n")
   
   message <- paste0(message,
-                    "\nYou can install Pirat using the install_pirat() function.\n")
+                    "\nYou can install Pirat using the install_pirat() 
+                    function.\n")
   message
 }

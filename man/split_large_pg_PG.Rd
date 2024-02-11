@@ -18,8 +18,10 @@ List containing new adjacency matrix between peptides and PGs,
 and new adjacency matrix between mRNA and PGs.
 }
 \description{
-Split PGs with too many peptides/precursors, and adapts adjacency matrix between mRNA and PGs accordingly. It creates different PGs with
-size equal to size max (including peptides and mRNAs). Hence, some peptides and mRNA can be duplicated in the new PGs.
+Split PGs with too many peptides/precursors, and adapts 
+adjacency matrix between mRNA and PGs accordingly. It creates different PGs 
+with size equal to size max (including peptides and mRNAs). Hence, some 
+peptides and mRNA can be duplicated in the new PGs.
 }
 \examples{
 NULL

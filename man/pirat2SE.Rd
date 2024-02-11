@@ -15,6 +15,9 @@ pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff)
 
 \item{mask_pep_diff}{xxx}
 }
+\value{
+An instance of the class `SummarizedExperiment`
+}
 \description{
 This function converts the original dataset structure into 
 a SummarizedExperiment .

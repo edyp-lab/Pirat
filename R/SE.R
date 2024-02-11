@@ -7,6 +7,8 @@
 #' @param mask_prot_diff xxx
 #' @param mask_pep_diff xxx
 #' 
+#' @return An instance of the class `SummarizedExperiment`
+#' 
 #' @import SummarizedExperiment
 #' 
 #' @export
@@ -63,7 +65,10 @@ require(SummarizedExperiment)
 #' subbouyssie$mask_pep_diff )
 #' res <- wrapper_pipeline_llkimpute(obj)
 #' 
-
+#' @return See pipeline_llkimpute() function
+#' 
+#' @import SummarizedExperiment
+#' 
 wrapper_pipeline_llkimpute <- function(se, ...){
   
   stopifnot(inherits(obj, 'SummarizedExperiment'))

@@ -57,7 +57,8 @@ in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and
 Also, the maximum size of PGs for which transcriptomic data can be used is 
 controlled with **max.pg.size.pirat.t**.}
 
-\item{mcar}{If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is considered.}
+\item{mcar}{If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is 
+considered.}
 
 \item{degenerated}{If TRUE, applies Pirat-Degenerated (i.e. its univariate 
 alternative) as described in original paper. Should not be TRUE unless for 
@@ -80,7 +81,6 @@ parameters. Finally, it imputes the peptide/precursor-level dataset with
 desired extension.
 }
 \examples{
-\dontrun{
 # Pirat classical mode
 library(Pirat)
 data(subbouyssie)
@@ -95,6 +95,5 @@ pipeline_llkimpute(subropers,
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
-}
 
 }
