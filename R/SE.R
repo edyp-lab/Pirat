@@ -7,36 +7,41 @@
 #' @param mask_prot_diff xxx
 #' @param mask_pep_diff xxx
 #' 
+#' @return An instance of the class `SummarizedExperiment`
+#' 
 #' @import SummarizedExperiment
-#' @import S4Vectors
 #' 
 #' @export
 #' 
 #' @examples
+#' library(SummarizedExperiment)
 #' data(subbouyssie)
-#' pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
+#' peptides_ab <- subbouyssie$peptides_ab
+#' adj <- subbouyssie$adj
+#' mask_prot_diff <- subbouyssie$mask_prot_diff
+#' mask_pep_diff <- subbouyssie$mask_pep_diff
+#' obj <- pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
+#' obj
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
                      mask_prot_diff, 
                      mask_pep_diff){
   
-  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
-    stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
-  }
-  if (!requireNamespace("S4Vectors", quietly = TRUE)) {
-    stop("Please install S4Vectors: BiocManager::install('S4Vectors')")
-  }
-  
- obj <- SummarizedExperiment(assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
-                       colData = S4Vectors::DataFrame(Condition = colnames(t(peptides_ab)),
-                                         Sample = colnames(t(peptides_ab)),
-                                         row.names = colnames(t(peptides_ab)))
-  )
+  # if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
+  #   stop("Please install SummarizedExperiment: BiocManager::install('SummarizedExperiment')")
+  # }
+require(SummarizedExperiment)
+ obj <- SummarizedExperiment::SummarizedExperiment(
+   assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
+   colData = data.frame(Condition = colnames(t(peptides_ab)),
+                        Sample = colnames(t(peptides_ab)),
+                        row.names = colnames(t(peptides_ab)))
+   )
  
- S4Vectors::metadata(obj)$adj <- adj
- S4Vectors::metadata(obj)$mask_prot_diff <- mask_prot_diff
- S4Vectors::metadata(obj)$mask_pep_diff <- mask_pep_diff
+ metadata(obj)$adj <- adj
+ metadata(obj)$mask_prot_diff <- mask_prot_diff
+ metadata(obj)$mask_pep_diff <- mask_pep_diff
   
   obj
 }
@@ -47,7 +52,7 @@ pirat2SE <- function(peptides_ab,
 #' @title xxx
 #' @description xxx
 #' 
-#' @param se xxx
+#' @param se An instance of the class SummarizedExperiment
 #' @param ... Additional arguments to pass to `pipeline_llkimpute()`
 #' 
 #' @import SummarizedExperiment
@@ -60,7 +65,10 @@ pirat2SE <- function(peptides_ab,
 #' subbouyssie$mask_pep_diff )
 #' res <- wrapper_pipeline_llkimpute(obj)
 #' 
-
+#' @return See pipeline_llkimpute() function
+#' 
+#' @import SummarizedExperiment
+#' 
 wrapper_pipeline_llkimpute <- function(se, ...){
   
   stopifnot(inherits(obj, 'SummarizedExperiment'))

@@ -22,3 +22,15 @@ Useful links:
 }
 
 }
+\author{
+\strong{Maintainer}: Samuel Wieczorek \email{samuel.wieczorek@cea.fr}
+
+Authors:
+\itemize{
+  \item Lucas Etourneau \email{lucas.etourneau@univ-grenoble-alpes.fr}
+  \item Laura Fancello \email{laura.fancello@cea.fr}
+  \item Nelle Varoquaux \email{nelle.varoquaux@univ-grenoble-alpes.fr}
+  \item Thomas Burger \email{thomas.burger@cea.fr}
+}
+
+}

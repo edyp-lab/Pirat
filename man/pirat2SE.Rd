@@ -15,12 +15,21 @@ pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff)
 
 \item{mask_pep_diff}{xxx}
 }
+\value{
+An instance of the class `SummarizedExperiment`
+}
 \description{
 This function converts the original dataset structure into 
 a SummarizedExperiment .
 }
 \examples{
+library(SummarizedExperiment)
 data(subbouyssie)
-pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
+peptides_ab <- subbouyssie$peptides_ab
+adj <- subbouyssie$adj
+mask_prot_diff <- subbouyssie$mask_prot_diff
+mask_pep_diff <- subbouyssie$mask_pep_diff
+obj <- pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
+obj
 
 }

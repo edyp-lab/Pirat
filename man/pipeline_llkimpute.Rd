@@ -13,44 +13,62 @@ pipeline_llkimpute(
   extension = "base",
   mcar = FALSE,
   degenerated = FALSE,
-  max.pg.size.pirat.t = 1
+  max.pg.size.pirat.t = 1,
+  verbose = FALSE
 )
 }
 \arguments{
-\item{data.pep.rna.mis}{A list containing important elements of the dataset to impute. Must contain:
-**peptides_ab**, the peptide or precursor abundance matrix to impute, with samples in 
-row and peptides or precursors in column; **adj**, a n_peptide x n_protein 
-adjacency matrix between peptides and proteins containing 0 and 1, 
-or TRUE and FALSE. Can contain: **rnas_ab**, the mRNA normalized count matrix, with samples in 
-row and mRNAs in column; **adj_rna_pg**, a n_mrna x n_protein 
-adjacency matrix n_mrna and proteins containing 0 and 1, or TRUE and FALSE;}
+\item{data.pep.rna.mis}{A list containing important elements of the dataset 
+to impute. Must contain:
+**peptides_ab**, the peptide or precursor abundance matrix to impute, with 
+samples in row and peptides or precursors in column; 
+**adj**, a n_peptide x n_protein adjacency matrix between peptides and 
+proteins containing 0 and 1, or TRUE and FALSE.
+Can contain: 
+**rnas_ab**, the mRNA normalized count matrix, with samples in 
+row and mRNAs in column;
+**adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
+containing 0 and 1, or TRUE and FALSE;}
 
-\item{pep.ab.comp}{The pseudo-complete peptide or precursor abundance matrix, with samples in 
-row and peptides or precursors in column. Useful only in mask-and-impute 
-experiments, if one wants to impute solely peptides containing pseudo-MVs.}
+\item{pep.ab.comp}{The pseudo-complete peptide or precursor abundance matrix,
+with samples in row and peptides or precursors in column. Useful only in 
+mask-and-impute experiments, if one wants to impute solely peptides 
+containing pseudo-MVs.}
 
-\item{alpha.factor}{Factor that multiplies the parameter alpha of the penalty described in the
-original paper.}
+\item{alpha.factor}{Factor that multiplies the parameter alpha of the 
+penalty described in the original paper.}
 
-\item{rna.cond.mask}{Vector of indexes representing conditions of samples of mRNA table, only mandatory
-if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).}
+\item{rna.cond.mask}{Vector of indexes representing conditions of samples 
+of mRNA table, only mandatory if extension == "T". For paired proteomic and 
+transcriptomic tables, should be c(1:n_samples).}
 
-\item{pep.cond.mask}{Vector of indexes representing conditions of samples of mRNA table, only mandatory
-if extension == "T". For paired proteomic and transcriptomic tables, should be c(1:n_samples).}
+\item{pep.cond.mask}{Vector of indexes representing conditions of samples 
+of mRNA table, only mandatory if extension == "T". For paired proteomic 
+and transcriptomic tables, should be c(1:n_samples).}
 
-\item{extension}{If NULL (default), classical Pirat is applied. If "2", only imputes
-PGs containing at least 2 peptides or precursors, and remaining peptides are left unchanged.
-If "S", Pirat-S is applied, considering sample-wise correlations only for singleton PGs.
+\item{extension}{If NULL (default), classical Pirat is applied. If "2", 
+only imputes PGs containing at least 2 peptides or precursors, and 
+remaining peptides are left unchanged.
+If "S", Pirat-S is applied, considering sample-wise correlations only for
+ singleton PGs.
 It "T", Pirat-T is applied, thus requiring **rnas_ab** and **adj_rna_pg** 
-in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and **pep.cond.mask**.
-Also, the maximum size of PGs for which transcriptomic data can be used is controlled with **max.pg.size.pirat.t**.}
+in list **data.pep.rna.mis**, as well as non-NULL **rna.cond.mask** and 
+**pep.cond.mask**.
+Also, the maximum size of PGs for which transcriptomic data can be used is 
+controlled with **max.pg.size.pirat.t**.}
 
-\item{mcar}{If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is considered.}
+\item{mcar}{If TRUE, forces gamma_1 = 0, thus no MNAR mechanism is 
+considered.}
 
-\item{degenerated}{If TRUE, applies Pirat-Degenerated (i.e. its univariate alternative) as described in original paper.
-Should not be TRUE unless for experimental purposes.}
+\item{degenerated}{If TRUE, applies Pirat-Degenerated (i.e. its univariate 
+alternative) as described in original paper. Should not be TRUE unless for 
+experimental purposes.}
 
-\item{max.pg.size.pirat.t}{When extension == "T", the maximum PG size for which transcriptomic information is used for imputation.}
+\item{max.pg.size.pirat.t}{When extension == "T", the maximum PG size for 
+which transcriptomic information is used for imputation.}
+
+\item{verbose}{A boolean (FALSE as default) which indicates whether to 
+display more details on the process}
 }
 \value{
 The imputed **data.pep.rna.mis$peptides_ab** table.
@@ -59,10 +77,10 @@ The imputed **data.pep.rna.mis$peptides_ab** table.
 Imputation pipeline of Pirat. First, it creates PGs. Then,
 it estimates parameters of the penalty term (that amounts to an
 inverse-Wishart prior). Second, it estimates the missingness mechanism
-parameters. Finally, it imputes the peptide/precursor-level dataset with desired extension.
+parameters. Finally, it imputes the peptide/precursor-level dataset with 
+desired extension.
 }
 \examples{
-\dontrun{
 # Pirat classical mode
 library(Pirat)
 data(subbouyssie)
@@ -70,13 +88,12 @@ pipeline_llkimpute(subbouyssie)
 
 # Pirat with transcriptomic integration for singleton PGs
 library(Pirat)
-data(ropers)
-nsamples = nrow(ropers$peptides_ab)
-pipeline_llkimpute(ropers, 
+data(subropers)
+nsamples = nrow(subropers$peptides_ab)
+pipeline_llkimpute(subropers, 
                    extension = "T",
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
-}
 
 }

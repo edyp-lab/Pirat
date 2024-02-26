@@ -4,9 +4,11 @@
 #' @description 
 #' ## To be customized ##
 #' 
-#' @param id xxx
-#' @param obj xxx
+#' @param id The id of the module
+#' @param obj An list of two items
 #' @param reset xxx
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details on the process
 #' 
 #' @name mod_Pirat
 #'
@@ -23,7 +25,8 @@ mod_Pirat_ui <- function(id){
   tagList(
     uiOutput(ns('extension_ui')),
     shiny::actionButton(ns("run"), "Run Pirat"),
-    uiOutput(ns('valid_btn_ui'))
+    uiOutput(ns('valid_btn_ui')),
+    plotOutput(ns('correlation_plot_UI'))
   )
 }
 
@@ -32,7 +35,8 @@ mod_Pirat_ui <- function(id){
 #' @export
 mod_Pirat_server <- function(id,
                              obj = reactive({NULL}),
-                             reset = reactive({NULL})
+                             reset = reactive({NULL}),
+                             verbose = FALSE
                              ) {
   
   
@@ -80,7 +84,8 @@ mod_Pirat_server <- function(id,
         withCallingHandlers(
          # out <- long_run_op(num_iter=10),
            dataOut$value <- pipeline_llkimpute(obj(),
-                                               extension = input$extension),
+                                               extension = input$extension,
+                                               verbose = verbose),
            dataOut$trigger <- as.numeric(Sys.time()),
            dataOut$widgets <- list(extension = input$extension),
            
@@ -98,6 +103,12 @@ mod_Pirat_server <- function(id,
       
       
       
+    })
+    
+    
+    output$correlation_plot_UI <- renderPlot({
+      req(obj())
+      plot_pep_correlations(pep.data = obj())
     })
      
     # observeEvent(input$valid_btn, {

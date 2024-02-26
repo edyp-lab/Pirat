@@ -7,7 +7,8 @@
 rm_pg_from_idx_merge_pg(l_pep_rna, pg_idx)
 }
 \arguments{
-\item{l_pep_rna}{A list representing dataset, formatted as in pipeline_llkimpute function}
+\item{l_pep_rna}{A list representing dataset, formatted as in 
+pipeline_llkimpute function}
 
 \item{pg_idx}{Vector of indices}
 }
@@ -15,9 +16,10 @@ rm_pg_from_idx_merge_pg(l_pep_rna, pg_idx)
 A list representing dataset.
 }
 \description{
-Remove PG by index and merge transcripts (if transcriptomic information is available)
-of PG included in one another (under condition that they have peptide).
-Then it removes transcripts without PG. Do not remove peptides that are left without PG.
+Remove PG by index and merge transcripts (if transcriptomic 
+information is available) of PG included in one another (under condition 
+that they have peptide). Then it removes transcripts without PG. Do not 
+remove peptides that are left without PG.
 }
 \examples{
 NULL

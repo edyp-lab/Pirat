@@ -15,10 +15,13 @@ split_large_pg(adj, size_max)
 New adjacency matrix between peptides and PGs.
 }
 \description{
-Split PGs with too many peptides/precursors. It creates different PGs with
-size equal to size max. Hence, some peptides can be duplicated in the new PGs.
+Split PGs with too many peptides/precursors. It creates 
+different PGs with size equal to size max. Hence, some peptides can be
+ duplicated in the new PGs.
 }
 \examples{
-NULL
+library(Pirat)
+data(subbouyssie)
+split_large_pg(subbouyssie$adj, 3)
 
 }

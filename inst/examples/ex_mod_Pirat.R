@@ -8,11 +8,13 @@ server <- function(input, output, session) {
 
   
   data(Exp1_R25_pept, package = 'DAPARdata')
-  data(bouyssie, package = 'Pirat')
+  data(subbouyssie, package = 'Pirat')
   
+  obj <- subbouyssie
   res <- mod_Pirat_server('pirat',
-                         obj = reactive({bouyssie}),
-                         reset = reactive({NULL}))
+                         obj = reactive({obj}),
+                         reset = reactive({NULL}),
+                         verbose = FALSE)
 
   
    observeEvent(res()$trigger, {

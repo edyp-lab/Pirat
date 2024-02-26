@@ -87,7 +87,9 @@
 
 
 # Remove peptides with number of MVs higher or equal to t
-remove_NA_pep_reset <- function(l_pep_rna, t, percentage=F) {
+remove_NA_pep_reset <- function(l_pep_rna, 
+                                t, 
+                                percentage=FALSE) {
   nsample = nrow(l_pep_rna$rnas_ab)
   if (percentage) {
     t = ceiling(nsample*t)
@@ -101,14 +103,15 @@ remove_NA_pep_reset <- function(l_pep_rna, t, percentage=F) {
 remove_Os_rna_reset <- function(l_pep_rna, cond_idx, n_cond_min=2,
                                 offset_log = 1) {
   rnas_ab = 2^l_pep_rna$rnas_ab - offset_log
-  count_present = matrix(F, length(unique(cond_idx)), ncol(rnas_ab))
+  count_present = matrix(FALSE, length(unique(cond_idx)), ncol(rnas_ab))
   for (cond in unique(cond_idx)) {
-    count_present[cond, ] = colSums(rnas_ab[cond_idx == cond, , drop = F] > 0) >= 1
+    .tmp <- rnas_ab[cond_idx == cond, , drop = FALSE]
+    count_present[cond, ] <- colSums(.tmp > 0) >= 1
   }
   idx_rna_2_rm = which(colSums(count_present) < n_cond_min)
   if (length(idx_rna_2_rm) != 0) {
-    l_pep_rna$adj_rna_pg = l_pep_rna$adj_rna_pg[-idx_rna_2_rm, ]
-    l_pep_rna$rnas_ab = l_pep_rna$rnas_ab[, -idx_rna_2_rm]
+    l_pep_rna$adj_rna_pg <- l_pep_rna$adj_rna_pg[-idx_rna_2_rm, ]
+    l_pep_rna$rnas_ab <- l_pep_rna$rnas_ab[, -idx_rna_2_rm]
     return(l_pep_rna)
   }
   else {
@@ -132,12 +135,22 @@ remove_shared_pep <- function(l_pep_rna) {
     if (length(i_rna_rm) != 0) {
       new_rna = l_pep_rna$rnas_ab[,-i_rna_rm]
       new_adj = new_adj[,-i_rna_rm]
-      return(list("peptides_ab" = new_pep, "rnas_ab" = new_rna, "adj" = new_adj,
-                  "charges" = new_z, "modifs" = new_modifs))
+      return(
+        list("peptides_ab" = new_pep, 
+                  "rnas_ab" = new_rna, 
+                  "adj" = new_adj,
+                  "charges" = new_z, 
+                  "modifs" = new_modifs)
+        )
     }
     else {
-      return(list("peptides_ab" = new_pep, "rnas_ab" = l_pep_rna$rnas_ab,
-                  "adj" = new_adj, "charges" = new_z, "modifs" = new_modifs))
+      return(
+        list("peptides_ab" = new_pep, 
+                  "rnas_ab" = l_pep_rna$rnas_ab,
+                  "adj" = new_adj, 
+                  "charges" = new_z, 
+                  "modifs" = new_modifs)
+        )
     }
 
   }

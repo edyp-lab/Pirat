@@ -64,81 +64,81 @@ call_hook <- function(name, ...) {
   response <- FALSE
   lapply(hooks, function(hook) {
     if (isTRUE(hook(...)))
-      response <<- TRUE
+      response <- TRUE
   })
   response
 }
 
-
-
-#' @title xxx
-#' @description xxx
-#'
-#' @export
-#' @return A boolean
-#' @export
-is_windows <- function() {
-  identical(.Platform$OS.type, "windows")
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
-#' @export
-is_unix <- function() {
-  identical(.Platform$OS.type, "unix")
-}
-
-#' @title xxx
-#' @description xxx
 #' 
-#' @export
-#'
-#' @return A boolean
 #' 
-is_osx <- function() {
-  Sys.info()[["sysname"]] == "Darwin"
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
+#' #' @title xxx
+#' #' @description xxx
+#' #'
+#' #' @export
+#' #' @return A boolean
+#' #' @export
+#' is_windows <- function() {
+#'   identical(.Platform$OS.type, "windows")
+#' }
 #' 
-is_linux <- function() {
-  identical(tolower(Sys.info()[["sysname"]]), "linux")
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
+#' #' @title xxx
+#' #' @description xxx
+#' #' @export
+#' #' @return A boolean
+#' #' @export
+#' is_unix <- function() {
+#'   identical(.Platform$OS.type, "unix")
+#' }
 #' 
-is_ubuntu <- function() {
-  # check /etc/lsb-release
-  if (is_unix() && file.exists("/etc/lsb-release")) {
-    lsbRelease <- readLines("/etc/lsb-release")
-    any(grepl("Ubuntu", lsbRelease))
-  } else {
-    FALSE
-  }
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
+#' #' @title xxx
+#' #' @description xxx
+#' #' 
+#' #' @export
+#' #'
+#' #' @return A boolean
+#' #' 
+#' is_osx <- function() {
+#'   Sys.info()[["sysname"]] == "Darwin"
+#' }
 #' 
-is_debian <- function() {
-  # check /etc/os-release
-  if (is_unix() && file.exists("/etc/os-release")) {
-    osRelease <- readLines("/etc/os-release")
-    any(grepl("Debian", osRelease))
-  } else {
-    FALSE
-  }
-}
+#' #' @title xxx
+#' #' @description xxx
+#' #' @export
+#' #' @return A boolean
+#' #' 
+#' is_linux <- function() {
+#'   identical(tolower(Sys.info()[["sysname"]]), "linux")
+#' }
+#' 
+#' #' @title xxx
+#' #' @description xxx
+#' #' @export
+#' #' @return A boolean
+#' #' 
+#' is_ubuntu <- function() {
+#'   # check /etc/lsb-release
+#'   if (is_unix() && file.exists("/etc/lsb-release")) {
+#'     lsbRelease <- readLines("/etc/lsb-release")
+#'     any(grepl("Ubuntu", lsbRelease))
+#'   } else {
+#'     FALSE
+#'   }
+#' }
+#' 
+#' #' @title xxx
+#' #' @description xxx
+#' #' @export
+#' #' @return A boolean
+#' #' 
+#' is_debian <- function() {
+#'   # check /etc/os-release
+#'   if (is_unix() && file.exists("/etc/os-release")) {
+#'     osRelease <- readLines("/etc/os-release")
+#'     any(grepl("Debian", osRelease))
+#'   } else {
+#'     FALSE
+#'   }
+#' }
 
 
 #' @title Indexes of PGs embedded in each others
@@ -150,7 +150,9 @@ is_debian <- function() {
 #' @export
 #'
 #' @examples
-#' NULL
+#' library(Pirat)
+#' data(subbouyssie)
+#' get_indexes_embedded_prots(subbouyssie$adj)
 #'
 get_indexes_embedded_prots <- function(adj) {
   similarity.mat = t(adj) %*% adj
@@ -168,11 +170,13 @@ get_indexes_embedded_prots <- function(adj) {
 
 
 #' @title Remove PGs by index and merge
-#' @description Remove PG by index and merge transcripts (if transcriptomic information is available)
-#' of PG included in one another (under condition that they have peptide).
-#' Then it removes transcripts without PG. Do not remove peptides that are left without PG.
+#' @description Remove PG by index and merge transcripts (if transcriptomic 
+#' information is available) of PG included in one another (under condition 
+#' that they have peptide). Then it removes transcripts without PG. Do not 
+#' remove peptides that are left without PG.
 #'
-#' @param l_pep_rna A list representing dataset, formatted as in pipeline_llkimpute function
+#' @param l_pep_rna A list representing dataset, formatted as in 
+#' pipeline_llkimpute function
 #' @param pg_idx Vector of indices
 #'
 #' @return A list representing dataset.
@@ -183,19 +187,20 @@ get_indexes_embedded_prots <- function(adj) {
 #'
 rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
   if (!(length(pg_idx) == 0) & !is.null(pg_idx)) {
-    adj2keep = l_pep_rna$adj[, -pg_idx, drop = F]
-    adj2rm = l_pep_rna$adj[, pg_idx, drop = F]
+    adj2keep = l_pep_rna$adj[, -pg_idx, drop = FALSE]
+    adj2rm = l_pep_rna$adj[, pg_idx, drop = FALSE]
     l_pep_rna$adj = adj2keep
     if (!is.null(l_pep_rna$adj_rna_pg)) {
       n_pep_per_pg2rm = colSums(adj2rm)
       pg_sim_mat = ((t(adj2rm) %*% adj2keep) == n_pep_per_pg2rm) &
         (n_pep_per_pg2rm != 0)
       idx.pg2merge = which(pg_sim_mat, arr.ind = TRUE)
-      adj2keep_rna = l_pep_rna$adj_rna_pg[, -pg_idx, drop = F]
-      adj2rm_rna = l_pep_rna$adj_rna_pg[, pg_idx, drop = F] 
+      adj2keep_rna = l_pep_rna$adj_rna_pg[, -pg_idx, drop = FALSE]
+      adj2rm_rna = l_pep_rna$adj_rna_pg[, pg_idx, drop = FALSE] 
       if (length(idx.pg2merge) != 0) {
         for (i in 1:nrow(idx.pg2merge)) {
-          adj2keep_rna[, idx.pg2merge[i, 2]] = adj2keep_rna[, idx.pg2merge[i, 2]] | 
+          adj2keep_rna[, idx.pg2merge[i, 2]] <-
+            adj2keep_rna[, idx.pg2merge[i, 2]] | 
             adj2rm_rna[, idx.pg2merge[i, 1]]
         }
       }
@@ -221,8 +226,9 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 
 #' @title Split too large PGs
 #' 
-#' @description Split PGs with too many peptides/precursors. It creates different PGs with
-#' size equal to size max. Hence, some peptides can be duplicated in the new PGs.
+#' @description Split PGs with too many peptides/precursors. It creates 
+#' different PGs with size equal to size max. Hence, some peptides can be
+#'  duplicated in the new PGs.
 #'
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
@@ -231,7 +237,9 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' library(Pirat)
+#' data(subbouyssie)
+#' split_large_pg(subbouyssie$adj, 3)
 #'
 split_large_pg = function(adj, 
                           size_max) {
@@ -244,14 +252,14 @@ split_large_pg = function(adj,
     idx_adj2bind = 1
     for (i in 1:length(idx_pg_too_large)) {
       cur_pg_idx = idx_pg_too_large[i]
-      cur_pg = adj[, cur_pg_idx, drop = F]
+      cur_pg = adj[, cur_pg_idx, drop = FALSE]
       idx_pg_pep = which(cur_pg == 1)
       n_groups = ceiling(sum(cur_pg) / size_max)
       groups_idx_pg_pep = suppressWarnings(
-        split(sample(idx_pg_pep, replace = F), 1:n_groups)
+        split(sample(idx_pg_pep, replace = FALSE), 1:n_groups)
       )
       for (j in 1:length(groups_idx_pg_pep)) {
-        new_pg = rep(F, npeps)
+        new_pg = rep(FALSE, npeps)
         idx2add = setdiff(idx_pg_pep, groups_idx_pg_pep[[j]])
         n2samples = size_max - length(groups_idx_pg_pep[[j]])
         idx2add = sample(idx2add, n2samples)
@@ -267,23 +275,35 @@ split_large_pg = function(adj,
 }
 
 # TODO: Rename this function in code. 
-# TODO: Impfunc shoud not be passed as parameter, by we should directly call "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to remove them
+# TODO: Impfunc shoud not be passed as parameter, by we should directly call 
+# TODO: "estimate params & impute.
+# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to 
+# TODO: remove them
 #' @title Impute each PG.
 #' @description Imputes each PG separately and return the results for each PG. 
 #'
 #' @param data.pep.rna.crop A list representing dataset
 # #' @param impfunc Imputation function
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
-#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
-#' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
-#' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
+#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide
+#'  the ground truth abundance table, 
+#' such that imputation will by done only for pseudo-MVs. This will accelerate 
+#' imputation algorithm.
+#' @param df Estimate degree of freedom of the IG distribution fitted on 
+#' observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
-#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
-#' @param min.pg.size2imp Minimum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
+#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is 
+#' plitted if its size is above this threshold.
+#' @param min.pg.size2imp Minimum PG size to impute after splitting. PGs for 
+#' which size is greater are not imputed. Should be lower than max_pg_size to 
+#' have effect. 
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details ont the process
 #' @param ... xxx
 #'
-#' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
+#' @return A list containing imputation results for each PG, the execution time,
+#'  and adjacency matrix between peptides and PGs corresponding to the 
+#'  imputed PGs.
 #' @export
 #'
 #' @examples
@@ -296,6 +316,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
                                   nu_factor = 2,
                                   max_pg_size = NULL,
                                   min.pg.size2imp = 1,
+                                  verbose = FALSE,
                                   ...) {
   
   adj = data.pep.rna.crop$adj
@@ -308,13 +329,16 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   logs = list()
   npseudoNA = 0
   begtime = Sys.time()
-  if (min.pg.size2imp > 1) { # If need to remove too small PGs, change adj and PG indexes
+  if (min.pg.size2imp > 1) { 
+    # If need to remove too small PGs, change adj and PG indexes
     pg.idxs = which(colSums(adj) >= min.pg.size2imp)
-    adj = adj[, pg.idxs, drop = F]
+    adj = adj[, pg.idxs, drop = FALSE]
     prot.idxs = 1:ncol(adj)
   }
   n_params = sum(colSums(adj)^2)
-  pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+  pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent 
+                                   [Elapsed time: :elapsedfull || Estimated 
+                                   time remaining: :eta]",
                          total = n_params,
                          complete = "=",   # Completion bar character
                          incomplete = "-", # Incomplete bar character
@@ -324,10 +348,12 @@ impute_block_llk_reset = function(data.pep.rna.crop,
   
   for (i in prot.idxs) {
     #message("##### peptide group=", i, "#####")
-    message("Peptide_group ", i," of ", ncol(adj))
+    if(verbose)
+      message("Peptide_group ", i," of ", ncol(adj))
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick(length(idx_cur_pep)^2)
-    cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], nrow = nsamples)
+    cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], 
+                    nrow = nsamples)
     colnames(cur_ab) = colnames(data.pep.rna.crop$peptides_ab)[idx_cur_pep]
     if (is.null(pep_ab_or)) {
       X_gt = NULL
@@ -350,11 +376,12 @@ impute_block_llk_reset = function(data.pep.rna.crop,
       psimat = psi*diag(n_pep_cur)
       #res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
       
-      res_imp = py$estimate_params_and_impute(subpp_ab, 
-                                              true_X = X_gt, 
-                                              K = K, 
-                                              psi = psimat, 
-                                              ...) # + max(colSums(is.na(subpp_ab)))
+      res_imp = py$estimate_params_and_impute(
+        subpp_ab, 
+        true_X = X_gt, 
+        K = K, 
+        psi = psimat, 
+        ...) # + max(colSums(is.na(subpp_ab)))
       
       
       
@@ -378,8 +405,10 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 # TODO: Rename the function
 #' @title Split too large PGs in multi-omic context
 #' 
-#' @description Split PGs with too many peptides/precursors, and adapts adjacency matrix between mRNA and PGs accordingly. It creates different PGs with
-#' size equal to size max (including peptides and mRNAs). Hence, some peptides and mRNA can be duplicated in the new PGs.
+#' @description Split PGs with too many peptides/precursors, and adapts 
+#' adjacency matrix between mRNA and PGs accordingly. It creates different PGs 
+#' with size equal to size max (including peptides and mRNAs). Hence, some 
+#' peptides and mRNA can be duplicated in the new PGs.
 #'
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
@@ -407,16 +436,16 @@ split_large_pg_PG = function(adj,
     adj_rna_pg_2bind = matrix(NA, nrow = nrnas, ncol = 0)
     for (i in 1:length(idx_pg_too_large)) {
       cur_pg_idx = idx_pg_too_large[i]
-      cur_pg = adj[, cur_pg_idx, drop = F]
+      cur_pg = adj[, cur_pg_idx, drop = FALSE]
       idx_pg_pep = which(cur_pg == 1)
-      cur_rna_pg = matrix(adj_rna_pg[, cur_pg_idx, drop = F], ncol = 1)
+      cur_rna_pg = matrix(adj_rna_pg[, cur_pg_idx, drop = FALSE], ncol = 1)
       colnames(cur_rna_pg) = colnames(adj_rna_pg)[cur_pg_idx]
       n_rna_cur_pg = sum(cur_rna_pg)
       stopifnot("Size max of pg too low when including RNA expression" =
                   n_rna_cur_pg < size_max)
       n_groups = ceiling(sum(cur_pg) / (size_max - n_rna_cur_pg) )
       groups_idx_pg_pep = suppressWarnings(
-        split(sample(idx_pg_pep, replace = F), 1:n_groups)
+        split(sample(idx_pg_pep, replace = FALSE), 1:n_groups)
       )
       for (j in 1:length(groups_idx_pg_pep)) {
         new_pg = rep(0, npeps)
@@ -437,30 +466,49 @@ split_large_pg_PG = function(adj,
 }
 
 # TODO: Rename this function in code. 
-# TODO: Impfunc shoud not be passed as parameter, by we should directly call "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to remove tham
+# TODO: Impfunc shoud not be passed as parameter, by we should directly call
+# "estimate params & impute.
+# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to 
+# remove them
 #' @title Impute each PG.
-#' @description Imputes each PG separately accounting for transcriptomic dataset and returns the results for each PG. 
+#' @description Imputes each PG separately accounting for transcriptomic 
+#' dataset and returns the results for each PG. 
 #'
-#' @param data.pep.rna.crop A list representing dataset, with mRNA normalized counts and mRNA/PGs adjacecy table.
+#' @param data.pep.rna.crop A list representing dataset, with mRNA normalized 
+#' counts and mRNA/PGs adjacecy table.
 # #' @param impfunc Imputation function
 #' @param psi Inverse scale parameter for IW prior of peptides abundances
 #' @param psi_rna Inverse scale parameter for IW prior of mRNA abundances
-#' @param rna.cond.mask Vector of size equal to the number of samples in mRNA abundance table, 
+#' @param rna.cond.mask Vector of size equal to the number of samples in mRNA 
+#' abundance table, 
 #' containing indices of conditions of each sample.
-#' @param pep.cond.mask Vector of size equal to the number of samples in peptide abundance table, 
+#' @param pep.cond.mask Vector of size equal to the number of samples in 
+#' peptide abundance table, 
 #' containing indices of conditions of each sample.
-#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
-#' such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.
-#' @param df Estimate degree of freedom of the IG distribution fitted on observed variance.
+#' @param pep_ab_or In case we impute a dataset with pseudo-MVS, we can provide 
+#' the ground truth abundance table, such that imputation will by done only for 
+#' pseudo-MVs. This will accelerate imputation algorithm.
+#' @param df Estimate degree of freedom of the IG distribution fitted on 
+#' observed variance.
 #' @param nu_factor Multiplication factor on degree of freedom. 2 by default.
-#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.
-#' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect. 
+#' @param max_pg_size Maximum PGs size authorized for imputation. PG size is 
+#' plitted if its size is above this threshold.
+#' @param max.pg.size2imp Maximum PG size to impute after splitting. PGs for 
+#' which size is greater are not imputed. Should be lower than max_pg_size to 
+#' have effect. 
+#' @param verbose A boolean (FALSE as default) which indicates whether to 
+#' display more details ont the process
 #' @param ... xxx
 #'
-#' @return A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
+#' @return A list containing imputation results for each PG, the execution time,
+#'  and adjacency matrix between peptides and PGs corresponding to the 
+#'  imputed PGs.
 #' @export
 #' @import reticulate
+#' 
+#' @examples
+#' NULL
+#' 
 #'
 impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      psi,
@@ -472,6 +520,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                                      nu_factor = 1,
                                      max_pg_size = NULL,
                                      max.pg.size2imp = 1,
+                                     verbose = FALSE,
                                      ...) {
 
   if (!is.null(max_pg_size)) {
@@ -494,23 +543,27 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
     nrep_rna = sum(rna.cond.mask == i)
     nrep_pep = sum(pep.cond.mask == i)
     rnas_means = colMeans(matrix(
-      data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = F], nrep_rna))
+      data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = FALSE], nrep_rna))
     # rnas_sds = apply(matrix(
     #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, sd, na.rm = TRUE)
     # rnas_sds[is.na(rnas_sds)] = 0
     # rnas_ab[pep.cond.mask == i, ] = matrix(rnorm(
     #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, byrow = TRUE) # This line enables to sample from statistics of each condition instead of setting the mean.
-    rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), nrep_pep, byrow =TRUE)
+    rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), 
+                                           nrep_pep, 
+                                           byrow =TRUE)
     
   }
   if (!is.null(max.pg.size2imp)) {
     pg.idxs = which(colSums(adj) <= max.pg.size2imp)
-    adj = adj[, pg.idxs, drop = F]
-    adj_rna_pg = adj_rna_pg[, pg.idxs, drop = F]
+    adj = adj[, pg.idxs, drop = FALSE]
+    adj_rna_pg = adj_rna_pg[, pg.idxs, drop = FALSE]
     prot.idxs = 1:ncol(adj)
   }
-  n_params = sum((colSums(adj[, prot.idxs, drop = F]) + 1)^2)
-  pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+  n_params = sum((colSums(adj[, prot.idxs, drop = FALSE]) + 1)^2)
+  pb <- progress::progress_bar$new(
+    format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || 
+    Estimated time remaining: :eta]",
                          total = n_params,
                          complete = "=",   # Completion bar character
                          incomplete = "-", # Incomplete bar character
@@ -518,11 +571,15 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
   for (i in prot.idxs) {
+    if(verbose)
+      message("Peptide_group ", i," of ", ncol(adj))
+    
     # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick((length(idx_cur_pep) + 1)^2)
     idx_cur_rna = which(adj_rna_pg[,i] == 1)
-    cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], nrow = nsamples)
+    cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], 
+                    nrow = nsamples)
     colnames(cur_ab) = colnames(data.pep.rna.crop$peptides_ab)[idx_cur_pep]
     cur_ab_rna = matrix(rnas_ab[,idx_cur_rna], nrow = nsamples)
     colnames(cur_ab_rna) = colnames(rnas_ab)[idx_cur_rna]
@@ -573,12 +630,14 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 
 # TODO: Change function name
 #' @title Impute abundance table from PGs results
-#' @description From imputation results in each PG and the associate adjacency peptide/PG matrix,
-#' imputes the original abundance table.  .
+#' @description From imputation results in each PG and the associate adjacency 
+#' peptide/PG matrix,imputes the original abundance table.  .
 #'
-#' @param logs.blocks List of PGs imputation results, that also contains related peptide/PGs adjacency matrix.
+#' @param logs.blocks List of PGs imputation results, that also contains 
+#' related peptide/PGs adjacency matrix.
 #' @param data.pep.rna List representing the dataset not yet imputed
-#' @param idx_blocks Indices of PGs for which imputation results should be integrated
+#' @param idx_blocks Indices of PGs for which imputation results should be 
+#' integrated
 #'
 #' @return The original peptide abundance table with imputed values.
 #' @export
@@ -631,9 +690,14 @@ impute_from_blocks = function(logs.blocks,
 #' @param name2 Label for 2nd histogram
 #' @param titlename Title of figure
 #' @param xlab X-axis label
-#' @param freq If True, bins heights correspond to raw counts, otherwise bins are normalized.
+#' @param freq If True, bins heights correspond to raw counts, otherwise bins 
+#' are normalized.
 #'
 #' @import grDevices
+#' 
+#' @examples
+#' NULL
+#' 
 #'
 plot2hists <- function(d1,
                        d2,
@@ -667,8 +731,8 @@ plot2hists <- function(d1,
 
 #' @title Empirical density of peptide correlations
 #' @description Plot empirical densities of correlations between peptides within
-#'  PG and at random, estimated by gaussian kernel. Note that only correlations between fully
-#'  observed peptides are considered here.
+#'  PG and at random, estimated by gaussian kernel. Note that only correlations 
+#'  between fully observed peptides are considered here.
 #'
 #' @param pep.data List representing dataset
 #' @param titlename Title of the graph displayed
@@ -688,7 +752,7 @@ plot_pep_correlations <- function(pep.data,
                                   xlabel = "Correlations") {
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
-    pep.idx = which(pep.data$adj[, i, drop = F] == 1)
+    pep.idx = which(pep.data$adj[, i, drop = FALSE] == 1)
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
       cor_pg = cor(pep_abs_pg)
@@ -699,7 +763,7 @@ plot_pep_correlations <- function(pep.data,
   all_cors_PG_vec = unlist(allcors)
   allcors = list()
   for (i in 1:ncol(pep.data$adj)) {
-    pep.idx = sample(nrow(pep.data$adj), sum(pep.data$adj[, i, drop = F]))
+    pep.idx = sample(nrow(pep.data$adj), sum(pep.data$adj[, i, drop = FALSE]))
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
       cor_pg = cor(pep_abs_pg)
@@ -709,11 +773,13 @@ plot_pep_correlations <- function(pep.data,
   }
   all_cors_rand_vec = unlist(allcors)
   data.hist = data.frame(values = c(all_cors_PG_vec, all_cors_rand_vec),
-                        group = factor(c(rep("Within PG", length(all_cors_PG_vec)),
-                                       rep("Random", length(all_cors_rand_vec)))))
-  g <- ggplot(data.hist, aes(x = values, fill = group)) + xlab(xlabel) +
+                        group = factor(
+                          c(rep("Within PG", length(all_cors_PG_vec)),
+                            rep("Random", length(all_cors_rand_vec)))))
+  g <- ggplot2::ggplot(data.hist, 
+                       ggplot2::aes(x = values, fill = group)) + xlab(xlabel) +
     # geom_histogram(position = "identity", alpha = 0.2) +
-    geom_density(alpha=.2, na.rm = T) + xlim(c(-1, 1)) +
+    geom_density(alpha=.2, na.rm = TRUE) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),
           # legend.position = c(0.8, 0.9),
           panel.background = element_blank(),

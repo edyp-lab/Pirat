@@ -15,38 +15,58 @@ impute_block_llk_reset_PG(
   nu_factor = 1,
   max_pg_size = NULL,
   max.pg.size2imp = 1,
+  verbose = FALSE,
   ...
 )
 }
 \arguments{
-\item{data.pep.rna.crop}{A list representing dataset, with mRNA normalized counts and mRNA/PGs adjacecy table.}
+\item{data.pep.rna.crop}{A list representing dataset, with mRNA normalized 
+counts and mRNA/PGs adjacecy table.}
 
 \item{psi}{Inverse scale parameter for IW prior of peptides abundances}
 
 \item{psi_rna}{Inverse scale parameter for IW prior of mRNA abundances}
 
-\item{rna.cond.mask}{Vector of size equal to the number of samples in mRNA abundance table, 
+\item{rna.cond.mask}{Vector of size equal to the number of samples in mRNA 
+abundance table, 
 containing indices of conditions of each sample.}
 
-\item{pep.cond.mask}{Vector of size equal to the number of samples in peptide abundance table, 
+\item{pep.cond.mask}{Vector of size equal to the number of samples in 
+peptide abundance table, 
 containing indices of conditions of each sample.}
 
-\item{pep_ab_or}{In case we impute a dataset with pseudo-MVS, we can provide the ground truth abundance table, 
-such that imputation will by done only for pseudo-MVs. This will accelerate imputation algorithm.}
+\item{pep_ab_or}{In case we impute a dataset with pseudo-MVS, we can provide 
+the ground truth abundance table, such that imputation will by done only for 
+pseudo-MVs. This will accelerate imputation algorithm.}
 
-\item{df}{Estimate degree of freedom of the IG distribution fitted on observed variance.}
+\item{df}{Estimate degree of freedom of the IG distribution fitted on 
+observed variance.}
 
 \item{nu_factor}{Multiplication factor on degree of freedom. 2 by default.}
 
-\item{max_pg_size}{Maximum PGs size authorized for imputation. PG size is plitted if its size is above this threshold.}
+\item{max_pg_size}{Maximum PGs size authorized for imputation. PG size is 
+plitted if its size is above this threshold.}
 
-\item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for which size is greater are not imputed. Should be lower than max_pg_size to have effect.}
+\item{max.pg.size2imp}{Maximum PG size to impute after splitting. PGs for 
+which size is greater are not imputed. Should be lower than max_pg_size to 
+have effect.}
+
+\item{verbose}{A boolean (FALSE as default) which indicates whether to 
+display more details ont the process}
 
 \item{...}{xxx}
 }
 \value{
-A list containing imputation results for each PG, the execution time, and adjacency matrix between peptides and PGs corresponding to the imputed PGs.
+A list containing imputation results for each PG, the execution time,
+ and adjacency matrix between peptides and PGs corresponding to the 
+ imputed PGs.
 }
 \description{
-Imputes each PG separately accounting for transcriptomic dataset and returns the results for each PG.
+Imputes each PG separately accounting for transcriptomic 
+dataset and returns the results for each PG.
+}
+\examples{
+NULL
+
+
 }

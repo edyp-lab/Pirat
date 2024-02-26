@@ -1,138 +1,111 @@
-#' @title Install Pirat package
+#' @title Install the package Pirat
 #'
-#' @description This script installs Python and PyTorch in the requested
-#' versions. It is largely inspired by wthe scripts in rTorch package
-#' (https://github.com/f0nzie/rTorch)
+#' @description This script installs Python and PyTorch in their requested
+#' versions. TSo as to be compliant with different OS, it only uses a conda
+#' environment. This script is largely inspired by the scripts in the packages 
+#' rTorch (https://github.com/f0nzie/rTorch) and tensorflow 
+#' (https://github.com/rstudio/tensorflow).
 #'
-#'
-#' @importFrom jsonlite fromJSON
+#' @param force A boolean (default value is FALSE) indicating whether to erase 
+#' a current installation of the package Pirat.
+#' @param silent A boolean (default is TRUE) xxx
+#' @param verbose A boolean (default is TRUE) to indicate whether to 
+#' show details or not.
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @return NULL
+#' 
 #' @examples
-#' \dontrun{
-#'
-#' # install PyTorch 1.10.0 on Python 3.3.9.5 including pandas
-#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-#' extra_packages = "pandas")
-#'
-#' # Install PyTorch 1.10.0, Python 3.9.5, pandas, matplotlib install from the console
-#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-#' extra_packages = c("pandas", "matplotlib"))
-#'
-#' # Install PyTorch 1.10.0 on Python 3.9.5 including pandas, matplotlib
-#' install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-#' extra_packages = c("pandas", "matplotlib"), dry_run = FALSE)
+#' \donttest{
+#' install_pirat()
 #' }
 #'
 #' @export
 #'
-install_pirat <- function() {
+install_pirat <- function(force = FALSE, 
+                          silent = TRUE,
+                          verbose = TRUE) {
     
-    method = "conda"
-    conda = "auto"
-    restart_session = TRUE
-    pip_ignore_installed = FALSE
-    envname = "r-pirat"
-    channel = c("pytorch", "stable", "torch")
-    new_env = identical(envname, "r-pirat")
+  
+  #require(reticulate)
+  Sys.unsetenv("RETICULATE_PYTHON")
+  method = "conda"
+  conda = "auto"
+  restart_session = TRUE
+  pip_ignore_installed = FALSE
+  envname = "r-pirat"
+  channel = c("pytorch", "stable", "torch")
     
+  packages <- c('numpy==1.20.2', 
+                'matplotlib', 
+                'pytorch==1.10.0', 
+                'cpuonly')
     
-    # requested_versions <- list(
-    #   torch = '1.10.0',
-    #   numpy = '1.20.2',
-    #   python = '3.9.5'
-    # )
+  python_version <- '3.9.5'
     
-    packages <- c('numpy==1.20.2', 
-                  'matplotlib', 
-                  'pytorch==1.10.0', 
-                  'cpuonly')
-    
-    # if (is_windows()) {
-    #   packages <- c(packages, 'pytorch==1.10.0')
-    # } else if (is_linux()) {
-    #   packages <- c(packages, 'pytorch==1.10.0')
-    # } else if (is_osx()){
-    #   packages <- c(packages, 'pytorch==1.10.0')
-    # }
-    python_version <- '3.9.5'
-    
-    
-    # some special handling for windows
-    # if (is_windows()) {
-    #   
-    #   # avoid DLL in use errors
-    #   if (reticulate::py_available()) {
-    #     stop("You should call install_pirat() only in a fresh ",
-    #          "R session that has not yet initialized Pirat (this is ",
-    #          "to avoid DLL in use errors during installation)")
-    #   }
-    #   
-    #  }
-    
- 
-    #python_version <- python_version %||% conda_python_version
-    # if(method %in% c("auto", "virtualenv") && is.null(python_version)) {
-    #  # 
-    # #  # virtualenv_starter() picks the most recent version available, but older
-    # #  # versions of tensorflow typically don't work with the latest Python
-    # # # # release. In general, we're better off picking the oldest Python version available
-    # #  # that works with the current release of tensorflow.
-    # #  # TF 2.13 is compatible with Python <=3.11,>=3.8
-    #   
-    #   available <- reticulate::virtualenv_starter(version = ">=3.9", all = TRUE)
-    # #  # pick the smallest minor version, ignoring patchlevel
-    #   if(nrow(available))
-    #     python_version <- min(available$version[, 1:2])
-    # }
-    
-    if (isTRUE(new_env)) {
-      
-      # if (method %in% c("auto", "virtualenv") &&
-      #     reticulate::virtualenv_exists(envname))
-      #   reticulate::virtualenv_remove(envname = envname, confirm = FALSE)
-      
-      if (method %in% c("auto", "conda")) {
-        if (!is.null(tryCatch(conda_python(envname, conda = conda),
-                              error = function(e) NULL)))
-          reticulate::conda_remove(envname, conda = conda)
+  if(verbose)
+    cat('Checks for Pirat...\n')
+  if (!is.null(tryCatch(reticulate::condaenv_exists(envname),
+                              error = function(e) NULL)) &&
+      reticulate::condaenv_exists(envname) == TRUE){
+      if (!force){
+        stop('Pirat is already installed. To force a new installation and 
+        erase the current one, set the argument force = TRUE.')
+        #return(NULL)
+      } else {
+        cat('Removing previous installation of Pirat...\n')
+        reticulate::conda_remove(envname, conda = conda)
       }
-      
     }
     
-    #reticulate::install_python(version = '3.9.5', force = TRUE)
-    reticulate::install_miniconda(force = TRUE)
-    #browser()
-    py_install_args <- list(
-      packages       = packages,
-      envname        = envname,
-      method         = 'conda',
-      channel        = channel,
-      conda          = 'auto',
-      python_version = python_version,
-      pip            = FALSE)
+   if(verbose)
+     cat('Installing miniconda...\n')
+    tryCatch({
+      reticulate::install_miniconda(path = reticulate::miniconda_path(), 
+                                    force = TRUE)
+      },
+      error = function(e) {
+        if(!silent){
+          user_input <- readline("The R session must be restarted. 
+                                 Do you want to proceed ? (Y/n)  ")
+          if(user_input == 'n') stop('Exiting...')
+          restart_session(cmd = 'Pirat::install_pirat()',
+                    alternate.msg = "Please restart manually the R session.")
+        }
+      })
     
-    # now ignored, superseded by `cuda`
-    #py_install_args$configure_cudnn <- NULL
-    
-    #do.call(reticulate::py_install, py_install_args)
-    do.call(reticulate::conda_install, py_install_args)
-    #if(is_string(metal)) {
-    #  py_install_args$packages <- metal
-    #  tryCatch(do.call(reticulate::py_install, py_install_args),
-    #           error = function(e) {
-     #            message(e)
-    #             message("No suitable version of the 'tensorflow-metal' found. You can ",
-    #                     "use TensorFlow with CPU only, or install a previous release ",
-    #                     "of tensorflow that has GPU support on ARM macs with ",
-    #                     "`tensorflow::install_tensorflow(version = '2.13')`")
-    #           })
-    #}
-    
+    reticulate::conda_install(packages = packages,
+                              envname = envname,
+                              method = 'conda',
+                              channel = channel,
+                              conda = 'auto',
+                              python_version = python_version,
+                              pip = FALSE)
+
     cat("\nInstallation complete.\n\n")
     
-    if (restart_session &&
-        requireNamespace("rstudioapi", quietly = TRUE) &&
-        rstudioapi::hasFun("restartSession"))
-      rstudioapi::restartSession()
+   restart_session(cmd = 'library(Pirat)',
+                   alternate.msg = "Please restart the R session and 
+                   reload the 'Pirat' package.")
     
     invisible(NULL)
+}
+
+
+
+restart_session <- function(cmd = NULL,
+                            alternate.msg = NULL){
+  is.rstudio <- function(){
+    .Platform$GUI == "RStudio"
   }
+  
+  #if (restart_session){
+    if (is.rstudio() &&
+        requireNamespace("rstudioapi", quietly = TRUE) &&
+        rstudioapi::hasFun("restartSession"))
+      rstudioapi::restartSession(command = cmd)
+    else
+      cat(paste0('\n', alternate.msg, '\n\n'))
+  #}
+}

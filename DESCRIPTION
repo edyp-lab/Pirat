@@ -7,25 +7,38 @@ Description: Pirat enables the imputation of missing values (either MNARs or
   the instrument censorship from the data available, it accounts for sibling
   peptides correlations and it can leverage complementary transcriptomics
   measurements. 
-Version: 0.1.0
-Author: c(
-    person("Lucas", "Etourneau", email = "lucas.etourneau@univ-grenoble-alpes.fr", role = c("cre", "aut")),
-    person("Laura", "Fancello", email = " laura.fancello@cea.fr", role = c("cre", "aut")),
-    person("Samuel", "Wieczorek", email = "samuel.wieczorek@cea.fr",  role = c("cre", "aut"))
-    person("Nelle", "Varoquaux", email = " nelle.varoquaux@univ-grenoble-alpes.fr", role = c("cre", "aut")),
-    person("Thomas", "Burger", email = "thomas.burger@cea.fr",  role = c("cre", "aut"))
-    )
-Maintainer: Lucas Etourneau <lucas.etourneau@univ-grenoble-alpes.fr>
+Version: 0.99.0
+Authors@R: 
+  c(person(given = "Lucas", 
+          family = "Etourneau", 
+          email = "lucas.etourneau@univ-grenoble-alpes.fr", 
+          role = c("aut")),
+    person(given = "Laura", 
+          family = "Fancello", 
+          email = " laura.fancello@cea.fr", 
+          role = c("aut")),
+    person(given = "Samuel", 
+          family = "Wieczorek",
+          email = "samuel.wieczorek@cea.fr",
+          role = c("cre", "aut")),
+    person(given = "Nelle", 
+          family = "Varoquaux",
+          email = " nelle.varoquaux@univ-grenoble-alpes.fr",
+          role = c("aut")),
+    person(given = "Thomas", 
+          family = "Burger",
+          email = "thomas.burger@cea.fr",
+          role = c("aut")))
 License: GPL-2
 Encoding: UTF-8
-LazyData: true
+biocViews: Proteomics, MassSpectrometry, Preprocessing, Software
 RoxygenNote: 7.3.1
 BiocViews: Proteomics,  MassSpectrometry
 Depends:
-  R (>= 4.3.0)
+  R (>= 4.4.0)
 Imports:
     reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
-    graphics, rstudioapi, jsonlite, SummarizedExperiment, S4Vectors
+    graphics, rstudioapi, SummarizedExperiment
 Suggests: knitr
 VignetteBuilder: knitr
 URL: http://www.prostar-proteomics.org/

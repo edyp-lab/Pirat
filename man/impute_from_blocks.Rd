@@ -7,18 +7,20 @@
 impute_from_blocks(logs.blocks, data.pep.rna, idx_blocks = NULL)
 }
 \arguments{
-\item{logs.blocks}{List of PGs imputation results, that also contains related peptide/PGs adjacency matrix.}
+\item{logs.blocks}{List of PGs imputation results, that also contains 
+related peptide/PGs adjacency matrix.}
 
 \item{data.pep.rna}{List representing the dataset not yet imputed}
 
-\item{idx_blocks}{Indices of PGs for which imputation results should be integrated}
+\item{idx_blocks}{Indices of PGs for which imputation results should be 
+integrated}
 }
 \value{
 The original peptide abundance table with imputed values.
 }
 \description{
-From imputation results in each PG and the associate adjacency peptide/PG matrix,
-imputes the original abundance table.  .
+From imputation results in each PG and the associate adjacency 
+peptide/PG matrix,imputes the original abundance table.  .
 }
 \examples{
 NULL

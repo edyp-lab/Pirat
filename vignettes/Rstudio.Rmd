@@ -26,7 +26,8 @@ knitr::opts_chunk$set(
 2. [Standard imputation with Pirat](#siwp)
 3. [Intra-PG correlation analysis](#ipgca)
 4. [Pirat extensions](#pe)
-5. [References](#refs)
+5. [Session info](#sessionInfo)
+6. [References](#refs)
 
 ### 1. Pirat installation <a name="pi"></a>
 
@@ -187,4 +188,15 @@ imp.res = pipeline_llkimpute(subropers,
 Also, it is possible to apply transcriptomic integration up to an arbitrary size of PG, simply by 
 changing parameter `max.pg.size.pirat.t` in `pipeline_llkimpute` to the desired limit PG size (*e.g.* `+Inf` for whole dataset).
 
-## 5. References (#refs)
+## 5. Session info
+
+```{r}
+sessionInfo()
+```
+
+## 6. References (#refs)
+
+
+
+
+

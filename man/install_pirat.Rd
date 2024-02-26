@@ -2,29 +2,32 @@
 % Please edit documentation in R/install_Pirat.R
 \name{install_pirat}
 \alias{install_pirat}
-\title{Install Pirat package}
+\title{Install the package Pirat}
 \usage{
-install_pirat()
+install_pirat(force = FALSE, silent = TRUE, verbose = TRUE)
+}
+\arguments{
+\item{force}{A boolean (default value is FALSE) indicating whether to erase 
+a current installation of the package Pirat.}
+
+\item{silent}{A boolean (default is TRUE) xxx}
+
+\item{verbose}{A boolean (default is TRUE) to indicate whether to 
+show details or not.}
 }
 \description{
-This script installs Python and PyTorch in the requested
-versions. It is largely inspired by wthe scripts in rTorch package
-(https://github.com/f0nzie/rTorch)
+This script installs Python and PyTorch in their requested
+versions. TSo as to be compliant with different OS, it only uses a conda
+environment. This script is largely inspired by the scripts in the packages 
+rTorch (https://github.com/f0nzie/rTorch) and tensorflow 
+(https://github.com/rstudio/tensorflow).
 }
 \examples{
-\dontrun{
-
-# install PyTorch 1.10.0 on Python 3.3.9.5 including pandas
-install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-extra_packages = "pandas")
-
-# Install PyTorch 1.10.0, Python 3.9.5, pandas, matplotlib install from the console
-install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-extra_packages = c("pandas", "matplotlib"))
-
-# Install PyTorch 1.10.0 on Python 3.9.5 including pandas, matplotlib
-install_pytorch(version = "1.10.0", conda_python_version = "3.9.5",
-extra_packages = c("pandas", "matplotlib"), dry_run = FALSE)
+\donttest{
+install_pirat()
 }
 
+}
+\author{
+Samuel Wieczorek
 }
