@@ -268,7 +268,7 @@ Outputs:
         . 'Xgt' (numpy array): optionnal. ground truth dataset.
 
 Notes:
-  . Pirat is dedicated for simple imputation, thus seed if fixed for the Monte-Carlo method used when imputing by conditionnal mean,
+  . Pirat is dedicated for simple imputation, thus the seed if fixed for the Monte-Carlo method used for imputation by conditionnal mean,
 
 """
                                  
