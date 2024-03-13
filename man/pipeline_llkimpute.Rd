@@ -21,9 +21,9 @@ pipeline_llkimpute(
 )
 }
 \arguments{
-\item{ARG_VALUE_1}{xxx}
+\item{ARG_VALUE_1}{Parameter 'data.pep.rna.mis' of the function `pipeline_llkimpute()`}
 
-\item{...}{xxx}
+\item{...}{Additional parameters for the function `pipeline_llkimpute()`}
 
 \item{data.pep.rna.mis}{A list containing important elements of the dataset 
 to impute. Must contain:
@@ -105,5 +105,9 @@ my_pipeline_llkimpute(subropers,
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
 data(subbouyssie)
-my_pipeline_llkimpute(subbouyssie)
+imp.data <- my_pipeline_llkimpute(subbouyssie)
+
+}
+\seealso{
+[pipeline_llkimpute()]
 }
