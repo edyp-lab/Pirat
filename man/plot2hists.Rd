@@ -22,12 +22,14 @@ plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = TRUE)
 \item{freq}{If True, bins heights correspond to raw counts, otherwise bins 
 are normalized.}
 }
+\value{
+A plot
+}
 \description{
 Plot 2 histograms on the same graph.
 xxxxx
 }
 \examples{
 NULL
-
 
 }

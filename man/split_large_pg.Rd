@@ -20,7 +20,6 @@ different PGs with size equal to size max. Hence, some peptides can be
  duplicated in the new PGs.
 }
 \examples{
-library(Pirat)
 data(subbouyssie)
 split_large_pg(subbouyssie$adj, 3)
 

@@ -8,6 +8,8 @@ pirat_config()
 }
 \value{
 List with information on the current configuration of Pirat
+
+A message showing the configuration of Pirat
 }
 \description{
 Pirat configuration information

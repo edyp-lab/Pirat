@@ -15,6 +15,9 @@ a current installation of the package Pirat.}
 \item{verbose}{A boolean (default is TRUE) to indicate whether to 
 show details or not.}
 }
+\value{
+No value
+}
 \description{
 This script installs Python and PyTorch in their requested
 versions. TSo as to be compliant with different OS, it only uses a conda

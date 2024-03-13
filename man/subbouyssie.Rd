@@ -4,12 +4,14 @@
 \name{subbouyssie}
 \alias{subbouyssie}
 \title{Bouyssie dataset}
+\value{
+A dataset
+xxxxxxx
+}
 \description{
 xxxxxx
 }
 \references{
-xxxxxxx
-
 xxxxxxx
 }
 \keyword{data}

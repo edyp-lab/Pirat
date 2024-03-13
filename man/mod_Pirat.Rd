@@ -29,6 +29,9 @@ mod_Pirat_server(
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details on the process}
 }
+\value{
+A shiny App (module)
+}
 \description{
 ## To be customized ##
 }

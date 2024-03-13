@@ -7,7 +7,7 @@
 #'
 #'
 #' @references xxxxxxx
-#'
+#' @return A dataset
 #' xxxxxxx
 #'
 #' @keywords datasets
@@ -23,7 +23,7 @@ NULL
 #' @keywords data
 #' @description xxxxxx
 #'
-#'
+#' @return A dataset
 #' @references xxxxxxx
 #'
 #' xxxxxxx
@@ -40,7 +40,7 @@ NULL
 #' @keywords data
 #' @description xxxxxx
 #'
-#'
+#' @return A dataset
 #' @references xxxxxxx
 #'
 #' xxxxxxx

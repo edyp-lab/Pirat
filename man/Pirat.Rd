@@ -5,6 +5,9 @@
 \alias{Pirat}
 \alias{Pirat-package}
 \title{xxx}
+\value{
+Nothing
+}
 \description{
 xxxx
 # https://community.rstudio.com/t/when-to-use-onload-vs-onattach/21953

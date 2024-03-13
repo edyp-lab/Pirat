@@ -11,6 +11,8 @@
 #' display more details on the process
 #' 
 #' @name mod_Pirat
+#' 
+#' @return A shiny App (module)
 #'
 NULL
 

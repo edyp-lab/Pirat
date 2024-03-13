@@ -82,12 +82,10 @@ desired extension.
 }
 \examples{
 # Pirat classical mode
-library(Pirat)
 data(subbouyssie)
 pipeline_llkimpute(subbouyssie) 
 
 # Pirat with transcriptomic integration for singleton PGs
-library(Pirat)
 data(subropers)
 nsamples = nrow(subropers$peptides_ab)
 pipeline_llkimpute(subropers, 

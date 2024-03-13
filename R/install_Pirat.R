@@ -14,7 +14,7 @@
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @return NULL
+#' @return No value
 #' 
 #' @examples
 #' \donttest{

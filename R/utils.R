@@ -69,77 +69,6 @@ call_hook <- function(name, ...) {
   response
 }
 
-#' 
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #'
-#' #' @export
-#' #' @return A boolean
-#' #' @export
-#' is_windows <- function() {
-#'   identical(.Platform$OS.type, "windows")
-#' }
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #' @export
-#' #' @return A boolean
-#' #' @export
-#' is_unix <- function() {
-#'   identical(.Platform$OS.type, "unix")
-#' }
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #' 
-#' #' @export
-#' #'
-#' #' @return A boolean
-#' #' 
-#' is_osx <- function() {
-#'   Sys.info()[["sysname"]] == "Darwin"
-#' }
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #' @export
-#' #' @return A boolean
-#' #' 
-#' is_linux <- function() {
-#'   identical(tolower(Sys.info()[["sysname"]]), "linux")
-#' }
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #' @export
-#' #' @return A boolean
-#' #' 
-#' is_ubuntu <- function() {
-#'   # check /etc/lsb-release
-#'   if (is_unix() && file.exists("/etc/lsb-release")) {
-#'     lsbRelease <- readLines("/etc/lsb-release")
-#'     any(grepl("Ubuntu", lsbRelease))
-#'   } else {
-#'     FALSE
-#'   }
-#' }
-#' 
-#' #' @title xxx
-#' #' @description xxx
-#' #' @export
-#' #' @return A boolean
-#' #' 
-#' is_debian <- function() {
-#'   # check /etc/os-release
-#'   if (is_unix() && file.exists("/etc/os-release")) {
-#'     osRelease <- readLines("/etc/os-release")
-#'     any(grepl("Debian", osRelease))
-#'   } else {
-#'     FALSE
-#'   }
-#' }
-
 
 #' @title Indexes of PGs embedded in each others
 #' @description Returns indexes of PGs that are embedded in others
@@ -150,7 +79,7 @@ call_hook <- function(name, ...) {
 #' @export
 #'
 #' @examples
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subbouyssie)
 #' get_indexes_embedded_prots(subbouyssie$adj)
 #'
@@ -237,13 +166,16 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subbouyssie)
 #' split_large_pg(subbouyssie$adj, 3)
 #'
 split_large_pg = function(adj, 
                           size_max) {
-  set.seed(1234)
+  if(FALSE)
+    set.seed(1234)
+  
+  
   idx_pg_too_large = which(colSums(adj) >= size_max)
   if (length(idx_pg_too_large) > 0) {
     new_adj = adj
@@ -424,7 +356,10 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 split_large_pg_PG = function(adj, 
                              size_max, 
                              adj_rna_pg) {
-  set.seed(1234)
+  if(FALSE)
+    set.seed(1234)
+  
+  
   idx_pg_too_large = which((colSums(adj) + colSums(adj_rna_pg)) >=
                              size_max)
   if (length(idx_pg_too_large) > 0) {
@@ -698,7 +633,8 @@ impute_from_blocks = function(logs.blocks,
 #' @examples
 #' NULL
 #' 
-#'
+#' @return A plot
+#' 
 plot2hists <- function(d1,
                        d2,
                        name1,

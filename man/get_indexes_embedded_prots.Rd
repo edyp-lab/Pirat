@@ -15,78 +15,7 @@ A vector of indices
 \description{
 Returns indexes of PGs that are embedded in others
 }
-\details{
-#' @title xxx
-#' @description xxx
-#'
-#' @export
-#' @return A boolean
-#' @export
-is_windows <- function() {
-  identical(.Platform$OS.type, "windows")
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
-#' @export
-is_unix <- function() {
-  identical(.Platform$OS.type, "unix")
-}
-
-#' @title xxx
-#' @description xxx
-#' 
-#' @export
-#'
-#' @return A boolean
-#' 
-is_osx <- function() {
-  Sys.info()[["sysname"]] == "Darwin"
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
-#' 
-is_linux <- function() {
-  identical(tolower(Sys.info()[["sysname"]]), "linux")
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
-#' 
-is_ubuntu <- function() {
-  # check /etc/lsb-release
-  if (is_unix() && file.exists("/etc/lsb-release")) {
-    lsbRelease <- readLines("/etc/lsb-release")
-    any(grepl("Ubuntu", lsbRelease))
-  } else {
-    FALSE
-  }
-}
-
-#' @title xxx
-#' @description xxx
-#' @export
-#' @return A boolean
-#' 
-is_debian <- function() {
-  # check /etc/os-release
-  if (is_unix() && file.exists("/etc/os-release")) {
-    osRelease <- readLines("/etc/os-release")
-    any(grepl("Debian", osRelease))
-  } else {
-    FALSE
-  }
-}
-}
 \examples{
-library(Pirat)
 data(subbouyssie)
 get_indexes_embedded_prots(subbouyssie$adj)
 

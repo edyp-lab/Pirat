@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subbouyssie)
 #' estimate_gamma(subbouyssie$peptides_ab)
 #' 
@@ -74,7 +74,7 @@ estimate_gamma = function(pep.ab.table,
 #' @export
 #'
 #' @examples
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subbouyssie)
 #' obj <- subbouyssie
 #' # Keep only fully observed peptides
@@ -169,12 +169,12 @@ estimate_psi_df = function(pep.ab.table) {
 #'
 #' @examples
 #' # Pirat classical mode
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subbouyssie)
 #' pipeline_llkimpute(subbouyssie) 
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
-#' library(Pirat)
+# #' library(Pirat)
 #' data(subropers)
 #' nsamples = nrow(subropers$peptides_ab)
 #' pipeline_llkimpute(subropers, 
@@ -194,7 +194,9 @@ pipeline_llkimpute = function(data.pep.rna.mis,
                               max.pg.size.pirat.t = 1,
                               verbose = FALSE) {
   
-  set.seed(98765)
+  if(FALSE)
+    set.seed(98765)
+  
   psi_rna = NULL
   
   if( verbose)

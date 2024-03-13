@@ -7,6 +7,7 @@
 #' library(your_package). onLoad will also run when somebody loads but doesn't 
 #' attach your package by calling your_package::your_function.
 #'
+#' @return Nothing
 #' @docType package
 #' @aliases Pirat-package
 #' @name Pirat
@@ -108,7 +109,7 @@ config_isValid <- function(){
 #' @examples
 #' pirat_config()
 #' 
-#' @return NULL
+#' @return A message showing the configuration of Pirat
 #' 
 pirat_config <- function() {
   
@@ -161,39 +162,39 @@ print.pirat_config <- function(x, ...) {
 }
 
 
-
-# Build error message for Pirat configuration errors
-pirat_config_error_message <- function() {
-  message <- "Valid installation of Pirat not found."
-  config <- pirat_config()
-  if (!is.null(config)) {
-    if (length(config$python_versions) > 0) {
-      message <- paste0(message,
-                        "\n\nPython environments searched for 
-                        'Pirat' package:\n")
-      python_versions <- paste0(" ", 
-                                normalizePath(config$python_versions, 
-                                              mustWork = FALSE),
-                                collapse = "\n")
-      message <- paste0(message, python_versions, sep = "\n")
-    }
-  }
-  
-  python_error <- tryCatch({
-    import("Pirat")
-    list(message = NULL)
-  },
-  error = function(e) {
-    on.exit(py_clear_last_error())
-    py_last_error()
-  })
-  
-  message <- paste0(message,
-                    "\nPython exception encountered:\n ",
-                    python_error$message, "\n")
-  
-  message <- paste0(message,
-                    "\nYou can install Pirat using the install_pirat() 
-                    function.\n")
-  message
-}
+# 
+# # Build error message for Pirat configuration errors
+# pirat_config_error_message <- function() {
+#   message <- "Valid installation of Pirat not found."
+#   config <- pirat_config()
+#   if (!is.null(config)) {
+#     if (length(config$python_versions) > 0) {
+#       message <- paste0(message,
+#                         "\n\nPython environments searched for 
+#                         'Pirat' package:\n")
+#       python_versions <- paste0(" ", 
+#                                 normalizePath(config$python_versions, 
+#                                               mustWork = FALSE),
+#                                 collapse = "\n")
+#       message <- paste0(message, python_versions, sep = "\n")
+#     }
+#   }
+#   
+#   python_error <- tryCatch({
+#     import("Pirat")
+#     list(message = NULL)
+#   },
+#   error = function(e) {
+#     on.exit(py_clear_last_error())
+#     py_last_error()
+#   })
+#   
+#   message <- paste0(message,
+#                     "\nPython exception encountered:\n ",
+#                     python_error$message, "\n")
+#   
+#   message <- paste0(message,
+#                     "\nYou can install Pirat using the install_pirat() 
+#                     function.\n")
+#   message
+# }

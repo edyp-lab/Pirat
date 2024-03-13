@@ -4,6 +4,9 @@
 \name{subropers}
 \alias{subropers}
 \title{Bouyssie dataset}
+\value{
+A dataset
+}
 \description{
 xxxxxx
 }
