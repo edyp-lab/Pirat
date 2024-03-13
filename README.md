@@ -10,18 +10,12 @@ remotes::install_github('prostarproteomics/Pirat')
 
 ```
 
-Once the package has been installed, it is necessary to install a Python environment (called r-pirat in the package) with specific versions of Python libraries. For this purpose, run: 
+Once the package has been downloaded, it is necessary to install a Python environment with specific versions of Python libraries. For this purpose, run: 
 
 ```
 library(Pirat)
 install_pirat()
 
-```
-
-This will install all necessary Python modules and restart the R session. Infos about versions can be obtained with:
-
-```
-pirat_config()
 ```
 
 
@@ -30,11 +24,11 @@ pirat_config()
 ```
 library(Pirat)
 data(subbouyssie)
-pipeline_llkimpute(subbouyssie) 
+my_pipeline_llkimpute(subbouyssie) 
 
 data(subropers)
 nsamples = nrow(subropers$peptides_ab)
-pipeline_llkimpute(subropers, 
+my_pipeline_llkimpute(subropers, 
                     extension = "T",
                     rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
