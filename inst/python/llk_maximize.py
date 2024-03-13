@@ -110,17 +110,6 @@ def compute_pen_llk(X, mu, log_chol_params, K, psi, phi0, phi, eps_chol=1e-5, ep
     return llk + pen_det + pen_trace
 
 
-def cov_w_nas(X):
-    mu = np.nanmean(X, 0)
-    is_obs_X = 1 * ~np.isnan(X)
-    n_norm = np.matmul(is_obs_X.transpose(), is_obs_X) - 1
-    X_cent = X - mu
-    X_cent[np.isnan(X_cent)] = 0
-    sig = np.matmul(X_cent.transpose(), X_cent) / np.maximum(n_norm, 1)
-    sig[n_norm <= 0] = 0.
-    return sig
-
-
 def get_matrix_from_tri_coefs(sigma_tri, input_low=True, out_low=True, out_up=False):
     p = int((-1 + np.sqrt(1. + 8*sigma_tri.shape[0]))/2)
     sigma = np.zeros([p, p])
@@ -137,14 +126,6 @@ def get_matrix_from_tri_coefs(sigma_tri, input_low=True, out_low=True, out_up=Fa
         if out_low:
             sigma.transpose()[uidx] = sigma_tri
     return sigma
-
-
-def random_matrices(m, mm):
-    print(m + 2)
-    print(mm)
-    a = np.random.normal(size=m.shape) + m
-    b = np.random.normal(size=(3,5))
-    return {'first':a, 'second':b}
 
 
 def impute_from_params(X_w_na, mu, sigma, phi, phi0):
@@ -242,6 +223,54 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
                                tol_obj=1e-9, tol_grad=1e-5, tol_param=1e-6, maxiter=500, lr=1., true_mu=None,
                                true_sigma=None, true_X=None, verbose=False, max_try=10, max_ls=10, eps_sig=1e-5,
                                nsamples=1000):
+"""
+Estimates feature mean and covariance matrix of a dataset given missingness parameters, 
+and imputes missing values accordingly.
+
+Inputs:
+    X (numpy array): dataset to impute, with features in columns and samples in rows
+    phi0 (float): intercept of the missingness parameters (default: None)
+    phi (float): slope of the missingness parameters (default: None)
+    K (float): degree of freedom in the inverse-Wishart penalty (default: 5)
+    psi (float): scale factor in the inverse-Wishart penalty (default: 1)
+    phi_known (bool): are missingness parameters known (default: True)
+    eps_chol (float): amount added to Cholesky's factorization's diagonal to avoid ill conditionned matrix (default: 1e-4)
+    eps_phi (float): amount added to phi in case it is estimated along gaussian parameters, such that phi remains strictly positive (default: 1e-8)
+    tol_obj (float): tolerance on objective function during optimization (default: 1e-9)
+    tol_grad (float): tolerance on gradient norm during optimization function (default: 1e-5)
+    tol_param (float): tolerance on parameters norm during optimization function (default: 1e-6)
+    maxiter (int): maximum number of iterations during optimization (default: 500)
+    lr (float): initial learning rate (or step size) of L-BFGS (default: 1.)
+    true_mu (numpy array): true value of mu (default: None)
+    true_sigma (numpy array): true value of sigma (default: None)
+    true_X (numpy array): true value of X (default: None)
+    verbose (bool): should verbose mode be activated (default: False)
+    max_try (int): maximum number of attempts if numerical instabilities appear in optmization due to determinant approximation (default: 10)
+    max_ls (int): maximum number of line search attempts in L-BFGS (default: 10)
+    eps_sig (float): amount added to sigma's diagonal to avoid ill conditionned matrix (default: 1e-5)
+    nsamples (int): number of samples used for MOnte-Carlo at imputation step (default: 1000)
+    
+
+Outputs:
+  res_dic (dict): a dictionnary containing:
+        . 'Xhat' (numpy array): the imputed dataset
+        . 'varXhat' (numpy array): the conditional variance of imputed values, 
+        . 'phi0' (float): estimated or used phi0
+        . 'phi' (float): estimated or used phi
+        . 'llks' (numpy array): list of likelihood values across L-BFGS iterations
+        . 'mu' (numpy array): estimated mu
+        . 'sigma' (numpy array): estimated sigma
+        . 'error_msg' (str): error message if error occurs
+        . 'reason' (str): stop criterion of optimization process
+        . 'mu_errors' (numpy array): optionnal. mu errors across iterations.
+        . 'sigma_errors' (numpy array): optionnal. sigma errors across iterations.
+        . 'ximp_errors' (numpy array): optionnal. imputation errors across iterations.
+        . 'Xgt' (numpy array): optionnal. ground truth dataset.
+
+Notes:
+  . Pirat is dedicated for simple imputation, thus the seed if fixed for the Monte-Carlo method used for imputation by conditionnal mean,
+
+"""
                                  
     # Added by Sam 
     TRUEFAIL = None

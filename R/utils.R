@@ -155,9 +155,11 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 
 #' @title Split too large PGs
 #' 
-#' @description Split PGs with too many peptides/precursors. It creates 
-#' different PGs with size equal to size max. Hence, some peptides can be
-#'  duplicated in the new PGs.
+#' @description Split PGs with too many peptides/precursors, while keeping other PG untouched. It creates 
+#' new PGs with size equal to size max. Hence, some peptides can be
+#'  duplicated in the new PGscreated. The seed is fixed such that the split generated remains constant for a given
+#'  adjacency matrix. 
+#'  
 #'
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
@@ -172,7 +174,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #'
 split_large_pg = function(adj, 
                           size_max) {
-  if(FALSE)
+
     set.seed(1234)
   
   
@@ -335,12 +337,14 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 }
 
 # TODO: Rename the function
-#' @title Split too large PGs in multi-omic context
+#' @title Splits too large PGs in proteogenomics context
 #' 
-#' @description Split PGs with too many peptides/precursors, and adapts 
-#' adjacency matrix between mRNA and PGs accordingly. It creates different PGs 
+#' @description Split PGs with too many peptides/precursors while keeping other PGs untouched,
+#' and adapts adjacency matrix between mRNA and PGs accordingly. It creates new PGs 
 #' with size equal to size max (including peptides and mRNAs). Hence, some 
 #' peptides and mRNA can be duplicated in the new PGs.
+#' The seed is fixed such that the split generated remains constant for a given
+#' adjacency matrix. 
 #'
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
@@ -356,8 +360,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 split_large_pg_PG = function(adj, 
                              size_max, 
                              adj_rna_pg) {
-  if(FALSE)
-    set.seed(1234)
+     set.seed(1234)
   
   
   idx_pg_too_large = which((colSums(adj) + colSums(adj_rna_pg)) >=
