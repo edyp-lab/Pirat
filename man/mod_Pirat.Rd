@@ -30,7 +30,11 @@ mod_Pirat_server(
 display more details on the process}
 }
 \value{
-A shiny App (module)
+A shiny app
+
+A shiny app
+
+A shiny app
 }
 \description{
 ## To be customized ##

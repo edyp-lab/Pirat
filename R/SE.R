@@ -14,7 +14,6 @@
 #' @export
 #' 
 #' @examples
-# #' library(SummarizedExperiment)
 #' data(subbouyssie)
 #' peptides_ab <- subbouyssie$peptides_ab
 #' adj <- subbouyssie$adj
@@ -23,12 +22,13 @@
 #' obj <- pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
 #' obj
 #' 
+#' @importFrom SummarizedExperiment SummarizedExperiment
+#' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
                      mask_prot_diff, 
                      mask_pep_diff){
-  
-#require(SummarizedExperiment)
+
  obj <- SummarizedExperiment::SummarizedExperiment(
    assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 
    colData = data.frame(Condition = colnames(t(peptides_ab)),
@@ -52,7 +52,6 @@ pirat2SE <- function(peptides_ab,
 #' @param se An instance of the class SummarizedExperiment
 #' @param ... Additional arguments to pass to `pipeline_llkimpute()`
 #' 
-#' @import SummarizedExperiment
 #' 
 #' @export
 #' 
@@ -64,7 +63,6 @@ pirat2SE <- function(peptides_ab,
 #' 
 #' @return See pipeline_llkimpute() function
 #' 
-#' @import SummarizedExperiment
 #' 
 wrapper_pipeline_llkimpute <- function(se, ...){
   
@@ -77,7 +75,7 @@ wrapper_pipeline_llkimpute <- function(se, ...){
     mask_pep_diff = metadata(se)$mask_pep_diff
   )
 
-  pipeline_llkimpute(obj, ...)
+  my_pipeline_llkimpute(obj, ...)
 }
 
 

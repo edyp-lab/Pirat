@@ -6,7 +6,6 @@
 \title{Bouyssie dataset}
 \value{
 A dataset
-xxxxxxx
 }
 \description{
 xxxxxx

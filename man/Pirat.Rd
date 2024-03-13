@@ -6,7 +6,7 @@
 \alias{Pirat-package}
 \title{xxx}
 \value{
-Nothing
+NA
 }
 \description{
 xxxx
