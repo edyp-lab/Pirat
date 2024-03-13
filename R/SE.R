@@ -22,7 +22,8 @@
 #' obj <- pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff )
 #' obj
 #' 
-#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @import SummarizedExperiment 
+#' @importFrom S4Vectors metadata
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
@@ -62,7 +63,7 @@ pirat2SE <- function(peptides_ab,
 #' res <- wrapper_pipeline_llkimpute(obj)
 #' 
 #' @return See pipeline_llkimpute() function
-#' 
+#' @importFrom S4Vectors metadata
 #' 
 wrapper_pipeline_llkimpute <- function(se, ...){
   
