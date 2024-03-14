@@ -247,8 +247,8 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 #' display more details ont the process
 #' @param ... Additional parameters
 #'
-#' @return A list containing imputation results for each PG, the execution time,
-#'  and adjacency matrix between peptides and PGs corresponding to the 
+#' @return A list containing imputation results for each PG, the execution 
+#' time, and adjacency matrix between peptides and PGs corresponding to the 
 #'  imputed PGs.
 #' @export
 #' @import reticulate
@@ -292,10 +292,13 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
     rnas_means = colMeans(matrix(
       data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = FALSE], nrep_rna))
     # rnas_sds = apply(matrix(
-    #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, sd, na.rm = TRUE)
+    #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, 
+    #   sd, na.rm = TRUE)
     # rnas_sds[is.na(rnas_sds)] = 0
     # rnas_ab[pep.cond.mask == i, ] = matrix(rnorm(
-    #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, byrow = TRUE) # This line enables to sample from statistics of each condition instead of setting the mean.
+    #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, 
+    #   byrow = TRUE) # This line enables to sample from statistics of each 
+    #   condition instead of setting the mean.
     rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), 
                                            nrep_pep, 
                                            byrow =TRUE)
@@ -315,7 +318,8 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
                          complete = "=",   # Completion bar character
                          incomplete = "-", # Incomplete bar character
                          current = ">",    # Current bar character
-                         clear = FALSE,    # If TRUE, clears the bar when finish
+                         clear = FALSE,    # If TRUE, clears the bar when 
+                                           # finish
                          width = 100)      # Width of the progress bar
   for (i in prot.idxs) {
     if(verbose)
@@ -348,19 +352,22 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = c(rep(psi, ncol(cur_ab)), rep(psi_rna, ncol(cur_ab_rna))) * 
         diag(n_pep_cur)
-      #res_imp = impfunc(subpp_ab, true_X = NULL, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
+      #res_imp = impfunc(subpp_ab, true_X = NULL, K = K, psi = psimat, ...) 
+      ## + max(colSums(is.na(subpp_ab)))
       
       res_imp = py$estimate_params_and_impute(subpp_ab, 
                                               true_X = NULL, 
                                               K = K, 
                                               psi = psimat, 
-                                              ...) # + max(colSums(is.na(subpp_ab)))
+                                              ...) 
+      # + max(colSums(is.na(subpp_ab)))
       
       
       
       
       res_imp$Xhat = res_imp$Xhat[, 1:ncol(cur_ab)]
-      # res_imp = list(Xhat=matrix(10, nsamples, ncol(cur_ab)), error_msg="success")
+      # res_imp = list(Xhat=matrix(10, nsamples, ncol(cur_ab)), 
+      # error_msg="success")
       ermsg = res_imp$error_msg
       #print(ermsg)
       stopifnot(ermsg == "success")

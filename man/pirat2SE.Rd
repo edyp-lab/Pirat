@@ -7,8 +7,8 @@
 pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff)
 }
 \arguments{
-\item{peptides_ab}{the peptide or precursor abundance matrix to impute, with 
-samples in row and peptides or precursors in column;}
+\item{peptides_ab}{the peptide or precursor abundance matrix to impute, 
+with samples in row and peptides or precursors in column;}
 
 \item{adj}{a n_peptide x n_protein adjacency matrix between peptides and 
 proteins containing 0 and 1, or TRUE and FALSE.

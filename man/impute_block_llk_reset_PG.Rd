@@ -57,8 +57,8 @@ display more details ont the process}
 \item{...}{Additional parameters}
 }
 \value{
-A list containing imputation results for each PG, the execution time,
- and adjacency matrix between peptides and PGs corresponding to the 
+A list containing imputation results for each PG, the execution 
+time, and adjacency matrix between peptides and PGs corresponding to the 
  imputed PGs.
 }
 \description{

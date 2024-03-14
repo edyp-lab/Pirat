@@ -2,8 +2,8 @@
 #' @description This function converts the original dataset structure into 
 #' a SummarizedExperiment .
 #' 
-#' @param peptides_ab the peptide or precursor abundance matrix to impute, with 
-#' samples in row and peptides or precursors in column;
+#' @param peptides_ab the peptide or precursor abundance matrix to impute, 
+#' with samples in row and peptides or precursors in column;
 #' @param adj a n_peptide x n_protein adjacency matrix between peptides and 
 #' proteins containing 0 and 1, or TRUE and FALSE.
 #' Can contain: 

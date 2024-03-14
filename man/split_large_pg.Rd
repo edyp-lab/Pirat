@@ -15,10 +15,10 @@ split_large_pg(adj, size_max)
 New adjacency matrix between peptides and PGs.
 }
 \description{
-Split PGs with too many peptides/precursors, while keeping other PG untouched. It creates 
-new PGs with size equal to size max. Hence, some peptides can be
- duplicated in the new PGscreated. The seed is fixed such that the split generated remains constant for a given
- adjacency matrix.
+Split PGs with too many peptides/precursors, while keeping 
+other PG untouched. It creates new PGs with size equal to size max. Hence, 
+some peptides can be duplicated in the new PGscreated. The seed is fixed 
+such that the split generated remains constant for a given adjacency matrix.
 }
 \examples{
 data(subbouyssie)

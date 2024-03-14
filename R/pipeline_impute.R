@@ -80,7 +80,8 @@ NULL
 
 #' @rdname pipeline_llkimpute
 #' 
-#' @param ARG_VALUE_1 Parameter 'data.pep.rna.mis' of the function `pipeline_llkimpute()`
+#' @param ARG_VALUE_1 Parameter 'data.pep.rna.mis' of the function 
+#' `pipeline_llkimpute()`
 #' @param ... Additional parameters for the function `pipeline_llkimpute()`
 #' 
 #' @seealso [pipeline_llkimpute()]

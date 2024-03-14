@@ -21,7 +21,8 @@ pipeline_llkimpute(
 )
 }
 \arguments{
-\item{ARG_VALUE_1}{Parameter 'data.pep.rna.mis' of the function `pipeline_llkimpute()`}
+\item{ARG_VALUE_1}{Parameter 'data.pep.rna.mis' of the function 
+`pipeline_llkimpute()`}
 
 \item{...}{Additional parameters for the function `pipeline_llkimpute()`}
 
