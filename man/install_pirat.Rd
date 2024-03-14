@@ -16,6 +16,8 @@ Python libraries needed to run the imputation functions of the package
 It has to be execute only once, before the first use of the package.
 }
 \examples{
+\donttest{
 install_pirat()
+}
 
 }

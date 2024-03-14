@@ -7,7 +7,9 @@
 #' @rdname install_pirat
 #' 
 #' @examples
+#' \donttest{
 #' install_pirat()
+#' }
 #' 
 #' @export
 #' 
