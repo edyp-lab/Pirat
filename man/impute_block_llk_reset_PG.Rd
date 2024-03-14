@@ -54,7 +54,7 @@ have effect.}
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details ont the process}
 
-\item{...}{xxx}
+\item{...}{Additional parameters}
 }
 \value{
 A list containing imputation results for each PG, the execution time,

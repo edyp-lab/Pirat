@@ -106,8 +106,8 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' which size is greater are not imputed. Should be lower than max_pg_size to 
 #' have effect. 
 #' @param verbose A boolean (FALSE as default) which indicates whether to 
-#' display more details ont the process
-#' @param ... xxx
+#' display more details on the process
+#' @param ... Additional arguments
 #'
 #' @return A list containing imputation results for each PG, the execution time,
 #'  and adjacency matrix between peptides and PGs corresponding to the 
@@ -245,7 +245,7 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 #' have effect. 
 #' @param verbose A boolean (FALSE as default) which indicates whether to 
 #' display more details ont the process
-#' @param ... xxx
+#' @param ... Additional parameters
 #'
 #' @return A list containing imputation results for each PG, the execution time,
 #'  and adjacency matrix between peptides and PGs corresponding to the 

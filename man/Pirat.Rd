@@ -4,12 +4,12 @@
 \name{Pirat}
 \alias{Pirat}
 \alias{Pirat-package}
-\title{xxx}
+\title{.onLoad function}
 \value{
 NA
 }
 \description{
-xxxx
+.onLoad function
 # https://community.rstudio.com/t/when-to-use-onload-vs-onattach/21953
 Usually you want .onLoad, which—as the name suggests—runs when the package is 
 loaded. If something has to happen before anything is run, that's the way to 

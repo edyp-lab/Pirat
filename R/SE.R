@@ -2,8 +2,15 @@
 #' @description This function converts the original dataset structure into 
 #' a SummarizedExperiment .
 #' 
-#' @param peptides_ab A data.frame which contains the quantitative data
-#' @param adj The adjacency matrix
+#' @param peptides_ab the peptide or precursor abundance matrix to impute, with 
+#' samples in row and peptides or precursors in column;
+#' @param adj a n_peptide x n_protein adjacency matrix between peptides and 
+#' proteins containing 0 and 1, or TRUE and FALSE.
+#' Can contain: 
+#' **rnas_ab**, the mRNA normalized count matrix, with samples in 
+#' row and mRNAs in column;
+#' **adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
+#' containing 0 and 1, or TRUE and FALSE; 
 #' @param mask_prot_diff xxx
 #' @param mask_pep_diff xxx
 #' 

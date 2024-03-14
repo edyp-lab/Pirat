@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{source_own_pyScripts}
 \alias{source_own_pyScripts}
-\title{xxxxx}
+\title{Source user defined Python code}
 \usage{
 source_own_pyScripts()
 }
@@ -10,5 +10,7 @@ source_own_pyScripts()
 NA
 }
 \description{
-xxx
+Use the function `reticulate::source_python()` to source
+custom python files stored int the directory 'inst/python' of the 
+package `Pirat`.
 }

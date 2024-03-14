@@ -104,9 +104,6 @@ my_pipeline_llkimpute(subropers,
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
-data(subbouyssie)
-imp.data <- my_pipeline_llkimpute(subbouyssie)
-
 }
 \seealso{
 [pipeline_llkimpute()]

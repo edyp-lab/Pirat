@@ -39,9 +39,9 @@ which size is greater are not imputed. Should be lower than max_pg_size to
 have effect.}
 
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
-display more details ont the process}
+display more details on the process}
 
-\item{...}{xxx}
+\item{...}{Additional arguments}
 }
 \value{
 A list containing imputation results for each PG, the execution time,
