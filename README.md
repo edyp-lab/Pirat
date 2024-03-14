@@ -10,7 +10,9 @@ remotes::install_github('prostarproteomics/Pirat')
 
 ```
 
-Once the package has been downloaded, it is necessary to install a Python environment with specific versions of Python libraries. For this purpose, run: 
+Once the package has been downloaded, it is necessary to install a Python environment with specific versions of Python libraries. This is the purpose of the function
+`install_pirat()`. This function takes a long time to execute and need to be
+run only once.
 
 ```
 library(Pirat)
@@ -18,11 +20,9 @@ install_pirat()
 
 ```
 
-
 ## Test
 
 ```
-library(Pirat)
 data(subbouyssie)
 my_pipeline_llkimpute(subbouyssie) 
 
