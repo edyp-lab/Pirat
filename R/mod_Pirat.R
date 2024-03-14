@@ -1,16 +1,31 @@
 
-#' @title ## To be customized ##
+#' @title Pirat shiny app
 #' 
 #' @description 
 #' ## To be customized ##
 #' 
 #' @param id The id of the module
-#' @param obj An list of two items
-#' @param reset xxx
+#' @param obj An instance of the class `SummarizedExperiment`.
+#' @param reset A boolean which indicates whether to reset the widgets or not.
 #' @param verbose A boolean (FALSE as default) which indicates whether to 
 #' display more details on the process
 #' 
 #' @name mod_Pirat
+#' 
+#' @examples
+#' if(interactive()){
+#' data(subbouyssie)
+#' 
+#' # Builds the instance of `SummarizedExperiment`
+#' obj.se <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, 
+#' subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
+#' 
+#' #Launch the app
+#' app <- mod_Pirat(obj.se)
+#' shiny::runApp(app)
+#' 
+#' }
+#' 
 #' 
 #' @return A shiny app
 #'
@@ -18,6 +33,7 @@ NULL
 
 #' @rdname mod_Pirat
 #' @return A shiny app
+#' @importFrom shiny NS tagList uiOutput actionButton uiOutput plotOutput
 #' @export
 #' 
 mod_Pirat_ui <- function(id){
@@ -34,6 +50,11 @@ mod_Pirat_ui <- function(id){
 
 
 #' @rdname mod_Pirat
+#' 
+#' @importFrom shiny moduleServer reactiveVal reactiveValues renderUI 
+#' selectInput observeEvent withProgress setProgress req reactive renderPlot
+#' @importFrom SummarizedExperiment assay
+#' @importFrom S4Vectors metadata
 #' @export
 #' @return A shiny app
 #' 
@@ -42,13 +63,11 @@ mod_Pirat_server <- function(id,
                              reset = reactive({NULL}),
                              verbose = FALSE
                              ) {
-  
-  
-  
+
   # Define default selected values for widgets
   # This is only for simple workflows
   # This list must contain one item per widget (defined in the ui() function
-  # The name of each item is the same as in the ui minus the suffix '_ui')
+  # The name of each item is the same as in the ui without the suffix '_ui')
   widgets.default.values <- list(
     extension = 'base'
    # widget2 = NULL,
@@ -60,11 +79,30 @@ mod_Pirat_server <- function(id,
     
    maxval <- reactiveVal(0)
    
+   data <- reactiveVal(NULL)
+   
     dataOut <- reactiveValues(
       trigger = NULL,
       value = NULL,
       widgets = NULL
     )
+    
+    observe({
+      req(obj())
+      
+      if(!inherits(obj(), 'SummarizedExperiment')){
+        return(NULL)
+      }
+      
+      data(list(
+        peptides_ab = t(assay(obj())),
+        adj = metadata(obj())$adj,
+        mask_prot_diff = metadata(obj())$mask_prot_diff,
+        mask_pep_diff = metadata(obj())$mask_pep_diff
+      )
+      )
+      
+    })
     
     output$extension_ui <- renderUI({
       selectInput(ns('extension'), 'Algorithm',
@@ -77,9 +115,7 @@ mod_Pirat_server <- function(id,
     })
     
     
-    GetNbPg <- reactive({
-      5
-    })
+    GetNbPg <- reactive({5})
     
     shiny::observeEvent(input$run, {
       
@@ -87,7 +123,7 @@ mod_Pirat_server <- function(id,
       shiny::withProgress(
         withCallingHandlers(
          # out <- long_run_op(num_iter=10),
-           dataOut$value <- my_pipeline_llkimpute(obj(),
+           dataOut$value <- my_pipeline_llkimpute(data(),
                                                extension = input$extension,
                                                verbose = verbose),
            dataOut$trigger <- as.numeric(Sys.time()),
@@ -104,15 +140,12 @@ mod_Pirat_server <- function(id,
         ),
         max = maxval()
       )
-      
-      
-      
     })
     
     
     output$correlation_plot_UI <- renderPlot({
-      req(obj())
-      plot_pep_correlations(pep.data = obj())
+      req(data())
+      plot_pep_correlations(pep.data = data())
     })
      
     # observeEvent(input$valid_btn, {
@@ -131,3 +164,20 @@ mod_Pirat_server <- function(id,
 }
 
 
+
+#' @rdname mod_Pirat
+#' @export
+#' @importFrom shiny reactive shinyApp fluidPage
+#' @return A shiny app
+#' 
+mod_Pirat <- function(obj){
+  ui <- fluidPage(
+    mod_Pirat_ui('pirat')
+  )
+  
+  server <- function(input, output, session) {
+    mod_Pirat_server('pirat', obj = reactive({obj}))
+  }
+  
+  app <- shiny::shinyApp(ui, server)
+}

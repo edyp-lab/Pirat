@@ -8,7 +8,7 @@
 A dataset
 }
 \description{
-xxxxxx
+This small dataset is extracted from the `Bouyssie` dataset
 }
 \references{
 xxxxxxx

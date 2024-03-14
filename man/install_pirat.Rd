@@ -2,7 +2,7 @@
 % Please edit documentation in R/install_pirat.R
 \name{install_pirat}
 \alias{install_pirat}
-\title{xxx}
+\title{Install Python environment and libraries}
 \usage{
 install_pirat()
 }
@@ -10,8 +10,12 @@ install_pirat()
 NA
 }
 \description{
-xxx
+This function installs the Python environment and the
+Python libraries needed to run the imputation functions of the package 
+`Pirat`. This operation takes several minutes.
+It has to be execute only once, before the first use of the package.
 }
 \examples{
 install_pirat()
+
 }

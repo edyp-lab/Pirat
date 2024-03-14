@@ -1,8 +1,14 @@
-#' @title xxx
+#' @title Install Python environment and libraries
+#' @description This function installs the Python environment and the
+#' Python libraries needed to run the imputation functions of the package 
+#' `Pirat`. This operation takes several minutes.
+#' It has to be execute only once, before the first use of the package. 
+#' 
 #' @rdname install_pirat
 #' 
 #' @examples
 #' install_pirat()
+#' 
 #' @export
 #' 
 #' @importFrom stats cov
@@ -24,5 +30,5 @@ install_pirat <- function() {
       #output 
     })
   
-  some_useful_thing
+  invisible(some_useful_thing)
 }

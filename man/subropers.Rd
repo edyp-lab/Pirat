@@ -8,10 +8,7 @@
 A dataset
 }
 \description{
-xxxxxx
-}
-\references{
-xxxxxxx
+This small dataset is extracted from the `ropers` dataset
 }
 \keyword{data}
 \keyword{datasets}

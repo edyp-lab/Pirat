@@ -2,7 +2,6 @@
 
 #' @title Plot 2 histograms
 #' @description Plot 2 histograms on the same graph.
-#' xxxxx
 #'
 #' @param d1 vector of values for the first histogram
 #' @param d2 vector of values for the first histogram

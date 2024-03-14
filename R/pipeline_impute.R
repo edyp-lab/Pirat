@@ -12,7 +12,7 @@
 #' estimate_gamma(subbouyssie$peptides_ab)
 #' 
 #' 
-estimate_gamma = function(pep.ab.table,
+estimate_gamma <- function(pep.ab.table,
                           mcar = FALSE) {
   mv_rates <- colMeans(is.na(pep.ab.table))
   mean_abund <- colMeans(pep.ab.table, na.rm = TRUE)
@@ -80,7 +80,7 @@ estimate_gamma = function(pep.ab.table,
 #' estimate_psi_df(obs2NApep)
 #' 
 #' 
-estimate_psi_df = function(pep.ab.table) {
+estimate_psi_df <- function(pep.ab.table) {
   f <- function(x, a, b)
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
   
@@ -224,7 +224,7 @@ my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) {
 #' @rdname pipeline_llkimpute
 #' @return NA
 #' 
-pipeline_llkimpute = function(data.pep.rna.mis,
+pipeline_llkimpute <- function(data.pep.rna.mis,
                               pep.ab.comp = NULL,
                               alpha.factor = 2,
                               rna.cond.mask = NULL,

@@ -20,7 +20,8 @@ Authors@R:
     person(given = "Samuel", 
           family = "Wieczorek",
           email = "samuel.wieczorek@cea.fr",
-          role = c("cre", "aut")),
+          role = c("cre", "aut"),
+          comment = c(ORCID="0000-0002-5016-1203")),
     person(given = "Nelle", 
           family = "Varoquaux",
           email = " nelle.varoquaux@univ-grenoble-alpes.fr",
@@ -38,7 +39,7 @@ Depends:
   R (>= 4.3.0)
 Imports:
     basilisk, reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
-    graphics, SummarizedExperiment, S4Vectors
+    graphics, SummarizedExperiment, S4Vectors, shiny
 Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
 URL: http://www.prostar-proteomics.org/

@@ -3,7 +3,7 @@
 \docType{data}
 \name{ropers}
 \alias{ropers}
-\title{Bouyssie dataset}
+\title{ropers dataset}
 \value{
 A dataset
 }
@@ -11,8 +11,6 @@ A dataset
 xxxxxx
 }
 \references{
-xxxxxxx
-
 xxxxxxx
 }
 \keyword{data}

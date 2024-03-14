@@ -26,7 +26,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Samuel Wieczorek \email{samuel.wieczorek@cea.fr}
+\strong{Maintainer}: Samuel Wieczorek \email{samuel.wieczorek@cea.fr} (\href{https://orcid.org/0000-0002-5016-1203}{ORCID})
 
 Authors:
 \itemize{

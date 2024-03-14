@@ -4,7 +4,7 @@
 \alias{mod_Pirat}
 \alias{mod_Pirat_ui}
 \alias{mod_Pirat_server}
-\title{## To be customized ##}
+\title{Pirat shiny app}
 \usage{
 mod_Pirat_ui(id)
 
@@ -18,13 +18,15 @@ mod_Pirat_server(
  }),
   verbose = FALSE
 )
+
+mod_Pirat(obj)
 }
 \arguments{
 \item{id}{The id of the module}
 
-\item{obj}{An list of two items}
+\item{obj}{An instance of the class `SummarizedExperiment`.}
 
-\item{reset}{xxx}
+\item{reset}{A boolean which indicates whether to reset the widgets or not.}
 
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details on the process}
@@ -35,7 +37,25 @@ A shiny app
 A shiny app
 
 A shiny app
+
+A shiny app
 }
 \description{
 ## To be customized ##
+}
+\examples{
+if(interactive()){
+data(subbouyssie)
+
+# Builds the instance of `SummarizedExperiment`
+obj.se <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, 
+subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
+
+#Launch the app
+app <- mod_Pirat(obj.se)
+shiny::runApp(app)
+
+}
+
+
 }

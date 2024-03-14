@@ -27,7 +27,6 @@ A plot
 }
 \description{
 Plot 2 histograms on the same graph.
-xxxxx
 }
 \examples{
 NULL

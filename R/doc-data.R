@@ -3,8 +3,7 @@
 #' @rdname subbouyssie
 #' @docType data
 #' @keywords data
-#' @description xxxxxx
-#'
+#' @description This small dataset is extracted from the `Bouyssie` dataset
 #'
 #' @references xxxxxxx
 #'
@@ -16,7 +15,7 @@ NULL
 
 
 
-#' @title Bouyssie dataset
+#' @title ropers dataset
 #' @name ropers
 #' @rdname ropers
 #' @docType data
@@ -25,8 +24,6 @@ NULL
 #'
 #' @return A dataset
 #' @references xxxxxxx
-#'
-#' xxxxxxx
 #'
 #' @keywords datasets
 NULL
@@ -38,10 +35,7 @@ NULL
 #' @rdname subropers
 #' @docType data
 #' @keywords data
-#' @description xxxxxx
-#'
-#'
-#' @references xxxxxxx
+#' @description This small dataset is extracted from the `ropers` dataset
 #'
 #' @return A dataset
 #'

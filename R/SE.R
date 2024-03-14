@@ -2,8 +2,8 @@
 #' @description This function converts the original dataset structure into 
 #' a SummarizedExperiment .
 #' 
-#' @param peptides_ab xxx
-#' @param adj xxx
+#' @param peptides_ab A data.frame which contains the quantitative data
+#' @param adj The adjacency matrix
 #' @param mask_prot_diff xxx
 #' @param mask_pep_diff xxx
 #' 
@@ -47,22 +47,24 @@ pirat2SE <- function(peptides_ab,
 
 
 
-#' @title xxx
-#' @description xxx
+#' @title Imputation method using SummarizedExperiment dataset
+#' @description This function imputes data from an instance of the
+#' SummarizedExperiment structure data. After a conversion step, it calls the 
+#' function `my_pipeline_llkimpute`.
 #' 
 #' @param se An instance of the class SummarizedExperiment
-#' @param ... Additional arguments to pass to `pipeline_llkimpute()`
+#' @param ... Additional arguments to pass to `my_pipeline_llkimpute()`
 #' 
 #' 
 #' @export
 #' 
 #' @examples
 #' data(subbouyssie)
-#' obj <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, 
-#' subbouyssie$mask_pep_diff )
+#' obj <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, 
+#' subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
 #' res <- wrapper_pipeline_llkimpute(obj)
 #' 
-#' @return See pipeline_llkimpute() function
+#' @return See my_pipeline_llkimpute() function
 #' @importFrom S4Vectors metadata
 #' 
 wrapper_pipeline_llkimpute <- function(se, ...){

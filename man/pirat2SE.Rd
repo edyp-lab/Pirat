@@ -7,9 +7,9 @@
 pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff)
 }
 \arguments{
-\item{peptides_ab}{xxx}
+\item{peptides_ab}{A data.frame which contains the quantitative data}
 
-\item{adj}{xxx}
+\item{adj}{The adjacency matrix}
 
 \item{mask_prot_diff}{xxx}
 

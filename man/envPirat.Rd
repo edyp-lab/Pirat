@@ -3,7 +3,7 @@
 \docType{data}
 \name{envPirat}
 \alias{envPirat}
-\title{xxx}
+\title{Creates a BasiliskEnvironment class}
 \format{
 An object of class \code{BasiliskEnvironment} of length 1.
 }
@@ -14,6 +14,6 @@ envPirat
 An instance of the class `BasiliskEnvironment`
 }
 \description{
-xxx
+Please refer to the package `basilisk`.
 }
 \keyword{datasets}

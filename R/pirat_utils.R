@@ -117,7 +117,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @examples
 #' NULL
 #'
-impute_block_llk_reset = function(data.pep.rna.crop,
+impute_block_llk_reset <- function(data.pep.rna.crop,
                                   psi,
                                   pep_ab_or = NULL,
                                   df = 1,
@@ -257,7 +257,7 @@ impute_block_llk_reset = function(data.pep.rna.crop,
 #' NULL
 #' 
 #'
-impute_block_llk_reset_PG = function(data.pep.rna.crop,
+impute_block_llk_reset_PG <- function(data.pep.rna.crop,
                                      psi,
                                      psi_rna,
                                      rna.cond.mask,
@@ -393,7 +393,7 @@ impute_block_llk_reset_PG = function(data.pep.rna.crop,
 #' NULL
 #' 
 #'
-impute_from_blocks = function(logs.blocks,
+impute_from_blocks <- function(logs.blocks,
                               data.pep.rna,
                               idx_blocks = NULL) {
   if (!is.null(logs.blocks$new_adj)) {

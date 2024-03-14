@@ -2,25 +2,27 @@
 % Please edit documentation in R/SE.R
 \name{wrapper_pipeline_llkimpute}
 \alias{wrapper_pipeline_llkimpute}
-\title{xxx}
+\title{Imputation method using SummarizedExperiment dataset}
 \usage{
 wrapper_pipeline_llkimpute(se, ...)
 }
 \arguments{
 \item{se}{An instance of the class SummarizedExperiment}
 
-\item{...}{Additional arguments to pass to `pipeline_llkimpute()`}
+\item{...}{Additional arguments to pass to `my_pipeline_llkimpute()`}
 }
 \value{
-See pipeline_llkimpute() function
+See my_pipeline_llkimpute() function
 }
 \description{
-xxx
+This function imputes data from an instance of the
+SummarizedExperiment structure data. After a conversion step, it calls the 
+function `my_pipeline_llkimpute`.
 }
 \examples{
 data(subbouyssie)
-obj <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, subbouyssie$mask_prot_diff, 
-subbouyssie$mask_pep_diff )
+obj <- pirat2SE(subbouyssie$peptides_ab, subbouyssie$adj, 
+subbouyssie$mask_prot_diff, subbouyssie$mask_pep_diff )
 res <- wrapper_pipeline_llkimpute(obj)
 
 }
