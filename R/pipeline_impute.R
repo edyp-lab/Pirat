@@ -126,7 +126,7 @@ pipeline_llkimpute <- function(data.pep.rna.mis,
                               max.pg.size.pirat.t = 1,
                               verbose = FALSE) {
   
-  set.seed(98765)
+  #set.seed(98765)
   psi_rna = NULL
   
   if(verbose)
