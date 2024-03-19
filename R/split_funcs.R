@@ -21,10 +21,7 @@
 split_large_pg <- function(adj, 
   size_max) {
   
-  # If one wants to reproduce the exact results in the paper,
-  # it is necessary to set the seed to 1234. Then, uncomment the following line 
-  # set.seed(1234)
-  
+
   idx_pg_too_large = which(colSums(adj) >= size_max)
   if (length(idx_pg_too_large) > 0) {
     new_adj = adj
@@ -83,10 +80,6 @@ split_large_pg <- function(adj,
 split_large_pg_PG <- function(adj, 
   size_max, 
   adj_rna_pg) {
-  
-  # If one wants to reproduce the exact results in the paper,
-  # it is necessary to set the seed to 1234. Then, uncomment the following line 
-  # set.seed(1234)
   
   idx_pg_too_large = which((colSums(adj) + colSums(adj_rna_pg)) >=
       size_max)
