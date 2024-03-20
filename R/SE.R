@@ -11,8 +11,10 @@
 #' row and mRNAs in column;
 #' **adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
 #' containing 0 and 1, or TRUE and FALSE; 
-#' @param mask_prot_diff xxx
-#' @param mask_pep_diff xxx
+#' @param mask_prot_diff (Optional) boolean vector of size equal to the number of proteins, indicating
+#' whether proteins are ground truth differentially abundant (typically in spike-in benchmark datasets).
+#' @param mask_pep_diff (Optional) boolean vector of size equal to the number of peptides, indicating
+#' whether peptides are ground truth differentially abundant (typically in spike-in benchmark datasets).
 #' 
 #' @return An instance of the class `SummarizedExperiment`
 #' 
@@ -34,8 +36,8 @@
 #' 
 pirat2SE <- function(peptides_ab, 
                      adj, 
-                     mask_prot_diff, 
-                     mask_pep_diff){
+                     mask_prot_diff = NULL, 
+                     mask_pep_diff = NULL){
 
  obj <- SummarizedExperiment::SummarizedExperiment(
    assays = as.matrix(t(peptides_ab), row.names = colnames(t(peptides_ab))), 

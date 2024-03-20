@@ -1,4 +1,4 @@
-#' @title Bouyssie dataset
+#' @title Sub-Bouyssie dataset
 #' @name subbouyssie
 #' @rdname subbouyssie
 #' @docType data
