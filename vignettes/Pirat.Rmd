@@ -66,6 +66,11 @@ Note that `subbouyssie` is actually a list that contains two elements:
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows and peptides in columns.
 2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s (no preprocessing or simplification is needed for this matrix, Pirat will automatically build the PGs from it).
 
+Slight imputation variations may occur for peptides belonging to very large PGs, because the latter are randomly split into several smaller PGs with fixed size to reduce computational costs. Although this variability is too small to affect imputation quality, we fix the seed in this tutorial such that the user can retrieve exactly the same imputed values when running the notebook again.
+```{r}
+set.seed(12345)
+```
+
 One can then impute this dataset with the following line
 
 ```{r}
@@ -162,9 +167,9 @@ imp.res = my_pipeline_llkimpute(subropers,
                              max.pg.size.pirat.t = 1)
 ```
 
-Only few peptides have been used to fit the prior variance distribution in  , as we use a small subset from the original Ropers2021 dataset. Thus the goodness of fit may vary a lot depending on the subset chosen.
+Only few peptides have been used to fit the prior variance distribution in $\Sigma$, as we use a small subset from the original Ropers2021 dataset. Thus the goodness of fit may vary a lot depending on the subset chosen.
 
-And gives following imputed singletons:
+It gives the following imputed singletons:
 
 ```{r}
 idx.sing.pg = which(colSums(subropers$adj) == 1)
@@ -172,7 +177,7 @@ idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
 imp.res$data.imputed[, idx.sing.pep]
 ```
 
-On the other hand, if proteomic and transcriptomic samples are not paired but are derived from a same biological/experimental condition. Pirat-T can be used by adapting the mask related to samples in each type of analysis (here, both proteomic and transcriptomic samples 6 different conditions with 3 replicates each, and conditions appear in the same order):
+On the other hand, if proteomic and transcriptomic samples are not paired but are derived from a same biological/experimental condition. Pirat-T can be used by adapting the mask related to samples in each type of analysis (here, both proteomic and transcriptomic datasets have 6 different conditions in the same order with 3 replicates each):
 
 ```{r}
 imp.res = my_pipeline_llkimpute(subropers,
