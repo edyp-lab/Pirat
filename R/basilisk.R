@@ -10,5 +10,6 @@ envPirat <- basilisk::BasiliskEnvironment("envPirat",
     "matplotlib==3.7",
     "pytorch==1.10.0",
     "python==3.9.5"),
-  channels = c("pytorch", "stable", "torch"),
-  path = "test_dummy")
+  channels = c("pytorch", "stable", "torch")
+  #,path = "test_dummy"
+  )

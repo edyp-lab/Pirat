@@ -92,6 +92,9 @@ NULL
 #' 
 #' @return The imputed **data.pep.rna.mis$peptides_ab** table.
 #' 
+#' @importFrom reticulate import
+#' @importFrom basilisk basiliskStart basiliskRun basiliskStop
+#' 
 my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) { 
   proc <- basilisk::basiliskStart(envPirat)
   on.exit(basilisk::basiliskStop(proc))
@@ -106,6 +109,8 @@ my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) {
       # Python objects, no pointers to shared memory. 
       output 
     }, arg1=ARG_VALUE_1, ...)
+  
+  basilisk::basiliskStop(cl)
   
   some_useful_thing
 }

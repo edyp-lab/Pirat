@@ -3,15 +3,22 @@
 \docType{data}
 \name{subbouyssie}
 \alias{subbouyssie}
-\title{Bouyssie dataset}
+\title{Sub-Bouyssie dataset}
 \value{
 A dataset
 }
 \description{
-This small dataset is extracted from the `Bouyssie` dataset
+This dataset is extracted from the original `Bouyssie2020`
+dataset mentionned in Pirat article, where only 5 PGs were randomly selected.
 }
 \references{
-xxxxxxx
+Bouyssié, D., Hesse, A. M., Mouton-Barbosa, E., Rompais, 
+M., MacRon, C., Carapito, C., Gonzalez De Peredo, A., Couté, Y., Dupierris, 
+V., Burel, A., Menetrey, J. P., Kalaitzakis, A., Poisat, J., Romdhani, A., 
+Burlet-Schiltz, O., Cianférani, S., Garin, J., & Bruley, C. (2020). 
+Proline: an efficient and user-friendly software suite for large-scale 
+proteomics. Bioinformatics, 36(10), 3148–3155. 
+https://doi.org/10.1093/BIOINFORMATICS/BTAA118
 }
 \keyword{data}
 \keyword{datasets}
