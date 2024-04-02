@@ -18,11 +18,11 @@ install_Pirat <- function() {
   .ver <- reticulate::py_config()$version_string
   
   list(
-    torch_version = pkgs[which(pkgs$package=='pytorch'),]$version,
-    numpy_version = pkgs[which(pkgs$package=='numpy'),]$version,
-    matplotlib_version = pkgs[which(pkgs$package=='matplotlib'),]$version,
     location = reticulate::py_config()$pythonhome,
-    python_version = unlist(strsplit(.ver, split = ' '))[1]
+    python = unlist(strsplit(.ver, split = ' '))[1],
+    torch = pkgs[which(pkgs$package=='pytorch'),]$version,
+    numpy = pkgs[which(pkgs$package=='numpy'),]$version,
+    matplotlib = pkgs[which(pkgs$package=='matplotlib'),]$version    
     )
   })
   basiliskStop(cl)
