@@ -12,11 +12,11 @@
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 install_Pirat <- function() {
   cl <- basiliskStart(envPirat)
-  matplotlib.names <- basiliskRun(cl, function() { 
-    X <- reticulate::import("matplotlib")
+  pirat.install <- basiliskRun(cl, function() { 
+    X <- reticulate::import("torch")
     names(X) 
   })
   basiliskStop(cl)
 
-  list(matplotlib=matplotlib.names)
+  pirat.install
 }
