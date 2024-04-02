@@ -10,7 +10,7 @@
 #' @export
 #' @importFrom reticulate import
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
-test_Pirat <- function() {
+install_Pirat <- function() {
   cl <- basiliskStart(envPirat)
   matplotlib.names <- basiliskRun(cl, function() { 
     X <- reticulate::import("matplotlib")
