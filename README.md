@@ -5,7 +5,7 @@
 To install this package from Github:
 
 ```
-library(remotes)
+install.packages('remotes')
 remotes::install_github('prostarproteomics/Pirat')
 
 ```
@@ -16,7 +16,7 @@ run only once.
 
 ```
 library(Pirat)
-install_pirat()
+install_Pirat()
 
 ```
 
