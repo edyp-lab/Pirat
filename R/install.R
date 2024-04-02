@@ -14,7 +14,18 @@ install_Pirat <- function() {
   cl <- basiliskStart(envPirat)
   pirat.install <- basiliskRun(cl, function() { 
     X <- reticulate::import("torch")
-    names(X) 
+
+     pkgs <- reticulate::py_list_packages()
+  .ver <- reticulate::py_config()$version_string
+  
+  list(#active_env = Get_active_env(),
+    torch_version = pkgs[which(pkgs$package=='pytorch'),]$version,
+    numpy_version = pkgs[which(pkgs$package=='numpy'),]$version,
+    matplotlib_version = pkgs[which(pkgs$package=='matplotlib'),]$version,
+    location = reticulate::py_config()$pythonhome,
+    python_version <- unlist(strsplit(.ver, split = ' '))[1]
+    )
+
   })
   basiliskStop(cl)
 
