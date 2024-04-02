@@ -27,5 +27,5 @@ install_Pirat <- function() {
   })
   basiliskStop(cl)
 
-  pirat.install
+  lapply(pirat.install, function(x) paste0(names(x), x))
 }
