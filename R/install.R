@@ -27,5 +27,5 @@ install_Pirat <- function() {
   })
   basiliskStop(cl)
 
-  lapply(pirat.install, function(x) paste0(names(x), x))
+  cat(paste0("\t", names(pirat.install), "=", pirat.install, "\n"))
 }
