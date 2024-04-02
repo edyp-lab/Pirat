@@ -110,7 +110,7 @@ my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) {
       output 
     }, arg1=ARG_VALUE_1, ...)
   
-  basilisk::basiliskStop(cl)
+  basilisk::basiliskStop(proc)
   
   some_useful_thing
 }
