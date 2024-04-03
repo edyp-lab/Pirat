@@ -96,13 +96,16 @@ NULL
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 #' 
 my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) { 
+  message('Starting Python environment...\n')
   proc <- basilisk::basiliskStart(envPirat)
   on.exit(basilisk::basiliskStop(proc))
   
   some_useful_thing <- basilisk::basiliskRun(proc, 
     fun = function(arg1, ...) {
       py <- reticulate::import("torch", delay_load = FALSE)
+       message('Launching custom Python scripts ...\n')
       source_own_pyScripts()
+      message('Launch pipeline_llkimpute() ...\n')
       output <- pipeline_llkimpute(arg1, ...)
       
       # The return value MUST be a pure R object, i.e., no reticulate
