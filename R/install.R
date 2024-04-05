@@ -6,7 +6,7 @@
 #' @author Aaron Lun
 #' 
 #' @examples
-#' test()
+#' install_Pirat()
 #' @export
 #' @importFrom reticulate import
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
