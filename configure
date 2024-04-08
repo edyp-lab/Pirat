@@ -1,3 +1,5 @@
 #!/bin/sh
 
+${R_HOME}/bin/Rscript -e "Sys.setenv(BASILISK_USE_SYSTEM_DIR=1)"
 ${R_HOME}/bin/Rscript -e "basilisk::configureBasiliskEnv()"
+

@@ -268,7 +268,7 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
             . 'Xgt' (numpy array): optionnal. ground truth dataset.
     
     Notes:
-      . Pirat is dedicated for simple imputation, thus the seed if fixed for the Monte-Carlo method used for imputation by conditionnal mean,
+      . Pirat is dedicated for single imputation, thus the seed if fixed for the Monte-Carlo method used for imputation by conditionnal mean,
     
     """
                                  

@@ -92,20 +92,28 @@ NULL
 #' 
 #' @return The imputed **data.pep.rna.mis$peptides_ab** table.
 #' 
+#' @importFrom reticulate import
+#' @importFrom basilisk basiliskStart basiliskRun basiliskStop
+#' 
 my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) { 
+  message('Starting Python environment...\n')
   proc <- basilisk::basiliskStart(envPirat)
   on.exit(basilisk::basiliskStop(proc))
   
   some_useful_thing <- basilisk::basiliskRun(proc, 
     fun = function(arg1, ...) {
       py <- reticulate::import("torch", delay_load = FALSE)
+       message('Launching custom Python scripts ...\n')
       source_own_pyScripts()
+      message('Launch pipeline_llkimpute() ...\n')
       output <- pipeline_llkimpute(arg1, ...)
       
       # The return value MUST be a pure R object, i.e., no reticulate
       # Python objects, no pointers to shared memory. 
       output 
     }, arg1=ARG_VALUE_1, ...)
+  
+  basilisk::basiliskStop(proc)
   
   some_useful_thing
 }
@@ -195,7 +203,7 @@ pipeline_llkimpute <- function(data.pep.rna.mis,
                                            eps_phi = 1e-5, 
                                            tol_obj = 1e-7, 
                                            tol_grad = 1e-5, 
-                                           tol_param = 1e-3,
+                                           tol_param = 1e-4,
                                            maxiter = as.integer(5000), 
                                            lr = 0.5,
                                            phi_known = TRUE,
