@@ -4,7 +4,7 @@
 \alias{pirat2SE}
 \title{COnvert Pirat dataset to SummarizedExperiment}
 \usage{
-pirat2SE(peptides_ab, adj, mask_prot_diff, mask_pep_diff)
+pirat2SE(peptides_ab, adj, mask_prot_diff = NULL, mask_pep_diff = NULL)
 }
 \arguments{
 \item{peptides_ab}{the peptide or precursor abundance matrix to impute, 
@@ -18,9 +18,11 @@ row and mRNAs in column;
 **adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
 containing 0 and 1, or TRUE and FALSE;}
 
-\item{mask_prot_diff}{xxx}
+\item{mask_prot_diff}{(Optional) boolean vector of size equal to the number of proteins, indicating
+whether proteins are ground truth differentially abundant (typically in spike-in benchmark datasets).}
 
-\item{mask_pep_diff}{xxx}
+\item{mask_pep_diff}{(Optional) boolean vector of size equal to the number of peptides, indicating
+whether peptides are ground truth differentially abundant (typically in spike-in benchmark datasets).}
 }
 \value{
 An instance of the class `SummarizedExperiment`

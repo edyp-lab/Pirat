@@ -3,15 +3,21 @@
 \docType{data}
 \name{ropers}
 \alias{ropers}
-\title{ropers dataset}
+\title{Ropers dataset}
 \value{
 A dataset
 }
 \description{
-xxxxxx
+This dataset corresponds to `Ropers2021` dataset, described in 
+Pirat article.
 }
 \references{
-xxxxxxx
+Ropers, D., Couté, Y., Faure, L., Ferré, S., Labourdette, D., 
+Shabani, A., Trouilh, L., Vasseur, P., Corre, G., Ferro, M., Teste, M. A., 
+Geiselmann, J., & de Jong, H. (2021). Multiomics Study of Bacterial Growth 
+Arrest in a Synthetic Biology Application. ACS Synthetic Biology, 10(11), 
+2910–2926. 
+https://doi.org/10.1021/ACSSYNBIO.1C00115/SUPPL_FILE/SB1C00115_SI_010.ZIP
 }
 \keyword{data}
 \keyword{datasets}
