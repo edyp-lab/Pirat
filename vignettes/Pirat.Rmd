@@ -67,13 +67,13 @@ Note that `subbouyssie` is actually a list that contains two elements:
 2. `adj`, the adjacency matrix between peptides and proteins, containing etiher booleans or 0s and 1s (no preprocessing or simplification is needed for this matrix, Pirat will automatically build the PGs from it).
 
 Slight imputation variations may occur for peptides belonging to very large PGs, because the latter are randomly split into several smaller PGs with fixed size to reduce computational costs. Although this variability is too small to affect imputation quality, we fix the seed in this tutorial such that the user can retrieve exactly the same imputed values when running the notebook again.
-```{r}
+```{r set_seed}
 set.seed(12345)
 ```
 
 One can then impute this dataset with the following line
 
-```{r}
+```{r impute}
 imp.res <- my_pipeline_llkimpute(subbouyssie)
 ```
 
