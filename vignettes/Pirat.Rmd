@@ -47,8 +47,8 @@ remotes::install_github('prostarproteomics/Pirat')
 Once the package has been installed, it is necessary to install a Python environment (called r-pirat in the package) with specific versions of Python libraries. For this purpose, run: 
 
 ```{r install_pirat, eval = TRUE}
-#Pirat::install_pirat()
 library(Pirat)
+Pirat::install_Pirat()
 ```
 
 

@@ -10,6 +10,7 @@
 #' @export
 #' @importFrom reticulate import
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
+#' 
 install_Pirat <- function() {
   cl <- basiliskStart(envPirat)
   pirat.install <- basiliskRun(cl, function() { 
