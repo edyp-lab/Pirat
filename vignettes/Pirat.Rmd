@@ -34,30 +34,13 @@ BiocStyle::markdown()
 
 
 
-# Installation
-
-
-To install this package from Github:
-
-```{r install_pkg, eval = FALSE}
-library(remotes)
-remotes::install_github('prostarproteomics/Pirat')
-```
-
-Once the package has been installed, it is necessary to install a Python environment (called r-pirat in the package) with specific versions of Python libraries. For this purpose, run: 
-
-```{r install_pirat, eval = TRUE}
-library(Pirat)
-Pirat::install_Pirat()
-```
-
-
 # Standard imputation with Pirat
 
 Pirat is a single imputation pipeline including a novel statistical approach dedicated to bottom-up proteomics data. All the technical details and the validation procedure of this method in available on the corresponding preprint @Etourneau2023 .
 To demonstrate its usage, we first load Pirat package and a subset of Bouyssie2020 dataset in the environment.
 
 ```{r load_data, echo = TRUE}
+library(Pirat)
 data(subbouyssie)
 ```
 
