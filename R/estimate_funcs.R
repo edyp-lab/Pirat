@@ -21,17 +21,18 @@ estimate_gamma <- function(pep.ab.table,
   mv_rates_sorted <- mv_rates[mean_abund_sorted$ix]
   kernel_size <- 10
   probs <- rep(0, length(mean_abund) - kernel_size + 1)
-  for (i in 1:length(probs)) {
-    probs[i] <- mean(mv_rates_sorted[i:(i + kernel_size - 1)])
+  for (i in seq(length(probs))) {
+      .indices <- seq(from = i, to = (i + kernel_size - 1), by = 1)
+    probs[i] <- mean(mv_rates_sorted[.indices])
   }
   not0 <- probs != 0
   m_ab_sorted <- mean_abund_sorted$x[not0]
   probs <- probs[not0]
-  plot(m_ab_sorted[1:length(probs)], log(probs),
+  plot(m_ab_sorted[seq(length(probs))], log(probs),
     main = paste("Estimation of missingness parameters with k=",kernel_size), 
     ylab = "log(p_mis)", 
     xlab = "observed mean")
-  res.reg <- stats::lm(log(probs) ~ m_ab_sorted[1:length(probs)])
+  res.reg <- stats::lm(log(probs) ~ m_ab_sorted[seq(length(probs))])
   sum.reg.reg <- summary(res.reg)
   print(sum.reg.reg)
   abline(res.reg, col="red")
@@ -46,13 +47,6 @@ estimate_gamma <- function(pep.ab.table,
   }
   sort_mean_abund <- sort(mean_abund)
   
-  
-  # print(paste("Gamma0 estimated = ", phi0))
-  # print(paste("Gamma1 estimated = ", phi))
-  # print(paste("prop abundances values for which pmis = 1 : ", 
-  #             mean(pep.ab.table <= -phi0/phi, na.rm = T)))
-  # print(paste("Nb abundances values for which pmis = 1 : ", 
-  #             sum(pep.ab.table <= -phi0/phi, na.rm = T)))
   return(list(gamma_0 = phi0, 
     gamma_1 = phi))
 }
@@ -68,6 +62,7 @@ estimate_gamma <- function(pep.ab.table,
 #' 
 #' @import MASS
 #' @import invgamma
+#' @importFrom stats var
 #'
 #' @return List containing estimated fitted hyperparameters df (degrees of 
 #' freedom) and psi (inverse scale).
@@ -82,22 +77,24 @@ estimate_gamma <- function(pep.ab.table,
 #' 
 #' 
 estimate_psi_df <- function(pep.ab.table) {
-  f <- function(x, a, b)
+  f <- function(x, a, b){
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
+  }
   
-  vars <- sort(apply(pep.ab.table, MARGIN = 2, FUN = var, na.rm = TRUE))
+  vars <- sort(apply(pep.ab.table, MARGIN = 2, FUN = stats::var, na.rm = TRUE))
   hist(vars, 
     30, 
     freq = FALSE, 
     xlab ="Variance completely observed",
     main="Histogram of observed variance and fitted inverse-gamma curve")
-  resllk <- tryCatch(MASS::fitdistr( vars, f, list(a=1, b=0.1) ), 
+  resllk <- tryCatch(MASS::fitdistr(vars, f, list(a = 1, b = 0.1) ), 
     error = function(e){NULL})
   if (is.null(resllk)) {
     return(NULL)
   }
   alpha <- resllk$estimate[1]
   beta <- resllk$estimate[2]
+  
   curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), 
     add = TRUE, 
     col = "red")

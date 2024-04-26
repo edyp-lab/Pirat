@@ -5,7 +5,7 @@
 \alias{my_pipeline_llkimpute}
 \title{Pirat imputation function}
 \usage{
-my_pipeline_llkimpute(ARG_VALUE_1, ...)
+my_pipeline_llkimpute(data.pep.rna.mis, ...)
 
 pipeline_llkimpute(
   data.pep.rna.mis,
@@ -13,7 +13,7 @@ pipeline_llkimpute(
   alpha.factor = 2,
   rna.cond.mask = NULL,
   pep.cond.mask = NULL,
-  extension = "base",
+  extension = c("base", "2", "S", "T"),
   mcar = FALSE,
   degenerated = FALSE,
   max.pg.size.pirat.t = 1,
@@ -21,22 +21,10 @@ pipeline_llkimpute(
 )
 }
 \arguments{
-\item{ARG_VALUE_1}{Parameter 'data.pep.rna.mis' of the function 
-`pipeline_llkimpute()`}
+\item{data.pep.rna.mis}{This is the parameter 'data.pep.rna.mis' of the 
+function `pipeline_llkimpute()`}
 
 \item{...}{Additional parameters for the function `pipeline_llkimpute()`}
-
-\item{data.pep.rna.mis}{A list containing important elements of the dataset 
-to impute. Must contain:
-**peptides_ab**, the peptide or precursor abundance matrix to impute, with 
-samples in row and peptides or precursors in column; 
-**adj**, a n_peptide x n_protein adjacency matrix between peptides and 
-proteins containing 0 and 1, or TRUE and FALSE.
-Can contain: 
-**rnas_ab**, the mRNA normalized count matrix, with samples in 
-row and mRNAs in column;
-**adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
-containing 0 and 1, or TRUE and FALSE;}
 
 \item{pep.ab.comp}{The pseudo-complete peptide or precursor abundance matrix,
 with samples in row and peptides or precursors in column. Useful only in 
@@ -48,11 +36,11 @@ penalty described in the original paper.}
 
 \item{rna.cond.mask}{Vector of indexes representing conditions of samples 
 of mRNA table, only mandatory if extension == "T". For paired proteomic and 
-transcriptomic tables, should be c(1:n_samples).}
+transcriptomic tables, should be seq(n_samples).}
 
 \item{pep.cond.mask}{Vector of indexes representing conditions of samples 
 of mRNA table, only mandatory if extension == "T". For paired proteomic 
-and transcriptomic tables, should be c(1:n_samples).}
+and transcriptomic tables, should be seq(n_samples).}
 
 \item{extension}{If NULL (default), classical Pirat is applied. If "2", 
 only imputes PGs containing at least 2 peptides or precursors, and 
@@ -90,7 +78,12 @@ Imputation pipeline of Pirat. First, it creates PGs. Then,
 it estimates parameters of the penalty term (that amounts to an
 inverse-Wishart prior). Second, it estimates the missingness mechanism
 parameters. Finally, it imputes the peptide/precursor-level dataset with 
-desired extension.
+desired extension.  
+The function `my_pipeline_llkimpute` may not be run itself as it uses Python 
+functions and the correct Python environment must be loaded before. This is
+the role of the function `my_pipeline_llkimpute()` which is a wrapper
+ function. It launches the Python environment and calls the function
+ `my_pipeline_llkimpute`
 }
 \examples{
 # Pirat classical mode
@@ -102,8 +95,8 @@ data(subropers)
 nsamples = nrow(subropers$peptides_ab)
 my_pipeline_llkimpute(subropers, 
                    extension = "T",
-                   rna.cond.mask = 1:nsamples, 
-                   pep.cond.mask = 1:nsamples,
+                   rna.cond.mask = seq(nsamples), 
+                   pep.cond.mask = seq(nsamples),
                    max.pg.size.pirat.t = 1)
 }
 \seealso{

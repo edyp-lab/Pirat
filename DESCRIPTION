@@ -39,7 +39,7 @@ Depends:
   R (>= 4.4.0)
 Imports:
     basilisk, reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
-    graphics, SummarizedExperiment, S4Vectors, shiny
+    graphics, SummarizedExperiment, S4Vectors
 Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
 URL: http://www.prostar-proteomics.org/

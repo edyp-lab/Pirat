@@ -1,11 +1,18 @@
 
 
 #' @title Pirat imputation function
+#' 
 #' @description Imputation pipeline of Pirat. First, it creates PGs. Then,
 #' it estimates parameters of the penalty term (that amounts to an
 #' inverse-Wishart prior). Second, it estimates the missingness mechanism
 #' parameters. Finally, it imputes the peptide/precursor-level dataset with 
 #' desired extension.  
+#' The function `my_pipeline_llkimpute` may not be run itself as it uses Python 
+#' functions and the correct Python environment must be loaded before. This is
+#' the role of the function `my_pipeline_llkimpute()` which is a wrapper
+#'  function. It launches the Python environment and calls the function
+#'  `my_pipeline_llkimpute`
+#'
 #'
 #' @param data.pep.rna.mis A list containing important elements of the dataset 
 #' to impute. Must contain:
@@ -26,10 +33,10 @@
 #' penalty described in the original paper. 
 #' @param rna.cond.mask Vector of indexes representing conditions of samples 
 #' of mRNA table, only mandatory if extension == "T". For paired proteomic and 
-#' transcriptomic tables, should be c(1:n_samples).
+#' transcriptomic tables, should be seq(n_samples).
 #' @param pep.cond.mask Vector of indexes representing conditions of samples 
 #' of mRNA table, only mandatory if extension == "T". For paired proteomic 
-#' and transcriptomic tables, should be c(1:n_samples).
+#' and transcriptomic tables, should be seq(n_samples).
 #' @param extension If NULL (default), classical Pirat is applied. If "2", 
 #' only imputes PGs containing at least 2 peptides or precursors, and 
 #' remaining peptides are left unchanged.
@@ -70,8 +77,8 @@
 #' nsamples = nrow(subropers$peptides_ab)
 #' my_pipeline_llkimpute(subropers, 
 #'                    extension = "T",
-#'                    rna.cond.mask = 1:nsamples, 
-#'                    pep.cond.mask = 1:nsamples,
+#'                    rna.cond.mask = seq(nsamples), 
+#'                    pep.cond.mask = seq(nsamples),
 #'                    max.pg.size.pirat.t = 1)
 NULL
 
@@ -80,8 +87,8 @@ NULL
 
 #' @rdname pipeline_llkimpute
 #' 
-#' @param ARG_VALUE_1 Parameter 'data.pep.rna.mis' of the function 
-#' `pipeline_llkimpute()`
+#' @param data.pep.rna.mis This is the parameter 'data.pep.rna.mis' of the 
+#' function `pipeline_llkimpute()`
 #' @param ... Additional parameters for the function `pipeline_llkimpute()`
 #' 
 #' @seealso [pipeline_llkimpute()]
@@ -95,12 +102,12 @@ NULL
 #' @importFrom reticulate import
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 #' 
-my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) { 
+my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) { 
   message('Starting Python environment...\n')
   proc <- basilisk::basiliskStart(envPirat)
   on.exit(basilisk::basiliskStop(proc))
   
-  some_useful_thing <- basilisk::basiliskRun(proc, 
+  myImputeFunc <- basilisk::basiliskRun(proc, 
     fun = function(arg1, ...) {
       py <- reticulate::import("torch", delay_load = FALSE)
        message('Launching custom Python scripts ...\n')
@@ -111,11 +118,11 @@ my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) {
       # The return value MUST be a pure R object, i.e., no reticulate
       # Python objects, no pointers to shared memory. 
       output 
-    }, arg1=ARG_VALUE_1, ...)
+    }, arg1 = data.pep.rna.mis, ...)
   
   basilisk::basiliskStop(proc)
   
-  some_useful_thing
+  myImputeFunc
 }
 
 
@@ -124,39 +131,40 @@ my_pipeline_llkimpute <- function(ARG_VALUE_1, ...) {
 #' @return NA
 #' 
 pipeline_llkimpute <- function(data.pep.rna.mis,
-                              pep.ab.comp = NULL,
-                              alpha.factor = 2,
-                              rna.cond.mask = NULL,
-                              pep.cond.mask = NULL,
-                              extension = 'base',
-                              mcar = FALSE,
-                              degenerated = FALSE,
-                              max.pg.size.pirat.t = 1,
-                              verbose = FALSE) {
+    pep.ab.comp = NULL,
+    alpha.factor = 2,
+    rna.cond.mask = NULL,
+    pep.cond.mask = NULL,
+    extension = c('base', '2', 'S', 'T'),
+    mcar = FALSE,
+    degenerated = FALSE,
+    max.pg.size.pirat.t = 1,
+    verbose = FALSE) {
   
   psi_rna = NULL
   
+  extension <- match.arg(extension)
+  
   if(verbose)
-    cat("extension: ", extension, "\n")
+    message("extension: ", extension, "\n")
   
   if( verbose)
-    cat("Remove nested prots...")
+      message("Remove nested prots...")
   idx.emb.prots <- get_indexes_embedded_prots(data.pep.rna.mis$adj)
   data.pep.rna.mis <- rm_pg_from_idx_merge_pg(data.pep.rna.mis, idx.emb.prots)
   if( verbose)
-    cat("Data ready for boarding with Pirat")
+      message("Data ready for boarding with Pirat")
   
   # Estimate Gamma distrib peptides
   obs2NApep <- data.pep.rna.mis$peptides_ab[
     ,colSums(is.na(data.pep.rna.mis$peptides_ab)) <= 0]
-  # ceiling(0.05 * nrow(data.pep.rna.mis$peptides_ab))]
   est.psi.df <- estimate_psi_df(obs2NApep)
   df <- est.psi.df$df
   psi <- est.psi.df$psi
   
   if( verbose){
-    cat(paste(c("Estimated DF", df)))
-    cat(paste(c("Estimated psi", psi)))
+      message(paste(c("Estimated DF", df)))
+      message(paste(c("Estimated psi", psi)))
   }
   
   # Estimate Gamma distrib RNA
