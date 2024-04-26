@@ -49,10 +49,13 @@ NULL
 #' 
 #' @format 
 #' A list of six items:
-#' * peptides_ab: 
-#' * rnas_ab:
-#' * adj: xxx
-#' * adj_rna_pg: xxx
+#' * peptides_ab: the peptide or precursor abundance matrix to impute, 
+#' with samples in row and peptides or precursors in column
+#' * rnas_ab: a n_peptide x n_protein adjacency matrix between peptides and 
+#' proteins containing 0 and 1, or TRUE and FALSE.
+#' * adj: A matrix which is the adjacency matrix for the slot peptides_ab.
+#' * adj_rna_pg: a n_mrna x n_protein adjacency matrix n_mrna and proteins 
+#' containing 0 and 1, or TRUE and FALSE
 #' * charges: xxx
 #' * modifs: xxx
 #' 
@@ -81,10 +84,13 @@ NULL
 #' 
 #' @format 
 #' A list of six items:
-#' * peptides_ab: 
-#' * rnas_ab:
-#' * adj: xxx
-#' * adj_rna_pg: xxx
+#' * peptides_ab: the peptide or precursor abundance matrix to impute, 
+#' with samples in row and peptides or precursors in column
+#' * rnas_ab: a n_peptide x n_protein adjacency matrix between peptides and 
+#' proteins containing 0 and 1, or TRUE and FALSE.
+#' * adj: A matrix which is the adjacency matrix for the slot peptides_ab.
+#' * adj_rna_pg: a n_mrna x n_protein adjacency matrix n_mrna and proteins 
+#' containing 0 and 1, or TRUE and FALSE
 #' * charges: xxx
 #' * modifs: xxx
 #' 

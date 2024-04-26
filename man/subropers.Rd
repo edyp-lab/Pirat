@@ -4,6 +4,15 @@
 \name{subropers}
 \alias{subropers}
 \title{Sub-Ropers dataset}
+\format{
+A list of six items:
+* peptides_ab: 
+* rnas_ab:
+* adj: xxx
+* adj_rna_pg: xxx
+* charges: xxx
+* modifs: xxx
+}
 \value{
 A dataset
 }

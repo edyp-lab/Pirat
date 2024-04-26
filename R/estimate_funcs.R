@@ -11,6 +11,7 @@
 #' data(subbouyssie)
 #' estimate_gamma(subbouyssie$peptides_ab)
 #' 
+#' @importFrom stats lm
 #' 
 estimate_gamma <- function(pep.ab.table,
   mcar = FALSE) {
@@ -30,7 +31,7 @@ estimate_gamma <- function(pep.ab.table,
     main = paste("Estimation of missingness parameters with k=",kernel_size), 
     ylab = "log(p_mis)", 
     xlab = "observed mean")
-  res.reg <- lm(log(probs) ~ m_ab_sorted[1:length(probs)])
+  res.reg <- stats::lm(log(probs) ~ m_ab_sorted[1:length(probs)])
   sum.reg.reg <- summary(res.reg)
   print(sum.reg.reg)
   abline(res.reg, col="red")

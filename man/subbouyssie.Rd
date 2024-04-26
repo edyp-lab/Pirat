@@ -4,6 +4,13 @@
 \name{subbouyssie}
 \alias{subbouyssie}
 \title{Sub-Bouyssie dataset}
+\format{
+A list of two items:
+* peptides_ab: a data.frame() containing the abundance of 31 peptides 
+(columns) over a series of 40 samples (lines) (10 conditions, 4 replicates 
+for each condition)
+* adj: A matrix which is the adjacency matrix for the slot peptides_ab.
+}
 \value{
 A dataset
 }

@@ -60,6 +60,7 @@ plot2hists <- function(d1,
 #' @param xlabel Label of x-axis
 #' 
 #' @import ggplot2
+#' @importFrom stats cor
 #'
 #' @return The ggplot2 graph
 #' @export
@@ -76,7 +77,7 @@ plot_pep_correlations <- function(pep.data,
     pep.idx = which(pep.data$adj[, i, drop = FALSE] == 1)
     if (length(pep.idx) != 1) {
       pep_abs_pg = pep.data$peptides_ab[, pep.idx]
-      cor_pg = cor(pep_abs_pg)
+      cor_pg = stats::cor(pep_abs_pg)
       mask_tri_low = lower.tri(cor_pg)
       allcors[[i]] = cor_pg[mask_tri_low]
     }
