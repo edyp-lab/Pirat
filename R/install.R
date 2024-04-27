@@ -1,32 +1,32 @@
-#' @title Test function
+#' @title Install python environment for Pirat
 #'
-#' @description Does nothing but test that we can load modules from different virtual environments.
+#' @description This function may be run only once and use the package
+#' `basilisk` to install the Python environment needed to run the 
+#' imputation functions in the package `Pirat`
 #'
 #' @return A list of names of objects exposed in each module.
-#' @author Aaron Lun
+#' @author Samuel Wieczorek
 #' 
 #' @examples
-#' install_Pirat()
+#' install_Pirat_env()
+#' 
 #' @export
-#' @importFrom reticulate import
-#' @importFrom basilisk basiliskStart basiliskRun basiliskStop
-install_Pirat <- function() {
-  cl <- basiliskStart(envPirat)
-  pirat.install <- basiliskRun(cl, function() { 
-    #X <- reticulate::import("torch")
-     pkgs <- reticulate::py_list_packages()
-  .ver <- reticulate::py_config()$version_string
-  
-  list(
-    location = reticulate::py_config()$pythonhome,
-    python = unlist(strsplit(.ver, split = ' '))[1],
-    torch = pkgs[which(pkgs$package=='pytorch'),]$version,
-    numpy = pkgs[which(pkgs$package=='numpy'),]$version
-    #matplotlib = pkgs[which(pkgs$package=='matplotlib'),]$version    
-    )
-  })
-  basiliskStop(cl)
-
-  cat('Installed packages:\n')
-  cat(paste0("\t", names(pirat.install), " (", pirat.install, ")\n"))
+#' @import basilisk
+#' 
+install_Pirat_env <- function() {
+    cl <- basiliskStart(envPirat)
+    pirat.install <- basiliskRun(cl, function() { 
+        pkgs <- basilisk::listPackages(env = envPirat)
+        path <- normalizePath(basilisk::obtainEnvironmentPath(envPirat))
+        list(
+            location = path,
+            python = basilisk::listPythonVersion(env = envPirat),
+            torch = pkgs[which(pkgs$package=='torch'),]$full,
+            numpy = pkgs[which(pkgs$package=='numpy'),]$full
+        )
+    })
+    basiliskStop(cl)
+    
+    cat('Installed packages:\n')
+    cat(paste0("\t", names(pirat.install), " (", pirat.install, ")\n"))
 }

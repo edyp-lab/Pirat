@@ -1,7 +1,8 @@
 import numpy as np
 import torch as t
 #from torch.optim.LBFGS import FullBatchLBFGS
-from python.LBFGS import FullBatchLBFGS
+#from python.LBFGS import FullBatchLBFGS
+from LBFGS import FullBatchLBFGS
 import time
 
 
