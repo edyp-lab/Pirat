@@ -26,6 +26,7 @@ the new PGs. The seed is fixed such that the split generated remains
 constant for a given adjacency matrix.
 }
 \examples{
-NULL
+data(subropers)
+split_large_pg_PG(subropers$adj, 3, subropers$adj_rna_pg)
 
 }

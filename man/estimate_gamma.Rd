@@ -22,5 +22,4 @@ Estimate missingness parameters Gamma
 data(subbouyssie)
 estimate_gamma(subbouyssie$peptides_ab)
 
-
 }

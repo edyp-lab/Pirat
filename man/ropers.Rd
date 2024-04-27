@@ -4,6 +4,15 @@
 \name{ropers}
 \alias{ropers}
 \title{Ropers dataset}
+\format{
+A list containing:
+- peptides_ab: numeric matrix of precrusors log2 abundances.
+- adj: adjacency matrix between peptides and PGs
+- rnas_ab: numeric matrix of gene expression log2 counts from mRNA analysis.
+- adj_rna_pg: adjacency matrix between genes and PGs
+- charges: charge of each precursor.
+- modifs: post-translational modification of each precursor.
+}
 \value{
 A dataset
 }

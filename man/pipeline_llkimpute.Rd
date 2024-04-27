@@ -5,7 +5,7 @@
 \alias{my_pipeline_llkimpute}
 \title{Pirat imputation function}
 \usage{
-my_pipeline_llkimpute(ARG_VALUE_1, ...)
+my_pipeline_llkimpute(data.pep.rna.mis, ...)
 
 pipeline_llkimpute(
   data.pep.rna.mis,
@@ -21,22 +21,10 @@ pipeline_llkimpute(
 )
 }
 \arguments{
-\item{ARG_VALUE_1}{Parameter 'data.pep.rna.mis' of the function 
+\item{data.pep.rna.mis}{Parameter 'data.pep.rna.mis' of the function 
 `pipeline_llkimpute()`}
 
 \item{...}{Additional parameters for the function `pipeline_llkimpute()`}
-
-\item{data.pep.rna.mis}{A list containing important elements of the dataset 
-to impute. Must contain:
-**peptides_ab**, the peptide or precursor abundance matrix to impute, with 
-samples in row and peptides or precursors in column; 
-**adj**, a n_peptide x n_protein adjacency matrix between peptides and 
-proteins containing 0 and 1, or TRUE and FALSE.
-Can contain: 
-**rnas_ab**, the mRNA normalized count matrix, with samples in 
-row and mRNAs in column;
-**adj_rna_pg**, a n_mrna x n_protein adjacency matrix n_mrna and proteins 
-containing 0 and 1, or TRUE and FALSE;}
 
 \item{pep.ab.comp}{The pseudo-complete peptide or precursor abundance matrix,
 with samples in row and peptides or precursors in column. Useful only in 
@@ -105,6 +93,9 @@ my_pipeline_llkimpute(subropers,
                    rna.cond.mask = 1:nsamples, 
                    pep.cond.mask = 1:nsamples,
                    max.pg.size.pirat.t = 1)
+\dontrun{
+pipeline_llkimpute(subbouyssie)
+}
 }
 \seealso{
 [pipeline_llkimpute()]

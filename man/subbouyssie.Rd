@@ -4,6 +4,11 @@
 \name{subbouyssie}
 \alias{subbouyssie}
 \title{Sub-Bouyssie dataset}
+\format{
+A list containing:
+- peptides_ab: numeric matrix of peptide (or precrusors) log2 abundances.
+- adj: adjacency matrix between peptides and PGs.
+}
 \value{
 A dataset
 }

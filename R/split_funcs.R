@@ -28,15 +28,15 @@ split_large_pg <- function(adj,
     npeps = nrow(adj)
     l_adjs2bind = list()
     idx_adj2bind = 1
-    for (i in 1:length(idx_pg_too_large)) {
+    for (i in seq(length(idx_pg_too_large))) {
       cur_pg_idx = idx_pg_too_large[i]
       cur_pg = adj[, cur_pg_idx, drop = FALSE]
       idx_pg_pep = which(cur_pg == 1)
       n_groups = ceiling(sum(cur_pg) / size_max)
       groups_idx_pg_pep = suppressWarnings(
-        split(sample(idx_pg_pep, replace = FALSE), 1:n_groups)
+        split(sample(idx_pg_pep, replace = FALSE), seq(n_groups))
       )
-      for (j in 1:length(groups_idx_pg_pep)) {
+      for (j in seq(length(groups_idx_pg_pep))) {
         new_pg = rep(FALSE, npeps)
         idx2add = setdiff(idx_pg_pep, groups_idx_pg_pep[[j]])
         n2samples = size_max - length(groups_idx_pg_pep[[j]])
@@ -56,7 +56,7 @@ split_large_pg <- function(adj,
 
 
 
-# TODO: Rename the function
+
 #' @title Splits too large PGs in proteogenomics context
 #' 
 #' @description Split PGs with too many peptides/precursors while keeping other
@@ -75,7 +75,8 @@ split_large_pg <- function(adj,
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(subropers)
+#' split_large_pg_PG(subropers$adj, 3, subropers$adj_rna_pg)
 #'
 split_large_pg_PG <- function(adj, 
   size_max, 
@@ -90,7 +91,7 @@ split_large_pg_PG <- function(adj,
     npeps = nrow(adj)
     adj2bind = matrix(NA, nrow = npeps, ncol = 0)
     adj_rna_pg_2bind = matrix(NA, nrow = nrnas, ncol = 0)
-    for (i in 1:length(idx_pg_too_large)) {
+    for (i in seq(length(idx_pg_too_large))) {
       cur_pg_idx = idx_pg_too_large[i]
       cur_pg = adj[, cur_pg_idx, drop = FALSE]
       idx_pg_pep = which(cur_pg == 1)
@@ -101,9 +102,9 @@ split_large_pg_PG <- function(adj,
           n_rna_cur_pg < size_max)
       n_groups = ceiling(sum(cur_pg) / (size_max - n_rna_cur_pg) )
       groups_idx_pg_pep = suppressWarnings(
-        split(sample(idx_pg_pep, replace = FALSE), 1:n_groups)
+        split(sample(idx_pg_pep, replace = FALSE), seq(n_groups))
       )
-      for (j in 1:length(groups_idx_pg_pep)) {
+      for (j in seq(length(groups_idx_pg_pep))) {
         new_pg = rep(0, npeps)
         idx2add = setdiff(idx_pg_pep, groups_idx_pg_pep[[j]])
         n2samples = size_max - n_rna_cur_pg - length(groups_idx_pg_pep[[j]])

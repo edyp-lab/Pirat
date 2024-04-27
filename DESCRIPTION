@@ -7,7 +7,7 @@ Description: Pirat enables the imputation of missing values (either MNARs or
   the instrument censorship from the data availabl. It accounts for sibling
   peptides correlations and it can leverage complementary transcriptomics
   measurements. 
-Version: 0.99.9
+Version: 0.99.15
 Authors@R: 
   c(person(given = "Lucas", 
           family = "Etourneau", 
@@ -39,7 +39,7 @@ Depends:
   R (>= 4.4.0)
 Imports:
     basilisk, reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
-    graphics, SummarizedExperiment, S4Vectors, shiny
+    graphics, SummarizedExperiment, S4Vectors
 Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
 URL: http://www.prostar-proteomics.org/
