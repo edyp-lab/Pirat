@@ -26,17 +26,17 @@ estimate_gamma <- function(pep.ab.table,
   not0 <- probs != 0
   m_ab_sorted <- mean_abund_sorted$x[not0]
   probs <- probs[not0]
-  plot(m_ab_sorted[1:length(probs)], log(probs),
-    main = paste("Estimation of missingness parameters with k=",kernel_size), 
-    ylab = "log(p_mis)", 
-    xlab = "observed mean")
+  # plot(m_ab_sorted[1:length(probs)], log(probs),
+  #   main = paste("Estimation of missingness parameters with k=",kernel_size), 
+  #   ylab = "log(p_mis)", 
+  #   xlab = "observed mean")
   res.reg <- lm(log(probs) ~ m_ab_sorted[1:length(probs)])
   sum.reg.reg <- summary(res.reg)
   print(sum.reg.reg)
-  abline(res.reg, col="red")
-  mylabel <- bquote(italic(R)^2 == .(format(summary(res.reg)$r.squared, 
-    digits = 3)))
-  text(x = 26, y = -3.2, labels = mylabel)
+  # abline(res.reg, col="red")
+  # mylabel <- bquote(italic(R)^2 == .(format(summary(res.reg)$r.squared, 
+  #   digits = 3)))
+  # text(x = 26, y = -3.2, labels = mylabel)
   
   phi0 <- -res.reg$coef[1]
   phi <- -res.reg$coef[2]
@@ -85,11 +85,11 @@ estimate_psi_df <- function(pep.ab.table) {
     b^a/gamma(a) * x^(-(a + 1)) * exp(-b/x)
   
   vars <- sort(apply(pep.ab.table, MARGIN = 2, FUN = var, na.rm = TRUE))
-  hist(vars, 
-    30, 
-    freq = FALSE, 
-    xlab ="Variance completely observed",
-    main="Histogram of observed variance and fitted inverse-gamma curve")
+  # hist(vars, 
+  #   30, 
+  #   freq = FALSE, 
+  #   xlab ="Variance completely observed",
+  #   main="Histogram of observed variance and fitted inverse-gamma curve")
   resllk <- tryCatch(MASS::fitdistr( vars, f, list(a=1, b=0.1) ), 
     error = function(e){NULL})
   if (is.null(resllk)) {
@@ -97,9 +97,9 @@ estimate_psi_df <- function(pep.ab.table) {
   }
   alpha <- resllk$estimate[1]
   beta <- resllk$estimate[2]
-  curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), 
-    add = TRUE, 
-    col = "red")
+  # curve(invgamma::dinvgamma(x, shape = alpha, rate = beta), 
+    # add = TRUE, 
+    # col = "red")
   
   df <- 2 * alpha
   psi <- 2 * beta

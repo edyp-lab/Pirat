@@ -41,7 +41,9 @@ get_indexes_embedded_prots <- function(adj) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(ropers)
+#' idxs_emb_prot = get_indexes_embedded_prots(ropers$adj)
+#' ropers_wo_emb_prot = rm_pg_from_idx_merge_pg(ropers, idxs_emb_prot)
 #'
 rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
   if (!(length(pg_idx) == 0) & !is.null(pg_idx)) {
@@ -115,8 +117,14 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' NULL
-#'
+#' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam = estimate_psi_df(obs2NApep)
+#' psi = res_res_hyperparam$psi
+#' imputed_pgs = impute_block_llk_reset(obj, psi)
+#' 
 impute_block_llk_reset <- function(data.pep.rna.crop,
                                   psi,
                                   pep_ab_or = NULL,
@@ -254,8 +262,17 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 #' @import reticulate
 #' 
 #' @examples
-#' NULL
-#' 
+#' data(ropers)
+#' obj <- ropers
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam_pep = estimate_psi_df(obs2NApep)
+#' psi_pep = res_hyperparam_pep$psi
+#' obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
+#' res_hyperparam_rna = estimate_psi_df(obs2NArna)
+#' psi_rna = res_hyperparam_rna$psi
+#' cond_mask = seq(1, nrow(obj$peptides_ab)) # paired proteomic transcriptomic setting
+#' imputed_pgs = impute_block_llk_reset(obj, psi_pep, psi_rna, cond_mask, cond_mask)
 #'
 impute_block_llk_reset_PG <- function(data.pep.rna.crop,
                                      psi,
@@ -397,8 +414,14 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
 #' @export
 #'
 #' @examples
-#' NULL
-#' 
+#' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam = estimate_psi_df(obs2NApep)
+#' psi = res_res_hyperparam$psi
+#' imputed_pgs = impute_block_llk_reset(obj, psi)
+#' impute_from_blocks(imputed_pgs, obj)
 #'
 impute_from_blocks <- function(logs.blocks,
                               data.pep.rna,
