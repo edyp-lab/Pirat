@@ -52,6 +52,12 @@ A list containing imputation results for each PG, the execution time,
 Imputes each PG separately and return the results for each PG.
 }
 \examples{
-NULL
+data(subbouyssie)
+obj <- subbouyssie
+# Keep only fully observed peptides
+obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+res_hyperparam = estimate_psi_df(obs2NApep)
+psi = res_res_hyperparam$psi
+imputed_pgs = impute_block_llk_reset(obj, psi)
 
 }

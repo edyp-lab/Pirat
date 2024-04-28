@@ -134,9 +134,9 @@ We can then check that singleton peptides are not imputed (yet some may be
 already fully observed).
 
 ```{r impute4}
-idx.sing.pg = which(colSums(subropers$adj) == 1)
-idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
-imp.res$data.imputed[, idx.sing.pep]
+mask.sing.pg = colSums(subropers$adj) == 1
+mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
+imp.res$data.imputed[, mask.sing.pep]
 ```
 
 # -S, samples-wise correlations
@@ -151,10 +151,11 @@ imp.res = my_pipeline_llkimpute(subropers, extension = "S")
 Here singleton peptides are impute after the rest of the dataset, using 
 sample-wise correlations obtained.
 
+
 ```{r impute2}
-idx.sing.pg = which(colSums(subropers$adj) == 1)
-idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
-imp.res$data.imputed[, idx.sing.pep]
+mask.sing.pg = colSums(subropers$adj) == 1
+mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
+imp.res$data.imputed[, mask.sing.pep]
 ```
 
 # -T, transcriptomic integration
@@ -188,9 +189,9 @@ the goodness of fit may vary a lot depending on the subset chosen.
 It gives the following imputed singletons:
 
 ```{r data.imputed3}
-idx.sing.pg = which(colSums(subropers$adj) == 1)
-idx.sing.pep = which(rowSums(subropers$adj[, idx.sing.pg]) >= 1)
-imp.res$data.imputed[, idx.sing.pep]
+mask.sing.pg = colSums(subropers$adj) == 1
+mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
+imp.res$data.imputed[, mask.sing.pep]
 ```
 
 On the other hand, if proteomic and transcriptomic samples are not paired but 
@@ -219,8 +220,3 @@ sessionInfo()
 ```
 
 # References
-
-
-
-
-

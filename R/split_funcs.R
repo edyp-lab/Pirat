@@ -2,12 +2,11 @@
 
 #' @title Split too large PGs
 #' 
-#' @description Split PGs with too many peptides/precursors, while keeping 
-#' other PG untouched. It creates new PGs with size equal to size max. Hence, 
-#' some peptides can be duplicated in the new PGscreated. The seed is fixed 
-#' such that the split generated remains constant for a given adjacency matrix.
-#'  
-#'
+#' @description Randomly splits PGs with too many peptides/precursors, while 
+#' keeping other PGs untouched. The new PGs created all have size equal to 
+#' size max. Hence, some peptides can be duplicated in the new PGs created.
+#' 
+#' 
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
 #'
@@ -16,7 +15,7 @@
 #'
 #' @examples
 #' data(subbouyssie)
-#' split_large_pg(subbouyssie$adj, 3)
+#' split_large_pg(subbouyssie$adj, 5)
 #'
 split_large_pg <- function(adj, 
   size_max) {
@@ -59,12 +58,11 @@ split_large_pg <- function(adj,
 
 #' @title Splits too large PGs in proteogenomics context
 #' 
-#' @description Split PGs with too many peptides/precursors while keeping other
-#' PGs untouched, and adapts adjacency matrix between mRNA and PGs 
-#' accordingly. It creates new PGs with size equal to size max (including 
-#' peptides and mRNAs). Hence, some peptides and mRNA can be duplicated in 
-#' the new PGs. The seed is fixed such that the split generated remains 
-#' constant for a given adjacency matrix. 
+#' @description Randomly splits PGs with too many peptides/precursors, while 
+#' keeping other PGs untouched, and adapts adjacency matrix between mRNA and 
+#' PGs accordingly. The new PGs created all have size equal to size_max 
+#' (including peptides and mRNAs). Hence, some peptides and mRNA can be
+#'  duplicated in the new PGs.
 #'
 #' @param adj Adjacency matrix between peptides and PGs.
 #' @param size_max Maximum PG size desired.
@@ -76,7 +74,7 @@ split_large_pg <- function(adj,
 #'
 #' @examples
 #' data(subropers)
-#' split_large_pg_PG(subropers$adj, 3, subropers$adj_rna_pg)
+#' split_large_pg_PG(subropers$adj, 5)
 #'
 split_large_pg_PG <- function(adj, 
   size_max, 

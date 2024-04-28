@@ -41,7 +41,9 @@ get_indexes_embedded_prots <- function(adj) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(ropers)
+#' idxs_emb_prot = get_indexes_embedded_prots(ropers$adj)
+#' ropers_wo_emb_prot = rm_pg_from_idx_merge_pg(ropers, idxs_emb_prot)
 #'
 rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
   if (!(length(pg_idx) == 0) & !is.null(pg_idx)) {
@@ -111,18 +113,27 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam = estimate_psi_df(obs2NApep)
+#' psi = res_res_hyperparam$psi
+#' imputed_pgs = impute_block_llk_reset(obj, psi)
 #'
-impute_block_llk_reset <- function(data.pep.rna.crop,
-                                  psi,
-                                  pep_ab_or = NULL,
-                                  df = 1,
-                                  nu_factor = 2,
-                                  max_pg_size = NULL,
-                                  min.pg.size2imp = 1,
-                                  verbose = FALSE,
-                                  ...) {
+impute_block_llk_reset <- function(
+    data.pep.rna.crop,
+    psi,
+    pep_ab_or = NULL,
+    df = 1,
+    nu_factor = 2,
+    max_pg_size = NULL,
+    min.pg.size2imp = 1,
+    verbose = FALSE,
+    ...) {
   
+    py <- reticulate::import("PyPirat", delay_load = TRUE)
+
   adj = data.pep.rna.crop$adj
   if (!is.null(max_pg_size)) {
     adj = split_large_pg(adj, max_pg_size)
@@ -151,7 +162,6 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
                          width = 100)      # Width of the progress bar
   
   for (i in prot.idxs) {
-    #message("##### peptide group=", i, "#####")
     if(verbose)
       message("Peptide_group ", i," of ", ncol(adj))
     idx_cur_pep = which(adj[,i] == 1)
@@ -178,7 +188,6 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
       
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = psi*diag(n_pep_cur)
-      #res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
       
       res_imp = py$estimate_params_and_impute(
         subpp_ab, 
@@ -242,24 +251,38 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 #' time, and adjacency matrix between peptides and PGs corresponding to the 
 #'  imputed PGs.
 #' @export
-#' @import reticulate
 #' 
 #' @examples
-#' NULL
+#' data(ropers)
+#' obj <- ropers
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam_pep = estimate_psi_df(obs2NApep)
+#' psi_pep = res_hyperparam_pep$psi
+#' obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
+#' res_hyperparam_rna = estimate_psi_df(obs2NArna)
+#' psi_rna = res_hyperparam_rna$psi
+#' # paired proteomic transcriptomic setting
+#' cond_mask = seq(1, nrow(obj$peptides_ab)) 
+#' imputed_pgs = impute_block_llk_reset(obj, psi_pep, 
+#' psi_rna, cond_mask, cond_mask)
 #' 
 #'
-impute_block_llk_reset_PG <- function(data.pep.rna.crop,
-                                     psi,
-                                     psi_rna,
-                                     rna.cond.mask,
-                                     pep.cond.mask,
-                                     pep_ab_or = NULL,
-                                     df = 2,
-                                     nu_factor = 1,
-                                     max_pg_size = NULL,
-                                     max.pg.size2imp = 1,
-                                     verbose = FALSE,
-                                     ...) {
+impute_block_llk_reset_PG <- function(
+    data.pep.rna.crop,
+    psi,
+    psi_rna,
+    rna.cond.mask,
+    pep.cond.mask,
+    pep_ab_or = NULL,
+    df = 2,
+    nu_factor = 1,
+    max_pg_size = NULL,
+    max.pg.size2imp = 1,
+    verbose = FALSE,
+    ...) {
+
+    py <- reticulate::import("PyPirat", delay_load = TRUE)
 
   if (!is.null(max_pg_size)) {
     adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
@@ -370,7 +393,14 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam <- estimate_psi_df(obs2NApep)
+#' psi <- res_res_hyperparam$psi
+#' imputed_pgs <- impute_block_llk_reset(obj, psi)
+#' impute_from_blocks(imputed_pgs, obj)
 #' 
 #'
 impute_from_blocks <- function(logs.blocks,

@@ -66,7 +66,19 @@ Imputes each PG separately accounting for transcriptomic
 dataset and returns the results for each PG.
 }
 \examples{
-NULL
+data(ropers)
+obj <- ropers
+# Keep only fully observed peptides
+obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+res_hyperparam_pep = estimate_psi_df(obs2NApep)
+psi_pep = res_hyperparam_pep$psi
+obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
+res_hyperparam_rna = estimate_psi_df(obs2NArna)
+psi_rna = res_hyperparam_rna$psi
+# paired proteomic transcriptomic setting
+cond_mask = seq(1, nrow(obj$peptides_ab)) 
+imputed_pgs = impute_block_llk_reset(obj, psi_pep, 
+psi_rna, cond_mask, cond_mask)
 
 
 }

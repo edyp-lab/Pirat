@@ -4,7 +4,15 @@
 \alias{plot2hists}
 \title{Plot 2 histograms}
 \usage{
-plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = TRUE)
+plot2hists(
+  d1,
+  d2,
+  name1 = "name1",
+  name2 = "name2",
+  titlename = "myTitle",
+  xlab = "",
+  freq = TRUE
+)
 }
 \arguments{
 \item{d1}{vector of values for the first histogram}
@@ -19,7 +27,7 @@ plot2hists(d1, d2, name1, name2, titlename, xlab = "", freq = TRUE)
 
 \item{xlab}{X-axis label}
 
-\item{freq}{If True, bins heights correspond to raw counts, otherwise bins 
+\item{freq}{If True, bins heights correspond to raw counts, otherwise bins
 are normalized.}
 }
 \value{
@@ -29,6 +37,8 @@ A plot
 Plot 2 histograms on the same graph.
 }
 \examples{
-NULL
+v1 <- 1:10
+v2 <- 5:25
+plot2hists(v1, v2)
 
 }

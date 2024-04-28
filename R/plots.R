@@ -9,22 +9,25 @@
 #' @param name2 Label for 2nd histogram
 #' @param titlename Title of figure
 #' @param xlab X-axis label
-#' @param freq If True, bins heights correspond to raw counts, otherwise bins 
+#' @param freq If True, bins heights correspond to raw counts, otherwise bins
 #' are normalized.
 #'
 #' @import grDevices
-#' 
+#'
 #' @examples
-#' NULL
-#' 
+#' v1 <- 1:10
+#' v2 <- 5:25
+#' plot2hists(v1, v2)
+#'
 #' @return A plot
-#' 
+#'
+#' @export
 #'
 plot2hists <- function(d1,
   d2,
-  name1,
-  name2,
-  titlename,
+  name1 = 'name1',
+  name2 = 'name2',
+  titlename = 'myTitle',
   xlab = "",
   freq = TRUE) {
   c1 <- rgb(173,216,230, maxColorValue = 255, alpha = 100, names = "lt.blue")
@@ -52,13 +55,13 @@ plot2hists <- function(d1,
 
 #' @title Empirical density of peptide correlations
 #' @description Plot empirical densities of correlations between peptides within
-#'  PG and at random, estimated by gaussian kernel. Note that only correlations 
+#'  PG and at random, estimated by gaussian kernel. Note that only correlations
 #'  between fully observed peptides are considered here.
 #'
 #' @param pep.data List representing dataset
 #' @param titlename Title of the graph displayed
 #' @param xlabel Label of x-axis
-#' 
+#'
 #' @import ggplot2
 #' @importFrom stats cor
 #'
@@ -69,8 +72,8 @@ plot2hists <- function(d1,
 #' data(subbouyssie)
 #' plot_pep_correlations(subbouyssie, 'test')
 #'
-plot_pep_correlations <- function(pep.data, 
-  titlename = NULL, 
+plot_pep_correlations <- function(pep.data,
+  titlename = NULL,
   xlabel = "Correlations") {
   allcors = list()
   for (i in seq(ncol(pep.data$adj))) {
@@ -98,7 +101,7 @@ plot_pep_correlations <- function(pep.data,
     group = factor(
       c(rep("Within PG", length(all_cors_PG_vec)),
         rep("Random", length(all_cors_rand_vec)))))
-  g <- ggplot2::ggplot(data.hist, 
+  g <- ggplot2::ggplot(data.hist,
     ggplot2::aes(x = values, fill = group)) + xlab(xlabel) +
     geom_density(alpha=.2, na.rm = TRUE) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),
