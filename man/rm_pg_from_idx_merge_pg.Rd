@@ -22,6 +22,8 @@ that they have peptide). Then it removes transcripts without PG. Do not
 remove peptides that are left without PG.
 }
 \examples{
-NULL
+data(ropers)
+idxs_emb_prot = get_indexes_embedded_prots(ropers$adj)
+ropers_wo_emb_prot = rm_pg_from_idx_merge_pg(ropers, idxs_emb_prot)
 
 }

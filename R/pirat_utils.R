@@ -17,7 +17,7 @@ get_indexes_embedded_prots <- function(adj) {
   mat.size = ncol(similarity.mat)
   idx.prot = 1
   idx.prot.rm = c()
-  for (idx.prot in 1:mat.size) {
+  for (idx.prot in seq(mat.size)) {
     if (any(similarity.mat[idx.prot, idx.prot] ==
             similarity.mat[idx.prot, -c(idx.prot, idx.prot.rm)])) {
       idx.prot.rm = c(idx.prot.rm, idx.prot)
@@ -41,7 +41,9 @@ get_indexes_embedded_prots <- function(adj) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' data(ropers)
+#' idxs_emb_prot = get_indexes_embedded_prots(ropers$adj)
+#' ropers_wo_emb_prot = rm_pg_from_idx_merge_pg(ropers, idxs_emb_prot)
 #'
 rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
   if (!(length(pg_idx) == 0) & !is.null(pg_idx)) {
@@ -56,7 +58,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
       adj2keep_rna = l_pep_rna$adj_rna_pg[, -pg_idx, drop = FALSE]
       adj2rm_rna = l_pep_rna$adj_rna_pg[, pg_idx, drop = FALSE] 
       if (length(idx.pg2merge) != 0) {
-        for (i in 1:nrow(idx.pg2merge)) {
+        for (i in seq(nrow(idx.pg2merge))) {
           adj2keep_rna[, idx.pg2merge[i, 2]] <-
             adj2keep_rna[, idx.pg2merge[i, 2]] | 
             adj2rm_rna[, idx.pg2merge[i, 1]]
@@ -82,11 +84,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 
 
 
-# TODO: Rename this function in code. 
-# TODO: Impfunc shoud not be passed as parameter, by we should directly call 
-# TODO: "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to 
-# TODO: remove them
+
 #' @title Impute each PG.
 #' @description Imputes each PG separately and return the results for each PG. 
 #'
@@ -115,23 +113,44 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' NULL
+#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, arg2) {
+#'         
+#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+#'         imputed_pgs 
+#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
+#' 
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
+#' data(subbouyssie)
+#' obs2NApep <- subbouyssie$peptides_ab[ ,colSums(is.na(subbouyssie$peptides_ab)) <= 0] 
+#' res_hyperparam <- estimate_psi_df(obs2NApep)
+#' psi <- res_hyperparam$psi
+#' Py_impute_block_llk_reset(subbouyssie, psi)
 #'
-impute_block_llk_reset <- function(data.pep.rna.crop,
-                                  psi,
-                                  pep_ab_or = NULL,
-                                  df = 1,
-                                  nu_factor = 2,
-                                  max_pg_size = NULL,
-                                  min.pg.size2imp = 1,
-                                  verbose = FALSE,
-                                  ...) {
+impute_block_llk_reset <- function(
+    data.pep.rna.crop,
+    psi,
+    pep_ab_or = NULL,
+    df = 1,
+    nu_factor = 2,
+    max_pg_size = NULL,
+    min.pg.size2imp = 1,
+    verbose = FALSE,
+    ...) {
   
+    py <- reticulate::import("PyPirat", delay_load = TRUE)
+
   adj = data.pep.rna.crop$adj
   if (!is.null(max_pg_size)) {
     adj = split_large_pg(adj, max_pg_size)
   }
-  prot.idxs = 1:ncol(adj)
+  prot.idxs = seq(ncol(adj))
   
   nsamples = nrow(data.pep.rna.crop$peptides_ab)
   logs = list()
@@ -141,7 +160,7 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
     # If need to remove too small PGs, change adj and PG indexes
     pg.idxs = which(colSums(adj) >= min.pg.size2imp)
     adj = adj[, pg.idxs, drop = FALSE]
-    prot.idxs = 1:ncol(adj)
+    prot.idxs = seq(ncol(adj))
   }
   n_params = sum(colSums(adj)^2)
   pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent 
@@ -155,7 +174,6 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
                          width = 100)      # Width of the progress bar
   
   for (i in prot.idxs) {
-    #message("##### peptide group=", i, "#####")
     if(verbose)
       message("Peptide_group ", i," of ", ncol(adj))
     idx_cur_pep = which(adj[,i] == 1)
@@ -182,7 +200,6 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
       
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = psi*diag(n_pep_cur)
-      #res_imp = impfunc(subpp_ab, true_X = X_gt, K = K, psi = psimat, ...) # + max(colSums(is.na(subpp_ab)))
       
       res_imp = py$estimate_params_and_impute(
         subpp_ab, 
@@ -212,11 +229,6 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 
 
 
-# TODO: Rename this function in code. 
-# TODO: Impfunc shoud not be passed as parameter, by we should directly call
-# "estimate params & impute.
-# TODO: Some parameters are not used anymore in pipeline_ll_imp file, need to 
-# remove them
 #' @title Impute each PG.
 #' @description Imputes each PG separately accounting for transcriptomic 
 #' dataset and returns the results for each PG. 
@@ -251,32 +263,64 @@ impute_block_llk_reset <- function(data.pep.rna.crop,
 #' time, and adjacency matrix between peptides and PGs corresponding to the 
 #'  imputed PGs.
 #' @export
-#' @import reticulate
 #' 
 #' @examples
-#' NULL
+#' Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, ...) {
+#'         Pirat::impute_block_llk_reset_PG(arg1, ...)
+#'     }, arg1 = data.pep.rna.crop, ...)
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
+#' data(subropers)
+#' obj <- subropers
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam_pep = estimate_psi_df(obs2NApep)
+#' psi_pep <- res_hyperparam_pep$psi
+#' obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
+#' res_hyperparam_rna = estimate_psi_df(obs2NArna)
+#' psi_rna <- res_hyperparam_rna$psi
+#' # paired proteomic transcriptomic setting
+#' cond_mask <- seq(nrow(obj$peptides_ab)) 
+#' imputed_pgs <- Py_impute_block_llk_reset_PG(
+#'     data.pep.rna.crop = obj, 
+#'     psi = psi_pep, 
+#'     psi_rna = psi_rna, 
+#'     rna.cond.mask = cond_mask, 
+#'     pep.cond.mask = cond_mask)
 #' 
 #'
-impute_block_llk_reset_PG <- function(data.pep.rna.crop,
-                                     psi,
-                                     psi_rna,
-                                     rna.cond.mask,
-                                     pep.cond.mask,
-                                     pep_ab_or = NULL,
-                                     df = 2,
-                                     nu_factor = 1,
-                                     max_pg_size = NULL,
-                                     max.pg.size2imp = 1,
-                                     verbose = FALSE,
-                                     ...) {
+impute_block_llk_reset_PG <- function(
+    data.pep.rna.crop,
+    psi,
+    psi_rna,
+    rna.cond.mask,
+    pep.cond.mask,
+    pep_ab_or = NULL,
+    df = 2,
+    nu_factor = 1,
+    max_pg_size = NULL,
+    max.pg.size2imp = 1,
+    verbose = FALSE,
+    ...) {
+
+    py <- reticulate::import("PyPirat", delay_load = TRUE)
 
   if (!is.null(max_pg_size)) {
     adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
                              data.pep.rna.crop$adj_rna_pg)
     adj = adjs$adj
     adj_rna_pg = adjs$adj_rna_pg
+  } else {
+      adj <- data.pep.rna.crop$adj
+      adj_rna_pg = data.pep.rna.crop$adj_rna_pg
   }
-  prot.idxs = 1:ncol(adj)
+  prot.idxs = seq(ncol(adj))
   niter = length(prot.idxs)
   nsamples = nrow(data.pep.rna.crop$peptides_ab)
   logs = list()
@@ -291,14 +335,6 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
     nrep_pep = sum(pep.cond.mask == i)
     rnas_means = colMeans(matrix(
       data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = FALSE], nrep_rna))
-    # rnas_sds = apply(matrix(
-    #   data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ], nrep_rna), 2, 
-    #   sd, na.rm = TRUE)
-    # rnas_sds[is.na(rnas_sds)] = 0
-    # rnas_ab[pep.cond.mask == i, ] = matrix(rnorm(
-    #   nrow(adj_rna_pg) * nrep_pep, rnas_means, rnas_sds), nrep_pep, 
-    #   byrow = TRUE) # This line enables to sample from statistics of each 
-    #   condition instead of setting the mean.
     rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), 
                                            nrep_pep, 
                                            byrow =TRUE)
@@ -308,7 +344,7 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
     pg.idxs = which(colSums(adj) <= max.pg.size2imp)
     adj = adj[, pg.idxs, drop = FALSE]
     adj_rna_pg = adj_rna_pg[, pg.idxs, drop = FALSE]
-    prot.idxs = 1:ncol(adj)
+    prot.idxs = seq(ncol(adj))
   }
   n_params = sum((colSums(adj[, prot.idxs, drop = FALSE]) + 1)^2)
   pb <- progress::progress_bar$new(
@@ -325,7 +361,6 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
     if(verbose)
       message("Peptide_group ", i," of ", ncol(adj))
     
-    # cat("\n##### PROT ", i, "/ ", n_pg, "#####\n")
     idx_cur_pep = which(adj[,i] == 1)
     pb$tick((length(idx_cur_pep) + 1)^2)
     idx_cur_rna = which(adj_rna_pg[,i] == 1)
@@ -352,24 +387,15 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
       K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
       psimat = c(rep(psi, ncol(cur_ab)), rep(psi_rna, ncol(cur_ab_rna))) * 
         diag(n_pep_cur)
-      #res_imp = impfunc(subpp_ab, true_X = NULL, K = K, psi = psimat, ...) 
-      ## + max(colSums(is.na(subpp_ab)))
       
       res_imp = py$estimate_params_and_impute(subpp_ab, 
                                               true_X = NULL, 
                                               K = K, 
                                               psi = psimat, 
                                               ...) 
-      # + max(colSums(is.na(subpp_ab)))
       
-      
-      
-      
-      res_imp$Xhat = res_imp$Xhat[, 1:ncol(cur_ab)]
-      # res_imp = list(Xhat=matrix(10, nsamples, ncol(cur_ab)), 
-      # error_msg="success")
+      res_imp$Xhat = res_imp$Xhat[, seq(ncol(cur_ab))]
       ermsg = res_imp$error_msg
-      #print(ermsg)
       stopifnot(ermsg == "success")
       logs[[i]] = res_imp
     }
@@ -382,7 +408,7 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
   return(logs)
 }
 
-# TODO: Change function name
+
 #' @title Impute abundance table from PGs results
 #' @description From imputation results in each PG and the associate adjacency 
 #' peptide/PG matrix,imputes the original abundance table.  .
@@ -397,7 +423,30 @@ impute_block_llk_reset_PG <- function(data.pep.rna.crop,
 #' @export
 #'
 #' @examples
-#' NULL
+#' 
+#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, arg2) {
+#'         
+#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+#'         imputed_pgs 
+#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
+#' 
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
+#' 
+#' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam <- estimate_psi_df(obs2NApep)
+#' psi <- res_hyperparam$psi
+#' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
+#' impute_from_blocks(imputed_pgs, obj)
 #' 
 #'
 impute_from_blocks <- function(logs.blocks,
@@ -409,7 +458,7 @@ impute_from_blocks <- function(logs.blocks,
     adj = data.pep.rna$adj
   }
   if (is.null(idx_blocks)) {
-    idx_blocks = 1:ncol(adj)
+    idx_blocks = seq(ncol(adj))
   }
   npeps = ncol(data.pep.rna$peptides_ab)
   nsamples = nrow(data.pep.rna$peptides_ab)

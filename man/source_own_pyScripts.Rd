@@ -14,3 +14,8 @@ Use the function `reticulate::source_python()` to source
 custom python files stored int the directory 'inst/python' of the 
 package `Pirat`.
 }
+\examples{
+# example code
+source_own_pyScripts()
+
+}

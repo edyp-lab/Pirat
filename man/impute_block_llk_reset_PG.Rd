@@ -66,7 +66,34 @@ Imputes each PG separately accounting for transcriptomic
 dataset and returns the results for each PG.
 }
 \examples{
-NULL
+Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
+proc <- basilisk::basiliskStart(envPirat)
+
+func <- basilisk::basiliskRun(proc, 
+    fun = function(arg1, ...) {
+        Pirat::impute_block_llk_reset_PG(arg1, ...)
+    }, arg1 = data.pep.rna.crop, ...)
+basilisk::basiliskStop(proc)
+func
+}
+
+data(subropers)
+obj <- subropers
+# Keep only fully observed peptides
+obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+res_hyperparam_pep = estimate_psi_df(obs2NApep)
+psi_pep <- res_hyperparam_pep$psi
+obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
+res_hyperparam_rna = estimate_psi_df(obs2NArna)
+psi_rna <- res_hyperparam_rna$psi
+# paired proteomic transcriptomic setting
+cond_mask <- seq(nrow(obj$peptides_ab)) 
+imputed_pgs <- Py_impute_block_llk_reset_PG(
+    data.pep.rna.crop = obj, 
+    psi = psi_pep, 
+    psi_rna = psi_rna, 
+    rna.cond.mask = cond_mask, 
+    pep.cond.mask = cond_mask)
 
 
 }

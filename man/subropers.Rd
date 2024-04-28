@@ -4,6 +4,13 @@
 \name{subropers}
 \alias{subropers}
 \title{Sub-Ropers dataset}
+\format{
+A list containing:
+- peptides_ab: numeric matrix of peptide (or precrusors) log2 abundances.
+- adj: adjacency matrix between peptides and PGs
+- rnas_ab: numeric matrix of gene expression log2 counts from mRNA analysis.
+- adj_rna_pg: adjacency matrix between genes and PGs
+}
 \value{
 A dataset
 }
