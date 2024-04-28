@@ -113,13 +113,25 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
+#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, arg2) {
+#'         
+#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+#'         imputed_pgs 
+#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
+#' 
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
 #' data(subbouyssie)
-#' obj <- subbouyssie
-#' # Keep only fully observed peptides
-#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
-#' res_hyperparam = estimate_psi_df(obs2NApep)
-#' psi = res_res_hyperparam$psi
-#' imputed_pgs = impute_block_llk_reset(obj, psi)
+#' obs2NApep <- subbouyssie$peptides_ab[ ,colSums(is.na(subbouyssie$peptides_ab)) <= 0] 
+#' res_hyperparam <- estimate_psi_df(obs2NApep)
+#' psi <- res_hyperparam$psi
+#' Py_impute_block_llk_reset(subbouyssie, psi)
 #'
 impute_block_llk_reset <- function(
     data.pep.rna.crop,
@@ -253,19 +265,34 @@ impute_block_llk_reset <- function(
 #' @export
 #' 
 #' @examples
-#' data(ropers)
-#' obj <- ropers
+#' Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, ...) {
+#'         Pirat::impute_block_llk_reset_PG(arg1, ...)
+#'     }, arg1 = data.pep.rna.crop, ...)
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
+#' data(subropers)
+#' obj <- subropers
 #' # Keep only fully observed peptides
 #' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
 #' res_hyperparam_pep = estimate_psi_df(obs2NApep)
-#' psi_pep = res_hyperparam_pep$psi
+#' psi_pep <- res_hyperparam_pep$psi
 #' obs2NArna <- obj$rnas_ab[ ,colSums(obj$rnas_ab == 0) <= 0]
 #' res_hyperparam_rna = estimate_psi_df(obs2NArna)
-#' psi_rna = res_hyperparam_rna$psi
+#' psi_rna <- res_hyperparam_rna$psi
 #' # paired proteomic transcriptomic setting
-#' cond_mask = seq(1, nrow(obj$peptides_ab)) 
-#' imputed_pgs = impute_block_llk_reset(obj, psi_pep, 
-#' psi_rna, cond_mask, cond_mask)
+#' cond_mask <- seq(nrow(obj$peptides_ab)) 
+#' imputed_pgs <- Py_impute_block_llk_reset_PG(
+#'     data.pep.rna.crop = obj, 
+#'     psi = psi_pep, 
+#'     psi_rna = psi_rna, 
+#'     rna.cond.mask = cond_mask, 
+#'     pep.cond.mask = cond_mask)
 #' 
 #'
 impute_block_llk_reset_PG <- function(
@@ -289,6 +316,9 @@ impute_block_llk_reset_PG <- function(
                              data.pep.rna.crop$adj_rna_pg)
     adj = adjs$adj
     adj_rna_pg = adjs$adj_rna_pg
+  } else {
+      adj <- data.pep.rna.crop$adj
+      adj_rna_pg = data.pep.rna.crop$adj_rna_pg
   }
   prot.idxs = seq(ncol(adj))
   niter = length(prot.idxs)
@@ -393,13 +423,29 @@ impute_block_llk_reset_PG <- function(
 #' @export
 #'
 #' @examples
+#' 
+#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
+#' proc <- basilisk::basiliskStart(envPirat)
+#' 
+#' func <- basilisk::basiliskRun(proc, 
+#'     fun = function(arg1, arg2) {
+#'         
+#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+#'         imputed_pgs 
+#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
+#' 
+#' basilisk::basiliskStop(proc)
+#' func
+#' }
+#' 
+#' 
 #' data(subbouyssie)
 #' obj <- subbouyssie
 #' # Keep only fully observed peptides
 #' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
 #' res_hyperparam <- estimate_psi_df(obs2NApep)
-#' psi <- res_res_hyperparam$psi
-#' imputed_pgs <- impute_block_llk_reset(obj, psi)
+#' psi <- res_hyperparam$psi
+#' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
 #' impute_from_blocks(imputed_pgs, obj)
 #' 
 #'
