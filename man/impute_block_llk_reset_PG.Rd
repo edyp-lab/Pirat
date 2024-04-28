@@ -77,8 +77,8 @@ basilisk::basiliskStop(proc)
 func
 }
 
-data(ropers)
-obj <- ropers
+data(subropers)
+obj <- subropers
 # Keep only fully observed peptides
 obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
 res_hyperparam_pep = estimate_psi_df(obs2NApep)

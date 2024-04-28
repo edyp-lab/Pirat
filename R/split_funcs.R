@@ -74,7 +74,7 @@ split_large_pg <- function(adj,
 #'
 #' @examples
 #' data(subropers)
-#' split_large_pg_PG(subropers$adj, 5)
+#' split_large_pg_PG(subropers$adj, 5, subropers$adj_rna_pg)
 #'
 split_large_pg_PG <- function(adj, 
   size_max, 
