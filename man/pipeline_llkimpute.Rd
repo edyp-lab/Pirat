@@ -83,19 +83,19 @@ desired extension.
 \examples{
 # Pirat classical mode
 data(subbouyssie)
-my_pipeline_llkimpute(subbouyssie) 
+myResult <- my_pipeline_llkimpute(subbouyssie) 
 
 # Pirat with transcriptomic integration for singleton PGs
 data(subropers)
 nsamples = nrow(subropers$peptides_ab)
-my_pipeline_llkimpute(subropers, 
+myResult <- my_pipeline_llkimpute(subropers, 
 extension = "T",
 rna.cond.mask = seq(nsamples), 
 pep.cond.mask = seq(nsamples),
 max.pg.size.pirat.t = 1)
 
 \dontrun{
-pipeline_llkimpute(subbouyssie)
+myResult <- pipeline_llkimpute(subbouyssie)
 }
 }
 \seealso{
