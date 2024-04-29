@@ -21,6 +21,6 @@ size max. Hence, some peptides can be duplicated in the new PGs created.
 }
 \examples{
 data(subbouyssie)
-split_large_pg(subbouyssie$adj, 5)
+split.obj <- split_large_pg(subbouyssie$adj, 5)
 
 }

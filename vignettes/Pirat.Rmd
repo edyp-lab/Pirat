@@ -92,7 +92,7 @@ head(imp.res$data.imputed[ ,seq(5)])
 
 ...and the computed parameters here.
 
-```{r}
+```{r params}
 imp.res$params
 ```
 Note that a positive value for $\gamma1$ indicates that a random left-truncation
