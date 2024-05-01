@@ -30,8 +30,8 @@ my_pipeline_llkimpute(subbouyssie)
 data(subropers)
 nsamples = nrow(subropers$peptides_ab)
 my_pipeline_llkimpute(subropers, 
-                    extension = "T",
-                    rna.cond.mask = 1:nsamples, 
-                   pep.cond.mask = 1:nsamples,
-                    max.pg.size.pirat.t = 1)
+extension = "T",
+rna.cond.mask = 1:nsamples, 
+pep.cond.mask = 1:nsamples,
+max.pg.size.pirat.t = 1)
 ```
