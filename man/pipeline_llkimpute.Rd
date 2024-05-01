@@ -13,7 +13,7 @@ pipeline_llkimpute(
   alpha.factor = 2,
   rna.cond.mask = NULL,
   pep.cond.mask = NULL,
-  extension = "base",
+  extension = c("base", "2", "T", "S"),
   mcar = FALSE,
   degenerated = FALSE,
   max.pg.size.pirat.t = 1,
@@ -83,7 +83,7 @@ desired extension.
 \examples{
 # Pirat classical mode
 data(subbouyssie)
-myResult <- my_pipeline_llkimpute(subbouyssie) 
+myResult <- my_pipeline_llkimpute(subbouyssie)
 
 # Pirat with transcriptomic integration for singleton PGs
 data(subropers)
