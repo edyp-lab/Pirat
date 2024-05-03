@@ -1,12 +1,12 @@
 #' @title Empirical density of peptide correlations
 #' @description Plot empirical densities of correlations between peptides within
-#'  PG and at random, estimated by gaussian kernel. Note that only correlations 
+#'  PG and at random, estimated by gaussian kernel. Note that only correlations
 #'  between fully observed peptides are considered here.
 #'
 #' @param pep.data List representing dataset
 #' @param titlename Title of the graph displayed
 #' @param xlabel Label of x-axis
-#' 
+#'
 #' @import ggplot2
 #' @importFrom stats cor
 #'
@@ -17,8 +17,8 @@
 #' data(subbouyssie)
 #' plot_pep_correlations(subbouyssie, 'test')
 #'
-plot_pep_correlations <- function(pep.data, 
-  titlename = NULL, 
+plot_pep_correlations <- function(pep.data,
+  titlename = NULL,
   xlabel = "Correlations") {
   allcors = list()
   for (i in seq(ncol(pep.data$adj))) {
@@ -46,7 +46,7 @@ plot_pep_correlations <- function(pep.data,
     group = factor(
       c(rep("Within PG", length(all_cors_PG_vec)),
         rep("Random", length(all_cors_rand_vec)))))
-  g <- ggplot2::ggplot(data.hist, 
+  g <- ggplot2::ggplot(data.hist,
     ggplot2::aes(x = values, fill = group)) + xlab(xlabel) +
     geom_density(alpha=.2, na.rm = TRUE) + xlim(c(-1, 1)) +
     theme(legend.title=element_blank(),

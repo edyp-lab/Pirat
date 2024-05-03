@@ -18,7 +18,7 @@ The ggplot2 graph
 }
 \description{
 Plot empirical densities of correlations between peptides within
- PG and at random, estimated by gaussian kernel. Note that only correlations 
+ PG and at random, estimated by gaussian kernel. Note that only correlations
  between fully observed peptides are considered here.
 }
 \examples{

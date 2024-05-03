@@ -1,9 +1,13 @@
+# llk_maximize.py
+
 import numpy as np
 import torch as t
-#from torch.optim.LBFGS import FullBatchLBFGS
-#from python.LBFGS import FullBatchLBFGS
-from LBFGS import FullBatchLBFGS
+#from PyPirat import FullBatchLBFGS
+#from LBFGS import FullBatchLBFGS
 import time
+import PyPirat
+
+
 
 
 def get_sigma_from_log_chol(log_chol_m, eps_chol=1e-10, eps_sig=1e-4):
@@ -351,7 +355,7 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
             phi0 = t.tensor([phi0_init]).clone().requires_grad_(True)
             parameters = [mu_pep_mis, chol_params, log_phi, phi0]
 
-        optimizer = FullBatchLBFGS(parameters, line_search=line_search, lr=lr_init)
+        optimizer = PyPirat.FullBatchLBFGS(parameters, line_search=line_search, lr=lr_init)
         optimizer.zero_grad()
 
         log_chol_m = get_matrix_from_tri_coefs(chol_params.detach().clone().numpy(),

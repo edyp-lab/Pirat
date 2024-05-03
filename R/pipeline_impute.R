@@ -63,18 +63,19 @@
 #' @examples
 #' # Pirat classical mode
 #' data(subbouyssie)
-#' my_pipeline_llkimpute(subbouyssie) 
+#' myResult <- my_pipeline_llkimpute(subbouyssie) 
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
 #' data(subropers)
 #' nsamples = nrow(subropers$peptides_ab)
-#' my_pipeline_llkimpute(subropers, 
-#'                    extension = "T",
-#'                    rna.cond.mask = 1:nsamples, 
-#'                    pep.cond.mask = 1:nsamples,
-#'                    max.pg.size.pirat.t = 1)
+#' myResult <- my_pipeline_llkimpute(subropers, 
+#' extension = "T",
+#' rna.cond.mask = seq(nsamples), 
+#' pep.cond.mask = seq(nsamples),
+#' max.pg.size.pirat.t = 1)
+#' 
 #' \dontrun{
-#' pipeline_llkimpute(subbouyssie)
+#' myResult <- pipeline_llkimpute(subbouyssie)
 #' }
 NULL
 
@@ -100,30 +101,13 @@ NULL
 #' 
 my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) { 
     message('Starting Python environment...\n')
-     proc <- NULL
-    tryCatch({proc <- basilisk::basiliskStart(envPirat)},
-    warning = function(w){
-        Pirat::install_Pirat_env()
-        proc <- basilisk::basiliskStart(envPirat)
-    },
-    error = function(e){
-        Pirat::install_Pirat_env()
-        proc <- basilisk::basiliskStart(envPirat)
-    })
+     proc <- basilisk::basiliskStart(envPirat)
     on.exit(basilisk::basiliskStop(proc))
     
-    some_useful_thing  <- basilisk::basiliskRun(proc, 
+    some_useful_thing <- basilisk::basiliskRun(proc, 
         fun = function(arg1, ...) {
-            py <- reticulate::import("torch", delay_load = TRUE)
             
-            message('Launching custom Python scripts ...\n')
-            # dirpath <- system.file("python", package = "Pirat")
-            # reticulate::source_python(file.path(dirpath, "LBFGS.py"))
-            # reticulate::source_python(file.path(dirpath, "llk_maximize.py"))
-            source_own_pyScripts()
-            message('Launch pipeline_llkimpute() ...\n')
             output <- pipeline_llkimpute(arg1, ...)
-            
             # The return value MUST be a pure R object, i.e., no reticulate
             # Python objects, no pointers to shared memory. 
             output 
@@ -137,17 +121,20 @@ my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) {
 #' @rdname pipeline_llkimpute
 #' @return NA
 #' 
-pipeline_llkimpute <- function(data.pep.rna.mis,
-                              pep.ab.comp = NULL,
-                              alpha.factor = 2,
-                              rna.cond.mask = NULL,
-                              pep.cond.mask = NULL,
-                              extension = 'base',
-                              mcar = FALSE,
-                              degenerated = FALSE,
-                              max.pg.size.pirat.t = 1,
-                              verbose = FALSE) {
+pipeline_llkimpute <- function(
+    data.pep.rna.mis,
+    pep.ab.comp = NULL,
+    alpha.factor = 2,
+    rna.cond.mask = NULL,
+    pep.cond.mask = NULL,
+    extension = 'base',
+    mcar = FALSE,
+    degenerated = FALSE,
+    max.pg.size.pirat.t = 1,
+    verbose = FALSE) {
   
+    py <- reticulate::import("PyPirat")
+
   psi_rna = NULL
   
   if(verbose)
@@ -204,54 +191,56 @@ pipeline_llkimpute <- function(data.pep.rna.mis,
       min.pg.size2imp <- 1
     }
 
-    res_per_block = impute_block_llk_reset(data.pep.rna.mis,
-                                           psi = psi, 
-                                           pep_ab_or = pep.ab.comp,
-                                           df = df,
-                                           nu_factor = alpha.factor,
-                                           max_pg_size = 30,
-                                           min.pg.size2imp = min.pg.size2imp,
-                                           phi0 = gamma_0, 
-                                           phi = gamma_1, 
-                                           eps_chol = 1e-4, 
-                                           eps_phi = 1e-5, 
-                                           tol_obj = 1e-7, 
-                                           tol_grad = 1e-5, 
-                                           tol_param = 1e-4,
-                                           maxiter = as.integer(5000), 
-                                           lr = 0.5,
-                                           phi_known = TRUE,
-                                           max_try = 50, 
-                                           max_ls = 500, 
-                                           eps_sig = 1e-4, 
-                                           nsamples = 1000,
-                                           verbose = verbose)
+    res_per_block = impute_block_llk_reset(
+        data.pep.rna.mis,
+        psi = psi, 
+        pep_ab_or = pep.ab.comp,
+        df = df,
+        nu_factor = alpha.factor,
+        max_pg_size = 30,
+        min.pg.size2imp = min.pg.size2imp,
+        phi0 = gamma_0, 
+        phi = gamma_1, 
+        eps_chol = 1e-4, 
+        eps_phi = 1e-5, 
+        tol_obj = 1e-7, 
+        tol_grad = 1e-5, 
+        tol_param = 1e-4,
+        maxiter = as.integer(5000), 
+        lr = 0.5,
+        phi_known = TRUE,
+        max_try = 50, 
+        max_ls = 500, 
+        eps_sig = 1e-4, 
+        nsamples = 1000,
+        verbose = verbose)
     
     data.imputed <- impute_from_blocks(res_per_block, data.pep.rna.mis)
   }
   else if (extension == "S") { # Pirat-S
-    res_per_block <- impute_block_llk_reset(data.pep.rna.mis,
-                                           psi = psi, 
-                                           df = df,
-                                           pep_ab_or = pep.ab.comp,
-                                           nu_factor = alpha.factor, 
-                                           max_pg_size = 30, 
-                                           min.pg.size2imp = 2,
-                                           phi0 = gamma_0, 
-                                           phi = gamma_1, 
-                                           eps_chol = 1e-4, 
-                                           eps_phi = 1e-5, 
-                                           tol_obj = 1e-7, 
-                                           tol_grad = 1e-5, 
-                                           tol_param = 1e-4,
-                                           maxiter = as.integer(5000), 
-                                           lr = 0.5, 
-                                           phi_known = TRUE,
-                                           max_try = 50, 
-                                           max_ls = 500, 
-                                           eps_sig = 1e-4, 
-                                           nsamples = 1000,
-                                           verbose = verbose)
+    res_per_block <- impute_block_llk_reset(
+        data.pep.rna.mis,
+        psi = psi, 
+        df = df,
+        pep_ab_or = pep.ab.comp,
+        nu_factor = alpha.factor, 
+        max_pg_size = 30, 
+        min.pg.size2imp = 2,
+        phi0 = gamma_0, 
+        phi = gamma_1, 
+        eps_chol = 1e-4, 
+        eps_phi = 1e-5, 
+        tol_obj = 1e-7, 
+        tol_grad = 1e-5, 
+        tol_param = 1e-4,
+        maxiter = as.integer(5000), 
+        lr = 0.5, 
+        phi_known = TRUE,
+        max_try = 50, 
+        max_ls = 500, 
+        eps_sig = 1e-4, 
+        nsamples = 1000,
+        verbose = verbose)
     
     data.imputed <- impute_from_blocks(res_per_block, data.pep.rna.mis)
     idx.pgs1 <- which(colSums(data.pep.rna.mis$adj) == 1)
