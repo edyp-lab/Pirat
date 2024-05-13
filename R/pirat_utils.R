@@ -211,7 +211,9 @@ impute_block_llk_reset <- function(
       
       
       ermsg = res_imp$error_msg
-      stopifnot(ermsg == "success")
+      if (ermsg != "success") {
+        stop(ermsg)
+      }
       if ((!is.null(X_gt)) & (ermsg == "success")) {
         npseudos = sum((!is.na(X_gt)) & is.na(subpp_ab))
         npseudoNA = npseudoNA + npseudos
