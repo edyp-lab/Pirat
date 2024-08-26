@@ -45,6 +45,7 @@ Bouyssie2020 dataset in the environment.
 
 ```{r load_data, echo = TRUE}
 library(Pirat)
+install_Pirat_env()
 data(subbouyssie)
 ```
 
