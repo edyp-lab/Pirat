@@ -53,7 +53,7 @@ Note that `subbouyssie` is actually a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows 
 and peptides in columns.
-2. `adj`, the adjacency matrix between peptides and proteins, containing etiher 
+2. `adj`, the adjacency matrix between peptides and proteins, containing either 
 booleans or 0s and 1s (no preprocessing or simplification is needed for this 
 matrix, Pirat will automatically build the PGs from it).
 
