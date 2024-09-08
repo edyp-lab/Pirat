@@ -14,7 +14,8 @@
 #' @import basilisk
 #' 
 install_Pirat_env <- function() {
-    cl <- basiliskStart(envPirat)
+    setBasiliskShared(FALSE)
+    cl <- basilisk::basiliskStart(envPirat)
     pirat.install <- basiliskRun(cl, function() { 
         pkgs <- basilisk::listPackages(env = envPirat)
         path <- normalizePath(basilisk::obtainEnvironmentPath(envPirat))

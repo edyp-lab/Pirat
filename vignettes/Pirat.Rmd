@@ -43,14 +43,8 @@ preprint @Etourneau2023 .
 To demonstrate its usage, we first load Pirat package and a subset of 
 Bouyssie2020 dataset in the environment.
 
-```{r load_data, eval = FALSE, echo = TRUE}
+```{r load_data, echo = TRUE}
 library(Pirat)
-install_Pirat_env()
-#> Installed packages:
-#>  location (C:\Users\sw175264\AppData\Local\R\cache\R\basilisk\1.16.0\Pirat\0.99.27\envPirat)
-#>      python (3.9.5)
-#>      torch (torch==1.10.0)
-#>      numpy (numpy==1.20.2)
 data(subbouyssie)
 ```
 
@@ -67,32 +61,15 @@ PGs, because the latter are randomly split into several smaller PGs with fixed
 size to reduce computational costs. Although this variability is too small to 
 affect imputation quality, we fix the seed in this tutorial such that the user 
 can retrieve exactly the same imputed values when running the notebook again.
-```{r setseed, eval = FALSE}
+
+```{r setseed}
 set.seed(12345)
 ```
 
 One can then impute this dataset with the following line
 
-```{r impute, eval = FALSE}
+```{r impute}
 imp.res <- my_pipeline_llkimpute(subbouyssie)
-#> 
-#> Call:
-#> stats::lm(formula = log(probs) ~ m_ab_sorted[seq(length(probs))])
-#> 
-#> Residuals:
-#>      Min       1Q   Median       3Q      Max 
-#> -0.64780 -0.25838  0.06931  0.35373  0.76279 
-#> 
-#> Coefficients:
-#>                                 Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)                      13.1950     1.5687   8.411 1.19e-07 ***
-#> m_ab_sorted[seq(length(probs))]  -0.7937     0.0758 -10.471 4.38e-09 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 0.42 on 18 degrees of freedom
-#> Multiple R-squared:  0.859,  Adjusted R-squared:  0.8511 
-#> F-statistic: 109.6 on 1 and 18 DF,  p-value: 4.378e-09
 ```
 
 The first plot represents the goodness of fit of the inverse-gamma prior, 
@@ -110,43 +87,14 @@ $\alpha$ and $\beta$.
 
 You can check the imputed values here...
 
-```{r test1, eval = FALSE}
+```{r test1}
 head(imp.res$data.imputed[ ,seq(5)])
-#>                        ELISMAK  EDLLVTK  VVIEPHR  HAGVYIAR 
-#> raw_abundance_10amol_1 24.07467 25.08683 24.79494  25.90383
-#> raw_abundance_10amol_2 24.05896 25.11780 25.04157  26.20225
-#> raw_abundance_10amol_3 23.94210 24.97989 24.67742  25.97934
-#> raw_abundance_10amol_4 24.00094 24.93289 24.31135  25.80639
-#> raw_abundance_50amol_1 24.05962 25.03968 24.66224  25.86291
-#> raw_abundance_50amol_2 24.02732 25.02199 24.65812  25.84511
-#>                        DHCIVVGR Carbamidomethyl (C3)
-#> raw_abundance_10amol_1                      24.77011
-#> raw_abundance_10amol_2                      24.98623
-#> raw_abundance_10amol_3                      24.69103
-#> raw_abundance_10amol_4                      24.50651
-#> raw_abundance_50amol_1                      24.68406
-#> raw_abundance_50amol_2                      24.66596
 ```
 
 ...and the computed parameters here.
 
-```{r params, eval = FALSE}
+```{r params}
 imp.res$params
-#> $alpha
-#>        a 
-#> 5.147265 
-#> 
-#> $beta
-#>         b 
-#> 0.2335229 
-#> 
-#> $gamma0
-#> (Intercept) 
-#>   -13.19496 
-#> 
-#> $gamma1
-#> m_ab_sorted[seq(length(probs))] 
-#>                       0.7937527
 ```
 Note that a positive value for $\gamma1$ indicates that a random left-truncation
 mechanism
@@ -158,13 +106,9 @@ Pirat has a diagnosis tool that compares distributions of correlations at
 random and those from same peptide groups (PGs).
 We use it here on the complete Ropers2021 dataset.
 
-```{r correlations, eval = FALSE}
+```{r correlations}
 data(subropers)
 plot_pep_correlations(subropers, titlename = "Ropers2021")
-```
-
-```{r correlations_png, echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
-knitr::include_graphics("./figs/plot_pep_correlations.png", error = FALSE)
 ```
 
 
@@ -181,58 +125,20 @@ To illustrate our examples, we use a subset of Ropers2021 dataset.
  
 # -2, the 2-peptide rule
  
-The -2 extension simply consists in not imputing singleton PGs. It can be 
-used as following.
+The -2 extension simply consists in not imputing singleton PGs. It can be used as following.
 
-```{r pipeline_llkimpute, eval = FALSE}
+```{r pipeline_llkimpute}
 data(subropers)
 imp.res = pipeline_llkimpute(subropers, extension = "2")
-#> 
-#> Call:
-#> stats::lm(formula = log(probs) ~ m_ab_sorted[seq(length(probs))])
-#> 
-#> Residuals:
-#>      Min       1Q   Median       3Q      Max 
-#> -1.40672 -0.15008  0.08833  0.28986  0.84125 
-#> 
-#> Coefficients:
-#>                                 Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)                     14.40677    1.19049   12.10 2.48e-16 ***
-#> m_ab_sorted[seq(length(probs))] -0.91419    0.06469  -14.13  < 2e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 0.4549 on 49 degrees of freedom
-#> Multiple R-squared:  0.803,  Adjusted R-squared:  0.799 
-#> F-statistic: 199.7 on 1 and 49 DF,  p-value: < 2.2e-16
 ```
 
 We can then check that singleton peptides are not imputed (yet some may be 
 already fully observed).
 
-```{r impute4, eval = FALSE}
+```{r impute4}
 mask.sing.pg = colSums(subropers$adj) == 1
 mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
 imp.res$data.imputed[, mask.sing.pep]
-#>         NALPEGYAPAK__2 AIGIISNNPEFADVR__2 DLNIDPATLR__2
-#> W1_1_MS       20.17349                 NA      19.18247
-#> W1_2_MS       19.79753           17.22690      18.50307
-#> W1_3_MS       20.07592           17.55627      18.83505
-#> W2_1_MS       19.82019           17.42375      18.47821
-#> W2_2_MS       20.17537           17.13305      17.89070
-#> W2_3_MS       20.36344           17.50759      18.18041
-#> R1_1_MS       20.69017                 NA      18.12682
-#> R1_2_MS       20.70866                 NA      18.03316
-#> R1_3_MS       21.04542                 NA      18.52355
-#> R2_1_MS       20.95692                 NA      18.49510
-#> R2_2_MS       20.90775           15.87217      17.92845
-#> R2_3_MS       21.20864                 NA      18.24418
-#> R3_1_MS       21.02669                 NA            NA
-#> R3_2_MS       21.10948                 NA      17.34890
-#> R3_3_MS       21.23109                 NA            NA
-#> R4_1_MS       20.83249                 NA      17.28032
-#> R4_2_MS       21.00524                 NA      17.67013
-#> R4_3_MS       20.57447                 NA      17.33383
 ```
 
 # -S, samples-wise correlations
@@ -240,55 +146,18 @@ imp.res$data.imputed[, mask.sing.pep]
 Pirat can leverage sample-wise correlations to impute the singleton peptides 
 as following:
 
-```{r my_pipeline_llkimpute2, eval = FALSE}
+```{r my_pipeline_llkimpute2}
 imp.res = my_pipeline_llkimpute(subropers, extension = "S")
-#> 
-#> Call:
-#> stats::lm(formula = log(probs) ~ m_ab_sorted[seq(length(probs))])
-#> 
-#> Residuals:
-#>      Min       1Q   Median       3Q      Max 
-#> -1.40672 -0.15008  0.08833  0.28986  0.84125 
-#> 
-#> Coefficients:
-#>                                 Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)                     14.40677    1.19049   12.10 2.48e-16 ***
-#> m_ab_sorted[seq(length(probs))] -0.91419    0.06469  -14.13  < 2e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 0.4549 on 49 degrees of freedom
-#> Multiple R-squared:  0.803,  Adjusted R-squared:  0.799 
-#> F-statistic: 199.7 on 1 and 49 DF,  p-value: < 2.2e-16
 ```
 
 Here singleton peptides are impute after the rest of the dataset, using 
 sample-wise correlations obtained.
 
 
-```{r impute2, eval = FALSE}
+```{r impute2}
 mask.sing.pg = colSums(subropers$adj) == 1
 mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
 imp.res$data.imputed[, mask.sing.pep]
-#>         NALPEGYAPAK__2 AIGIISNNPEFADVR__2 DLNIDPATLR__2
-#> W1_1_MS       20.17349           17.77321      19.18247
-#> W1_2_MS       19.79753           17.22690      18.50307
-#> W1_3_MS       20.07592           17.55627      18.83505
-#> W2_1_MS       19.82019           17.42375      18.47821
-#> W2_2_MS       20.17537           17.13305      17.89070
-#> W2_3_MS       20.36344           17.50759      18.18041
-#> R1_1_MS       20.69017           16.01870      18.12682
-#> R1_2_MS       20.70866           16.28692      18.03316
-#> R1_3_MS       21.04542           16.34702      18.52355
-#> R2_1_MS       20.95692           16.10669      18.49510
-#> R2_2_MS       20.90775           15.87217      17.92845
-#> R2_3_MS       21.20864           16.43660      18.24418
-#> R3_1_MS       21.02669           15.87970      17.69229
-#> R3_2_MS       21.10948           16.04076      17.34890
-#> R3_3_MS       21.23109           16.01596      18.00233
-#> R4_1_MS       20.83249           16.22859      17.28032
-#> R4_2_MS       21.00524           16.03777      17.67013
-#> R4_3_MS       20.57447           15.87691      17.33383
 ```
 
 # -T, transcriptomic integration
@@ -307,30 +176,12 @@ containing either booleans or 0s and 1s.
 biological samples were used for each type of analysis). Thus Pirat-T can be 
 used as following:
 
-```{r my_pipeline_llkimpute3, eval = FALSE}
+```{r my_pipeline_llkimpute3}
 imp.res = my_pipeline_llkimpute(subropers,
     extension = "T",
     rna.cond.mask = seq(nrow(subropers$peptides_ab)),
     pep.cond.mask = seq(nrow(subropers$peptides_ab)),
     max.pg.size.pirat.t = 1)
-#> 
-#> Call:
-#> stats::lm(formula = log(probs) ~ m_ab_sorted[seq(length(probs))])
-#> 
-#> Residuals:
-#>      Min       1Q   Median       3Q      Max 
-#> -1.40672 -0.15008  0.08833  0.28986  0.84125 
-#> 
-#> Coefficients:
-#>                                 Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)                     14.40677    1.19049   12.10 2.48e-16 ***
-#> m_ab_sorted[seq(length(probs))] -0.91419    0.06469  -14.13  < 2e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 0.4549 on 49 degrees of freedom
-#> Multiple R-squared:  0.803,  Adjusted R-squared:  0.799 
-#> F-statistic: 199.7 on 1 and 49 DF,  p-value: < 2.2e-16
 ```
 
 Only few peptides have been used to fit the prior variance distribution in 
@@ -339,29 +190,10 @@ the goodness of fit may vary a lot depending on the subset chosen.
 
 It gives the following imputed singletons:
 
-```{r data.imputed3, eval = FALSE}
+```{r data.imputed3}
 mask.sing.pg = colSums(subropers$adj) == 1
 mask.sing.pep = rowSums(subropers$adj[, mask.sing.pg]) >= 1
 imp.res$data.imputed[, mask.sing.pep]
-#>         NALPEGYAPAK__2 AIGIISNNPEFADVR__2 DLNIDPATLR__2
-#> W1_1_MS       20.17349           17.16826      19.18247
-#> W1_2_MS       19.79753           17.22690      18.50307
-#> W1_3_MS       20.07592           17.55627      18.83505
-#> W2_1_MS       19.82019           17.42375      18.47821
-#> W2_2_MS       20.17537           17.13305      17.89070
-#> W2_3_MS       20.36344           17.50759      18.18041
-#> R1_1_MS       20.69017           16.07105      18.12682
-#> R1_2_MS       20.70866           15.69253      18.03316
-#> R1_3_MS       21.04542           15.95376      18.52355
-#> R2_1_MS       20.95692           15.74790      18.49510
-#> R2_2_MS       20.90775           15.87217      17.92845
-#> R2_3_MS       21.20864           15.54095      18.24418
-#> R3_1_MS       21.02669           15.70025      17.84194
-#> R3_2_MS       21.10948           15.83525      17.34890
-#> R3_3_MS       21.23109           15.81318      17.82150
-#> R4_1_MS       20.83249           15.99150      17.28032
-#> R4_2_MS       21.00524           16.14081      17.67013
-#> R4_3_MS       20.57447           17.69132      17.33383
 ```
 
 On the other hand, if proteomic and transcriptomic samples are not paired but 
@@ -370,30 +202,12 @@ by adapting the mask related to samples in each type of analysis (here, both
 proteomic and transcriptomic datasets have 6 different conditions in the same 
 order with 3 replicates each):
 
-```{r my_pipeline_llkimpute_T, eval = FALSE}
+```{r my_pipeline_llkimpute_T}
 imp.res = my_pipeline_llkimpute(subropers,
                              extension = "T",
                              rna.cond.mask = rep(seq(6), each = 3),
                              pep.cond.mask = rep(seq(6), each = 3),
                              max.pg.size.pirat.t = 1)
-#> 
-#> Call:
-#> stats::lm(formula = log(probs) ~ m_ab_sorted[seq(length(probs))])
-#> 
-#> Residuals:
-#>      Min       1Q   Median       3Q      Max 
-#> -1.40672 -0.15008  0.08833  0.28986  0.84125 
-#> 
-#> Coefficients:
-#>                                 Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)                     14.40677    1.19049   12.10 2.48e-16 ***
-#> m_ab_sorted[seq(length(probs))] -0.91419    0.06469  -14.13  < 2e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 0.4549 on 49 degrees of freedom
-#> Multiple R-squared:  0.803,  Adjusted R-squared:  0.799 
-#> F-statistic: 199.7 on 1 and 49 DF,  p-value: < 2.2e-16
 ```
 
 Also, it is possible to apply transcriptomic integration up to an arbitrary 
