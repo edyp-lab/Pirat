@@ -96,9 +96,7 @@ head(imp.res$data.imputed[ ,seq(5)])
 ```{r params}
 imp.res$params
 ```
-Note that a positive value for $\gamma1$ indicates that a random left-truncation
-mechanism
-is present in the dataset.
+Note that a positive value for $\gamma1$ indicates that a random left-truncation mechanism is present in the dataset.
 
 # Intra-PG correlation analysis
 

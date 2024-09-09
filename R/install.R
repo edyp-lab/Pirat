@@ -14,9 +14,10 @@
 #' @import basilisk
 #' 
 install_Pirat_env <- function() {
-    setBasiliskShared(FALSE)
+    
+    #setBasiliskShared(FALSE)
     cl <- basilisk::basiliskStart(envPirat)
-    pirat.install <- basiliskRun(cl, function() { 
+    pirat.install <- basilisk::basiliskRun(cl, function() { 
         pkgs <- basilisk::listPackages(env = envPirat)
         path <- normalizePath(basilisk::obtainEnvironmentPath(envPirat))
         list(
@@ -26,7 +27,7 @@ install_Pirat_env <- function() {
             numpy = pkgs[which(pkgs$package=='numpy'),]$full
         )
     })
-    basiliskStop(cl)
+    basilisk::basiliskStop(cl)
     
     cat('Installed packages:\n')
     cat(paste0("\t", names(pirat.install), " (", pirat.install, ")\n"))
