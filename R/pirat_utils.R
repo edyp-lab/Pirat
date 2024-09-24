@@ -113,6 +113,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -132,6 +133,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' res_hyperparam <- estimate_psi_df(obs2NApep)
 #' psi <- res_hyperparam$psi
 #' Py_impute_block_llk_reset(subbouyssie, psi)
+#' }
 #'
 impute_block_llk_reset <- function(
     data.pep.rna.crop,
@@ -265,6 +267,7 @@ impute_block_llk_reset <- function(
 #' @export
 #' 
 #' @examples
+#' \donttest{
 #' Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -293,6 +296,7 @@ impute_block_llk_reset <- function(
 #'     psi_rna = psi_rna, 
 #'     rna.cond.mask = cond_mask, 
 #'     pep.cond.mask = cond_mask)
+#'     }
 #' 
 #'
 impute_block_llk_reset_PG <- function(

@@ -52,6 +52,7 @@ A list containing imputation results for each PG, the execution time,
 Imputes each PG separately and return the results for each PG.
 }
 \examples{
+\donttest{
 Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 proc <- basilisk::basiliskStart(envPirat)
 
@@ -71,5 +72,6 @@ obs2NApep <- subbouyssie$peptides_ab[ ,colSums(is.na(subbouyssie$peptides_ab)) <
 res_hyperparam <- estimate_psi_df(obs2NApep)
 psi <- res_hyperparam$psi
 Py_impute_block_llk_reset(subbouyssie, psi)
+}
 
 }
