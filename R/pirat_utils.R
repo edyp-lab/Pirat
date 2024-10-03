@@ -296,7 +296,7 @@ impute_block_llk_reset <- function(
 #'     psi_rna = psi_rna, 
 #'     rna.cond.mask = cond_mask, 
 #'     pep.cond.mask = cond_mask)
-#'     }
+#' }
 #' 
 #'
 impute_block_llk_reset_PG <- function(
@@ -427,6 +427,7 @@ impute_block_llk_reset_PG <- function(
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -450,7 +451,7 @@ impute_block_llk_reset_PG <- function(
 #' psi <- res_hyperparam$psi
 #' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
 #' impute_from_blocks(imputed_pgs, obj)
-#' 
+#' }
 #'
 impute_from_blocks <- function(logs.blocks,
                               data.pep.rna,
