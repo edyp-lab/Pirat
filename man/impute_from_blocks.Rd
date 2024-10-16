@@ -23,21 +23,7 @@ From imputation results in each PG and the associate adjacency
 peptide/PG matrix,imputes the original abundance table.  .
 }
 \examples{
-\donttest{
-Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
-proc <- basilisk::basiliskStart(envPirat)
-
-func <- basilisk::basiliskRun(proc, 
-    fun = function(arg1, arg2) {
-        
-        imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
-        imputed_pgs 
-    }, arg1 = data.pep.rna.mis, arg2 = psi)
-
-basilisk::basiliskStop(proc)
-func
-}
-
+\dontrun{
 
 data(subbouyssie)
 obj <- subbouyssie
