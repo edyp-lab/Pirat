@@ -1,3 +1,7 @@
+
+[![R-CMD-check-bioc](https://github.com/prostarproteomics/Pirat/actions/workflows/check_Bioc.yml/badge.svg)](https://github.com/prostarproteomics/Pirat/actions/workflows/check_Bioc.yml)
+
+
 # Pirat
 
 ## Installation
