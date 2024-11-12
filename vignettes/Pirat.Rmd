@@ -10,7 +10,7 @@ output:
         toc_float: true
         fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Pirat}
+  %\VignetteIndexEntry{Pirat-vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography:
@@ -28,11 +28,38 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r style, echo = FALSE, results = 'asis'}
-BiocStyle::markdown()
+<!-- ```{r style, echo = FALSE, results = 'asis'} -->
+<!-- BiocStyle::markdown() -->
+<!-- ``` -->
+
+
+
+# Installation
+
+`r Biocpkg("Pirat")` is an `R` package available via the 
+[Bioconductor](http://bioconductor.org) repository for packages. 
+<!-- You can install the release version by using the following commands  -->
+<!-- in your `R` session: -->
+
+<!-- ```{r "install", eval = FALSE} -->
+<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
+<!--     install.packages("BiocManager") -->
+<!-- } -->
+<!-- BiocManager::install("cfTools") -->
+<!-- ``` -->
+
+You can install the development version from [GitHub](https://github.com/) :
+
+```{r install_dev, eval = FALSE}
+BiocManager::install("prostarproteomics/Pirat")
 ```
 
 
+When calling one of the imputation methods for the first time after package
+installation, the underlying python module and conda environment will be 
+automatically downloaded and installed without the need for user intervention.
+This may take several minutes, but this is a one-time installation. 
+the first time after package installation.
 
 # Standard imputation with Pirat
 
@@ -45,6 +72,7 @@ Bouyssie2020 dataset in the environment.
 
 ```{r load_data, echo = TRUE}
 library(Pirat)
+library(utils)
 data(subbouyssie)
 ```
 
@@ -52,7 +80,7 @@ Note that `subbouyssie` is actually a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows 
 and peptides in columns.
-2. `adj`, the adjacency matrix between peptides and proteins, containing etiher 
+2. `adj`, the adjacency matrix between peptides and proteins, containing either 
 booleans or 0s and 1s (no preprocessing or simplification is needed for this 
 matrix, Pirat will automatically build the PGs from it).
 
@@ -61,6 +89,7 @@ PGs, because the latter are randomly split into several smaller PGs with fixed
 size to reduce computational costs. Although this variability is too small to 
 affect imputation quality, we fix the seed in this tutorial such that the user 
 can retrieve exactly the same imputed values when running the notebook again.
+
 ```{r setseed}
 set.seed(12345)
 ```
@@ -95,9 +124,7 @@ head(imp.res$data.imputed[ ,seq(5)])
 ```{r params}
 imp.res$params
 ```
-Note that a positive value for $\gamma1$ indicates that a random left-truncation
-mechanism
-is present in the dataset.
+Note that a positive value for $\gamma1$ indicates that a random left-truncation mechanism is present in the dataset.
 
 # Intra-PG correlation analysis
 
@@ -109,6 +136,8 @@ We use it here on the complete Ropers2021 dataset.
 data(subropers)
 plot_pep_correlations(subropers, titlename = "Ropers2021")
 ```
+
+
  We see here that the blue distribution has much more weights on high 
  correlations than the red one,
  indicating that PGs should clearly help for imputation.
@@ -122,8 +151,7 @@ To illustrate our examples, we use a subset of Ropers2021 dataset.
  
 # -2, the 2-peptide rule
  
-The -2 extension simply consists in not imputing singleton PGs. It can be 
-used as following.
+The -2 extension simply consists in not imputing singleton PGs. It can be used as following.
 
 ```{r pipeline_llkimpute}
 data(subropers)

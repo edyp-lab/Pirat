@@ -113,25 +113,13 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
-#' proc <- basilisk::basiliskStart(envPirat)
-#' 
-#' func <- basilisk::basiliskRun(proc, 
-#'     fun = function(arg1, arg2) {
-#'         
-#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
-#'         imputed_pgs 
-#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
-#' 
-#' basilisk::basiliskStop(proc)
-#' func
-#' }
-#' 
+#' \donttest{
 #' data(subbouyssie)
 #' obs2NApep <- subbouyssie$peptides_ab[ ,colSums(is.na(subbouyssie$peptides_ab)) <= 0] 
 #' res_hyperparam <- estimate_psi_df(obs2NApep)
 #' psi <- res_hyperparam$psi
 #' Py_impute_block_llk_reset(subbouyssie, psi)
+#' }
 #'
 impute_block_llk_reset <- function(
     data.pep.rna.crop,
@@ -211,9 +199,7 @@ impute_block_llk_reset <- function(
       
       
       ermsg = res_imp$error_msg
-      if (ermsg != "success") {
-        stop(ermsg)
-      }
+      stopifnot(ermsg == "success")
       if ((!is.null(X_gt)) & (ermsg == "success")) {
         npseudos = sum((!is.na(X_gt)) & is.na(subpp_ab))
         npseudoNA = npseudoNA + npseudos
@@ -267,6 +253,7 @@ impute_block_llk_reset <- function(
 #' @export
 #' 
 #' @examples
+#' \donttest{
 #' Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -295,6 +282,7 @@ impute_block_llk_reset <- function(
 #'     psi_rna = psi_rna, 
 #'     rna.cond.mask = cond_mask, 
 #'     pep.cond.mask = cond_mask)
+#' }
 #' 
 #'
 impute_block_llk_reset_PG <- function(
@@ -425,20 +413,7 @@ impute_block_llk_reset_PG <- function(
 #' @export
 #'
 #' @examples
-#' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
-#' proc <- basilisk::basiliskStart(envPirat)
-#' 
-#' func <- basilisk::basiliskRun(proc, 
-#'     fun = function(arg1, arg2) {
-#'         
-#'         imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
-#'         imputed_pgs 
-#'     }, arg1 = data.pep.rna.mis, arg2 = psi)
-#' 
-#' basilisk::basiliskStop(proc)
-#' func
-#' }
-#' 
+#' \dontrun{
 #' 
 #' data(subbouyssie)
 #' obj <- subbouyssie
@@ -448,7 +423,8 @@ impute_block_llk_reset_PG <- function(
 #' psi <- res_hyperparam$psi
 #' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
 #' impute_from_blocks(imputed_pgs, obj)
-#' 
+#' }
+#'
 impute_from_blocks <- function(logs.blocks,
                               data.pep.rna,
                               idx_blocks = NULL) {
@@ -479,5 +455,39 @@ impute_from_blocks <- function(logs.blocks,
   pep.imputed = pep.imputed / pmax(n_imputations, 1)
   pep.imputed[pep.imputed == 0] = data.pep.rna$peptides_ab[pep.imputed == 0]
   return(pep.imputed)
+}
+
+
+
+#' @title Wrapper for the function `impute_block_llk_reset()`
+#' 
+#' @param data.pep.rna.mis xxx
+#' @param psi Inverse scale parameter for IW prior of peptides abundances
+#'
+#' @return The original peptide abundance table with imputed values.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' #' data(subbouyssie)
+#' obj <- subbouyssie
+#' # Keep only fully observed peptides
+#' obs2NApep <- obj$peptides_ab[ ,colSums(is.na(obj$peptides_ab)) <= 0] 
+#' res_hyperparam <- estimate_psi_df(obs2NApep)
+#' psi <- res_hyperparam$psi
+#' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
+#' }
+Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) {
+proc <- basilisk::basiliskStart(envPirat)
+
+func <- basilisk::basiliskRun(proc,
+    fun = function(arg1, arg2) {
+
+        imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+        imputed_pgs
+    }, arg1 = data.pep.rna.mis, arg2 = psi)
+
+basilisk::basiliskStop(proc)
+func
 }
 

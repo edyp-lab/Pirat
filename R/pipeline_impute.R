@@ -63,7 +63,7 @@
 #' @examples
 #' # Pirat classical mode
 #' data(subbouyssie)
-#' myResult <- my_pipeline_llkimpute(subbouyssie) 
+#' myResult <- my_pipeline_llkimpute(subbouyssie)
 #' 
 #' # Pirat with transcriptomic integration for singleton PGs
 #' data(subropers)
@@ -127,25 +127,27 @@ pipeline_llkimpute <- function(
     alpha.factor = 2,
     rna.cond.mask = NULL,
     pep.cond.mask = NULL,
-    extension = 'base',
+    extension = c('base', '2', 'T', 'S'),
     mcar = FALSE,
     degenerated = FALSE,
     max.pg.size.pirat.t = 1,
     verbose = FALSE) {
   
+    extension <- match.arg(extension)
+    
     py <- reticulate::import("PyPirat")
 
   psi_rna = NULL
   
   if(verbose)
-    cat("extension: ", extension, "\n")
+    message("extension: ", extension, "\n")
   
   if( verbose)
-    cat("Remove nested prots...")
+      message("Remove nested prots...")
   idx.emb.prots <- get_indexes_embedded_prots(data.pep.rna.mis$adj)
   data.pep.rna.mis <- rm_pg_from_idx_merge_pg(data.pep.rna.mis, idx.emb.prots)
   if( verbose)
-    cat("Data ready for boarding with Pirat")
+      message("Data ready for boarding with Pirat")
   
   # Estimate Gamma distrib peptides
   obs2NApep <- data.pep.rna.mis$peptides_ab[
@@ -156,8 +158,8 @@ pipeline_llkimpute <- function(
   psi <- est.psi.df$psi
   
   if( verbose){
-    cat(paste(c("Estimated DF", df)))
-    cat(paste(c("Estimated psi", psi)))
+      message(paste(c("Estimated DF", df)))
+      message(paste(c("Estimated psi", psi)))
   }
   
   # Estimate Gamma distrib RNA
@@ -206,7 +208,7 @@ pipeline_llkimpute <- function(
         tol_obj = 1e-7, 
         tol_grad = 1e-5, 
         tol_param = 1e-4,
-        maxiter = as.integer(10000), 
+        maxiter = as.integer(5000), 
         lr = 0.5,
         phi_known = TRUE,
         max_try = 50, 
@@ -233,7 +235,7 @@ pipeline_llkimpute <- function(
         tol_obj = 1e-7, 
         tol_grad = 1e-5, 
         tol_param = 1e-4,
-        maxiter = as.integer(10000), 
+        maxiter = as.integer(5000), 
         lr = 0.5, 
         phi_known = TRUE,
         max_try = 50, 
@@ -289,7 +291,7 @@ pipeline_llkimpute <- function(
         tol_obj = 1e-7, 
         tol_grad = 1e-5, 
         tol_param = 1e-4,
-        maxiter = as.integer(10000), 
+        maxiter = as.integer(5000), 
         lr = 0.5, 
         phi_known = TRUE,
         max_try = 50, 
@@ -321,7 +323,7 @@ pipeline_llkimpute <- function(
         tol_obj = 1e-7,
         tol_grad = 1e-5, 
         tol_param = 1e-4,
-        maxiter = as.integer(10000), 
+        maxiter = as.integer(5000), 
         lr = 0.5, 
         phi_known = TRUE,
         max_try = 50, 

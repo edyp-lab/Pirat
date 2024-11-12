@@ -66,6 +66,7 @@ Imputes each PG separately accounting for transcriptomic
 dataset and returns the results for each PG.
 }
 \examples{
+\donttest{
 Py_impute_block_llk_reset_PG <- function(data.pep.rna.crop, ...) { 
 proc <- basilisk::basiliskStart(envPirat)
 
@@ -94,6 +95,7 @@ imputed_pgs <- Py_impute_block_llk_reset_PG(
     psi_rna = psi_rna, 
     rna.cond.mask = cond_mask, 
     pep.cond.mask = cond_mask)
+}
 
 
 }

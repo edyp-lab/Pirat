@@ -1,3 +1,58 @@
+
+
+#' @title Plot 2 histograms
+#' @description Plot 2 histograms on the same graph.
+#'
+#' @param d1 vector of values for the first histogram
+#' @param d2 vector of values for the first histogram
+#' @param name1 Label for first histogram
+#' @param name2 Label for 2nd histogram
+#' @param titlename Title of figure
+#' @param xlab X-axis label
+#' @param freq If True, bins heights correspond to raw counts, otherwise bins
+#' are normalized.
+#'
+#' @import grDevices
+#'
+#' @examples
+#' v1 <- 1:10
+#' v2 <- 5:25
+#' plot2hists(v1, v2)
+#'
+#' @return A plot
+#'
+#' @export
+#'
+plot2hists <- function(d1,
+  d2,
+  name1 = 'name1',
+  name2 = 'name2',
+  titlename = 'myTitle',
+  xlab = "",
+  freq = TRUE) {
+  c1 <- rgb(173,216,230, maxColorValue = 255, alpha = 100, names = "lt.blue")
+  c2 <- rgb(255,192,203, maxColorValue = 255, alpha = 100, names = "lt.pink")
+  b <- min(c(d1,d2), na.rm = TRUE) - 0.01
+  e <- max(c(d1,d2), na.rm = TRUE)*(1 + 0.1)
+  ax <- pretty(b:e, n = 50)
+  if (freq) {
+    hgA <- hist(d1, breaks = ax, plot = FALSE) # Save first histogram data
+    hgB <- hist(d2, breaks = ax, plot = FALSE) # Save 2nd histogram data
+    plot(hgA, col = c1, main = titlename, freq = freq,
+      ylim = c(0, max(c(hgA$counts, hgB$counts))))
+    plot(hgB, col = c2, add = TRUE, freq = freq)
+  } else {
+    hgA <- hist(d1, breaks = ax, plot = FALSE) # Save first histogram data
+    hgA$density = hgA$counts/sum(hgA$counts)*100
+    hgB <- hist(d2, breaks = ax, plot = FALSE) # Save first histogram data
+    hgB$density = hgB$counts/sum(hgB$counts)*100
+    plot(hgA, col = c1, main = titlename, xlab = xlab, freq = freq,
+      ylim = c(0, max(c(hgA$density, hgB$density))))
+    plot(hgB, col = c2, add = TRUE, freq = freq)
+  }
+  legend("topleft", c(name1, name2), fill = c(c1, c2))
+}
+
 #' @title Empirical density of peptide correlations
 #' @description Plot empirical densities of correlations between peptides within
 #'  PG and at random, estimated by gaussian kernel. Note that only correlations
