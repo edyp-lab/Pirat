@@ -1,5 +1,5 @@
 
-[![R-CMD-check-bioc](https://github.com/prostarproteomics/Pirat/actions/workflows/check_Bioc.yml/badge.svg)](https://github.com/prostarproteomics/Pirat/actions/workflows/check_Bioc.yml)
+[![R-CMD-check-bioc](https://github.com/edyp-lab/Pirat/actions/workflows/check_Bioc.yml/badge.svg)](https://github.com/edyp-lab/Pirat/actions/workflows/check_Bioc.yml)
 
 
 # Pirat
@@ -10,7 +10,7 @@ To install this package from Github:
 
 ```
 install.packages('remotes')
-remotes::install_github('prostarproteomics/Pirat')
+remotes::install_github('edyp-lab/Pirat')
 
 ```
 

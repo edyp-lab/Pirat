@@ -42,6 +42,6 @@ Imports:
     graphics, SummarizedExperiment, S4Vectors
 Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
-URL: http://www.prostar-proteomics.org/
-BugReports: https://github.com/prostarproteomics/Pirat/issues
+URL: https://github.com/edyp-lab/Pirat
+BugReports: https://github.com/edyp-lab/Pirat/issues
 StagedInstall: no
