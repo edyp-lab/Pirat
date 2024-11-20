@@ -1,6 +1,6 @@
 
 [![R-CMD-check-bioc](https://github.com/edyp-lab/Pirat/actions/workflows/check_Bioc.yml/badge.svg)](https://github.com/edyp-lab/Pirat/actions/workflows/check_Bioc.yml)
-
+[![R-CMD-check-bioc](https://github.com/edyp-lab/Pirat/actions/workflows/check-bioc.yml/badge.svg?branch=RELEASE_3_20)](https://github.com/edyp-lab/Pirat/actions/workflows/check-bioc.yml)
 
 # Pirat
 
