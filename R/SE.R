@@ -46,9 +46,9 @@ pirat2SE <- function(peptides_ab,
                         row.names = colnames(t(peptides_ab)))
    )
  
- metadata(obj)$adj <- adj
- metadata(obj)$mask_prot_diff <- mask_prot_diff
- metadata(obj)$mask_pep_diff <- mask_pep_diff
+ S4Vectors::metadata(obj)$adj <- adj
+ S4Vectors::metadata(obj)$mask_prot_diff <- mask_prot_diff
+ S4Vectors:: metadata(obj)$mask_pep_diff <- mask_pep_diff
   
   obj
 }
@@ -78,7 +78,7 @@ pirat2SE <- function(peptides_ab,
 #' 
 wrapper_pipeline_llkimpute <- function(se, ...){
   
-  stopifnot(inherits(obj, 'SummarizedExperiment'))
+  stopifnot(inherits(se, 'SummarizedExperiment'))
   
   obj <- list(
     peptides_ab = t(assay(se)),
