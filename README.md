@@ -9,8 +9,8 @@
 To install this package from Github:
 
 ```
-install.packages('remotes')
-remotes::install_github('edyp-lab/Pirat')
+install.packages('BiocManager')
+BiocManager::install('edyp-lab/Pirat', version = '3.20')
 
 ```
 
