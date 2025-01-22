@@ -100,6 +100,7 @@ NULL
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 #' 
 my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) { 
+
     message('Starting Python environment...\n')
      proc <- basilisk::basiliskStart(envPirat)
     on.exit(basilisk::basiliskStop(proc))
@@ -132,7 +133,15 @@ pipeline_llkimpute <- function(
     degenerated = FALSE,
     max.pg.size.pirat.t = 1,
     verbose = FALSE) {
-  
+    
+    if(degenerated == TRUE & extension[1] == "2") {
+        browser()
+        stop("Incompatible arguments. \n 'extension == \"2\"' and 'degenerated == TRUE' are not compatible.")
+    }
+    if(any(colSums(is.na(data.pep.rna.mis$peptides_ab)) == nrow(data.pep.rna.mis$peptides_ab))){
+        stop("At least one peptide/row contains all NA values. Please remove them before proceeding.")
+    }
+   
     extension <- match.arg(extension)
     
     py <- reticulate::import("PyPirat")
