@@ -133,8 +133,8 @@ random and those from same peptide groups (PGs).
 We use it here on the complete Ropers2021 dataset.
 
 ```{r correlations}
-data(subropers)
-plot_pep_correlations(subropers, titlename = "Ropers2021")
+data(ropers)
+plot_pep_correlations(ropers, titlename = "Ropers2021")
 ```
 
 
