@@ -100,13 +100,6 @@ One can then impute this dataset with the following line
 imp.res <- my_pipeline_llkimpute(subbouyssie)
 ```
 
-The first plot represents the goodness of fit of the inverse-gamma prior, 
-whereas the second one
-represents the goodness of fit of the missingness mechanism (details on fitting 
-methods are given in @Etourneau2023). Note that some of these parameters were 
-originally proposed in @Chen2014, however no methods existed to find then 
-automatically and without relying on heuristics.
-
 The result `imp.res` is a list that contains:
 
 1. `data.imputed`, the imputed log-2 abundance matrix.
@@ -124,7 +117,11 @@ head(imp.res$data.imputed[ ,seq(5)])
 ```{r params}
 imp.res$params
 ```
-Note that a positive value for $\gamma1$ indicates that a random left-truncation mechanism is present in the dataset.
+These parameters were originally proposed in @Chen2014, 
+however no methods were proposed to find then 
+automatically and without heuristics.
+Note that a positive value for $\gamma_1$ indicates that a random 
+left-truncation mechanism is present in the dataset.
 
 # Intra-PG correlation analysis
 
