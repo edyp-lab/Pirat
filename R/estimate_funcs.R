@@ -87,8 +87,12 @@ estimate_psi_df <- function(pep.ab.table) {
     #     freq = FALSE, 
     #     xlab ="Variance completely observed",
     #     main="Histogram of observed variance and fitted inverse-gamma curve")
-    resllk <- tryCatch(MASS::fitdistr(vars, f, list(a = 1, b = 0.1) ), 
-        error = function(e){NULL})
+    resllk <- tryCatch(MASS::fitdistr(vars, f, list(a = 1, b = 0.05)), 
+                     error = function(e){
+                       mu = mean(vars);
+                       sigma_sq = stats::var(vars);
+                       return(list("estimate" = c(mu^2 / sigma_sq + 2,
+                                                mu * (mu^2 / sigma_sq + 1))))})
     if (is.null(resllk)) {
         return(NULL)
     }
