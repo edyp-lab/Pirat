@@ -135,7 +135,6 @@ pipeline_llkimpute <- function(
     verbose = FALSE) {
     
     if(degenerated == TRUE & extension[1] == "2") {
-        browser()
         stop("Incompatible arguments. \n 'extension == \"2\"' and 'degenerated == TRUE' are not compatible.")
     }
     if(any(colSums(is.na(data.pep.rna.mis$peptides_ab)) == nrow(data.pep.rna.mis$peptides_ab))){
