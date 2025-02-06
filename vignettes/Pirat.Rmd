@@ -38,22 +38,14 @@ knitr::opts_chunk$set(
 
 `r Biocpkg("Pirat")` is an `R` package available via the 
 [Bioconductor](http://bioconductor.org) repository for packages. 
-<!-- You can install the release version by using the following commands  -->
-<!-- in your `R` session: -->
 
-<!-- ```{r "install", eval = FALSE} -->
-<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
-<!--     install.packages("BiocManager") -->
-<!-- } -->
-<!-- BiocManager::install("cfTools") -->
-<!-- ``` -->
-
-You can install the development version from [GitHub](https://github.com/) :
-
+You can install the latest version by executing the following code:
 ```{r install_dev, eval = FALSE}
-BiocManager::install("prostarproteomics/Pirat")
-```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
+BiocManager::install("Pirat")
+```
 
 When calling one of the imputation methods for the first time after package
 installation, the underlying python module and conda environment will be 
