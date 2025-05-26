@@ -48,7 +48,9 @@
 #' @param max.pg.size.pirat.t When extension == "T", the maximum PG size for 
 #' which transcriptomic information is used for imputation. 
 #' @param verbose A boolean (FALSE as default) which indicates whether to 
-#' display more details on the process
+#' display more details on the process.
+#' @param version Version to use, either "original_BSTS_2025" for the original 
+#' version or "accelerated" (default) a faster modified version.
 #'
 #' @import progress
 #' @import MASS
@@ -100,7 +102,6 @@ NULL
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 #' 
 my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) { 
-
     message('Starting Python environment...\n')
      proc <- basilisk::basiliskStart(envPirat)
     on.exit(basilisk::basiliskStop(proc))
@@ -132,15 +133,16 @@ pipeline_llkimpute <- function(
     mcar = FALSE,
     degenerated = FALSE,
     max.pg.size.pirat.t = 1,
-    verbose = FALSE) {
-    
+    verbose = FALSE,
+    version = "accelerated") {
+  
     if(degenerated == TRUE & extension[1] == "2") {
         stop("Incompatible arguments. \n 'extension == \"2\"' and 'degenerated == TRUE' are not compatible.")
     }
     if(any(colSums(is.na(data.pep.rna.mis$peptides_ab)) == nrow(data.pep.rna.mis$peptides_ab))){
         stop("At least one peptide/row contains all NA values. Please remove them before proceeding.")
     }
-   
+    
     extension <- match.arg(extension)
     
     py <- reticulate::import("PyPirat")
@@ -223,7 +225,8 @@ pipeline_llkimpute <- function(
         max_ls = 500, 
         eps_sig = 1e-4, 
         nsamples = 1000,
-        verbose = verbose)
+        verbose = verbose,
+        version = version)
     
     data.imputed <- impute_from_blocks(res_per_block, data.pep.rna.mis)
   }
@@ -250,7 +253,8 @@ pipeline_llkimpute <- function(
         max_ls = 500, 
         eps_sig = 1e-4, 
         nsamples = 1000,
-        verbose = verbose)
+        verbose = verbose,
+        version = version)
     
     data.imputed <- impute_from_blocks(res_per_block, data.pep.rna.mis)
     idx.pgs1 <- which(colSums(data.pep.rna.mis$adj) == 1)
@@ -306,7 +310,8 @@ pipeline_llkimpute <- function(
         max_ls = 500, 
         eps_sig = 1e-4, 
         nsamples = 1000,
-        verbose = verbose)
+        verbose = verbose,
+        version = version)
       
       data.imputed.pirat <- impute_from_blocks(res_per_block_pirat, 
                                               data.pep.rna.mis)
@@ -338,7 +343,8 @@ pipeline_llkimpute <- function(
         max_ls = 500, 
         eps_sig = 1e-4, 
         nsamples = 1000,
-        verbose = verbose)
+        verbose = verbose,
+        version = version)
       
       data.imputed.pirat.t <- impute_from_blocks(res_per_block_pirat_t, 
                                                 data.pep.rna.mis)

@@ -227,7 +227,7 @@ def impute_from_params(X_w_na, mu, sigma, phi, phi0):
 def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=True, eps_chol=1e-4, eps_phi=1e-8,
                                tol_obj=1e-9, tol_grad=1e-5, tol_param=1e-6, maxiter=500, lr=1., true_mu=None,
                                true_sigma=None, true_X=None, verbose=False, max_try=10, max_ls=10, eps_sig=1e-5,
-                               nsamples=1000):
+                               nsamples=1000, version = "accelerated"):
     """
     Estimates feature mean and covariance matrix of a dataset given missingness parameters, 
     and imputes missing values accordingly.
@@ -254,7 +254,7 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
         max_ls (int): maximum number of line search attempts in L-BFGS (default: 10)
         eps_sig (float): amount added to sigma's diagonal to avoid ill conditionned matrix (default: 1e-5)
         nsamples (int): number of samples used for MOnte-Carlo at imputation step (default: 1000)
-        
+        version (str): version to use, either "original_BSTS_2025" or "accelerated" (default: "accelerated") 
     
     Outputs:
       res_dic (dict): a dictionnary containing:
@@ -292,6 +292,14 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
 
     idx_pep_mis = np.where(np.sum(np.isnan(X), 0) >= 1)[0]
     mu0 = np.nanmean(X, 0)
+    
+    if version == "accelerated":
+        # Dummy imputation
+        mat_impdummy = np.copy(X)
+        inds = np.where(np.isnan(mat_impdummy))  
+        mat_impdummy[inds] = np.take(mu0, inds[1])
+        # Covariance matrix with dummy imputed data
+        matcovar_impdummy = np.cov(mat_impdummy, rowvar = False)
 
     # Initiate initial values of phi
     if phi is None:
@@ -327,7 +335,10 @@ def estimate_params_and_impute(X, phi0=None, phi=None, K=5, psi=1., phi_known=Tr
 
         # Get log-Cholesky parametrization
         # spread_unif = 0.01
-        sigma0 = psi.numpy()*np.eye(p)  # np.diag(np.random.uniform(1 - spread_unif, 1 + spread_unif, p))
+        if version == "accelerated":
+            sigma0 = matcovar_impdummy + (np.eye(p)*0.005)
+        else:
+            sigma0 = psi.numpy()*np.eye(p)  # np.diag(np.random.uniform(1 - spread_unif, 1 + spread_unif, p))
         # sigma0 = np.diag(sigma0)
         # sigma0[sigma0 == 0] = psi.numpy()
         # sigma0 = np.diag(sigma0)
