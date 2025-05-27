@@ -16,6 +16,7 @@ impute_block_llk_reset_PG(
   max_pg_size = NULL,
   max.pg.size2imp = 1,
   verbose = FALSE,
+  version = "accelerated",
   ...
 )
 }
@@ -53,6 +54,9 @@ have effect.}
 
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details ont the process}
+
+\item{version}{Version to use, either "original_BSTS_2025" for the original 
+version or "accelerated" (default) a faster modified version.}
 
 \item{...}{Additional parameters}
 }
@@ -95,7 +99,7 @@ imputed_pgs <- Py_impute_block_llk_reset_PG(
     psi_rna = psi_rna, 
     rna.cond.mask = cond_mask, 
     pep.cond.mask = cond_mask)
-}
+    }
 
 
 }

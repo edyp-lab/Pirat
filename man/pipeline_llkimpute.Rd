@@ -17,7 +17,8 @@ pipeline_llkimpute(
   mcar = FALSE,
   degenerated = FALSE,
   max.pg.size.pirat.t = 1,
-  verbose = FALSE
+  verbose = FALSE,
+  version = "accelerated"
 )
 }
 \arguments{
@@ -64,7 +65,10 @@ experimental purposes.}
 which transcriptomic information is used for imputation.}
 
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
-display more details on the process}
+display more details on the process.}
+
+\item{version}{Version to use, either "original_BSTS_2025" for the original 
+version or "accelerated" (default) a faster modified version.}
 }
 \value{
 The imputed **data.pep.rna.mis$peptides_ab** table.

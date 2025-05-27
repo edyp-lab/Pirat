@@ -13,6 +13,7 @@ impute_block_llk_reset(
   max_pg_size = NULL,
   min.pg.size2imp = 1,
   verbose = FALSE,
+  version = "accelerated",
   ...
 )
 }
@@ -41,6 +42,9 @@ have effect.}
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details on the process}
 
+\item{version}{Version to use, either "original_BSTS_2025" for the original 
+version or "accelerated" (default) a faster modified version.}
+
 \item{...}{Additional arguments}
 }
 \value{
@@ -53,6 +57,20 @@ Imputes each PG separately and return the results for each PG.
 }
 \examples{
 \donttest{
+Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
+proc <- basilisk::basiliskStart(envPirat)
+
+func <- basilisk::basiliskRun(proc, 
+    fun = function(arg1, arg2) {
+        
+        imputed_pgs <- Pirat::impute_block_llk_reset(arg1, arg2)
+        imputed_pgs 
+    }, arg1 = data.pep.rna.mis, arg2 = psi)
+
+basilisk::basiliskStop(proc)
+func
+}
+
 data(subbouyssie)
 obs2NApep <- subbouyssie$peptides_ab[ ,colSums(is.na(subbouyssie$peptides_ab)) <= 0] 
 res_hyperparam <- estimate_psi_df(obs2NApep)
