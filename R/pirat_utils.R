@@ -205,7 +205,7 @@ impute_block_llk_reset <- function(
             
             K = (nu_factor*df + n_pep_cur - 1) + n_pep_cur + 1
             psimat = psi*diag(n_pep_cur)
-            
+
             res_imp = py$estimate_params_and_impute(
                 subpp_ab, 
                 true_X = X_gt, 
