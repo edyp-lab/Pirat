@@ -13,6 +13,7 @@ impute_block_llk_reset(
   max_pg_size = NULL,
   min.pg.size2imp = 1,
   verbose = FALSE,
+  version = "accelerated",
   ...
 )
 }
@@ -41,6 +42,9 @@ have effect.}
 \item{verbose}{A boolean (FALSE as default) which indicates whether to 
 display more details on the process}
 
+\item{version}{Version to use, either "original_BSTS_2025" for the original 
+version or "accelerated" (default) a faster modified version.}
+
 \item{...}{Additional arguments}
 }
 \value{
@@ -52,7 +56,7 @@ A list containing imputation results for each PG, the execution time,
 Imputes each PG separately and return the results for each PG.
 }
 \examples{
-\donttest{
+\dontrun{
 Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 proc <- basilisk::basiliskStart(envPirat)
 
