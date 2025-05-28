@@ -5,8 +5,9 @@
 #' @return An instance of the class `BasiliskEnvironment`
 #' 
 envPirat <- basilisk::BasiliskEnvironment("envPirat",
-  pkgname = "Pirat",
-  packages = c("python==3.9.5", "numpy==1.20.2", "pytorch==1.10.0"),
-  channels = c("bioconda", "conda-forge", "pytorch", "torch")
-  ,path = "myModules"
-  )
+    pkgname = "Pirat",
+    packages = c("python==3.9.5", "numpy==1.20.2", "pytorch==1.10.0"),
+    #channels = c("conda-forge", "pytorch", "torch", "nodefaults")
+    channels = c( "pytorch", "torch", "conda-forge")
+    ,path = "myModules"
+)
