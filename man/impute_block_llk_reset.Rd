@@ -56,7 +56,7 @@ A list containing imputation results for each PG, the execution time,
 Imputes each PG separately and return the results for each PG.
 }
 \examples{
-\donttest{
+\dontrun{
 Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 proc <- basilisk::basiliskStart(envPirat)
 

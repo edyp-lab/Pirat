@@ -23,6 +23,7 @@ From imputation results in each PG and the associate adjacency
 peptide/PG matrix,imputes the original abundance table.  .
 }
 \examples{
+\donttest{
 Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 proc <- basilisk::basiliskStart(envPirat)
 
@@ -46,6 +47,6 @@ res_hyperparam <- estimate_psi_df(obs2NApep)
 psi <- res_hyperparam$psi
 imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
 impute_from_blocks(imputed_pgs, obj)
-
+}
 
 }

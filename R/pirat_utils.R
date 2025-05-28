@@ -115,7 +115,7 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -139,15 +139,15 @@ rm_pg_from_idx_merge_pg <- function(l_pep_rna, pg_idx) {
 #'
 impute_block_llk_reset <- function(
         data.pep.rna.crop,
-        psi,
-        pep_ab_or = NULL,
-        df = 1,
-        nu_factor = 2,
-        max_pg_size = NULL,
-        min.pg.size2imp = 1,
-        verbose = FALSE,
-        version = "accelerated",
-        ...) {
+    psi,
+    pep_ab_or = NULL,
+    df = 1,
+    nu_factor = 2,
+    max_pg_size = NULL,
+    min.pg.size2imp = 1,
+    verbose = FALSE,
+    version = "accelerated",
+    ...) {
     
     py <- reticulate::import("PyPirat", delay_load = TRUE)
     
@@ -171,12 +171,12 @@ impute_block_llk_reset <- function(
     pb <- progress::progress_bar$new(format = "(:spin) [:bar] :percent 
                                    [Elapsed time: :elapsedfull || Estimated 
                                    time remaining: :eta]",
-                                     total = n_params,
-                                     complete = "=",   # Completion bar character
-                                     incomplete = "-", # Incomplete bar character
-                                     current = ">",    # Current bar character
-                                     clear = FALSE,    # If TRUE, clears the bar when finish
-                                     width = 100)      # Width of the progress bar
+        total = n_params,
+        complete = "=",   # Completion bar character
+        incomplete = "-", # Incomplete bar character
+        current = ">",    # Current bar character
+        clear = FALSE,    # If TRUE, clears the bar when finish
+        width = 100)      # Width of the progress bar
     
     for (i in prot.idxs) {
         if(verbose)
@@ -184,7 +184,7 @@ impute_block_llk_reset <- function(
         idx_cur_pep = which(adj[,i] == 1)
         pb$tick(length(idx_cur_pep)^2)
         cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], 
-                        nrow = nsamples)
+            nrow = nsamples)
         colnames(cur_ab) = colnames(data.pep.rna.crop$peptides_ab)[idx_cur_pep]
         if (is.null(pep_ab_or)) {
             X_gt = NULL
@@ -196,7 +196,7 @@ impute_block_llk_reset <- function(
         }
         n_pep_cur = ncol(subpp_ab)
         if (sum(is.na(subpp_ab)) == 0 || # No missing values
-            (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {# No pseudo-MVs
+                (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {# No pseudo-MVs
             logs[[i]] = list()
         } else {
             if (all(is.na(X_gt) == is.na(subpp_ab))) {
@@ -307,24 +307,24 @@ impute_block_llk_reset <- function(
 #'
 impute_block_llk_reset_PG <- function(
         data.pep.rna.crop,
-        psi,
-        psi_rna,
-        rna.cond.mask,
-        pep.cond.mask,
-        pep_ab_or = NULL,
-        df = 2,
-        nu_factor = 1,
-        max_pg_size = NULL,
-        max.pg.size2imp = 1,
-        verbose = FALSE,
-        version = "accelerated",
-        ...) {
+    psi,
+    psi_rna,
+    rna.cond.mask,
+    pep.cond.mask,
+    pep_ab_or = NULL,
+    df = 2,
+    nu_factor = 1,
+    max_pg_size = NULL,
+    max.pg.size2imp = 1,
+    verbose = FALSE,
+    version = "accelerated",
+    ...) {
     
     py <- reticulate::import("PyPirat", delay_load = TRUE)
     
     if (!is.null(max_pg_size)) {
         adjs = split_large_pg_PG(data.pep.rna.crop$adj, max_pg_size,
-                                 data.pep.rna.crop$adj_rna_pg)
+            data.pep.rna.crop$adj_rna_pg)
         adj = adjs$adj
         adj_rna_pg = adjs$adj_rna_pg
     } else {
@@ -347,8 +347,8 @@ impute_block_llk_reset_PG <- function(
         rnas_means = colMeans(matrix(
             data.pep.rna.crop$rnas_ab[rna.cond.mask == i, ,drop = FALSE], nrep_rna))
         rnas_ab[pep.cond.mask == i, ] = matrix(rep(rnas_means, nrep_pep), 
-                                               nrep_pep, 
-                                               byrow =TRUE)
+            nrep_pep, 
+            byrow =TRUE)
         
     }
     if (!is.null(max.pg.size2imp)) {
@@ -376,7 +376,7 @@ impute_block_llk_reset_PG <- function(
         pb$tick((length(idx_cur_pep) + 1)^2)
         idx_cur_rna = which(adj_rna_pg[,i] == 1)
         cur_ab = matrix(data.pep.rna.crop$peptides_ab[,idx_cur_pep], 
-                        nrow = nsamples)
+            nrow = nsamples)
         colnames(cur_ab) = colnames(data.pep.rna.crop$peptides_ab)[idx_cur_pep]
         cur_ab_rna = matrix(rnas_ab[,idx_cur_rna], nrow = nsamples)
         colnames(cur_ab_rna) = colnames(rnas_ab)[idx_cur_rna]
@@ -388,7 +388,7 @@ impute_block_llk_reset_PG <- function(
             X_gt = cbind(cur_ab_gt, cur_ab_rna)
         }
         if (sum(is.na(subpp_ab)) == 0 |
-            (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {
+                (all(is.na(X_gt) == is.na(subpp_ab)) & !is.null(X_gt))) {
             logs[[i]] = list()
         } else {
             if (all(is.na(X_gt) == is.na(subpp_ab))) {
@@ -400,11 +400,11 @@ impute_block_llk_reset_PG <- function(
                 diag(n_pep_cur)
             
             res_imp = py$estimate_params_and_impute(subpp_ab, 
-                                                    true_X = NULL, 
-                                                    K = K, 
-                                                    psi = psimat,
-                                                    version = version,
-                                                    ...) 
+                true_X = NULL, 
+                K = K, 
+                psi = psimat,
+                version = version,
+                ...) 
             
             res_imp$Xhat = res_imp$Xhat[, seq(ncol(cur_ab))]
             ermsg = res_imp$error_msg
@@ -435,6 +435,7 @@ impute_block_llk_reset_PG <- function(
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' Py_impute_block_llk_reset <- function(data.pep.rna.mis, psi) { 
 #' proc <- basilisk::basiliskStart(envPirat)
 #' 
@@ -458,11 +459,11 @@ impute_block_llk_reset_PG <- function(
 #' psi <- res_hyperparam$psi
 #' imputed_pgs <- Py_impute_block_llk_reset(obj, psi)
 #' impute_from_blocks(imputed_pgs, obj)
-#' 
+#' }
 #'
 impute_from_blocks <- function(logs.blocks,
-                               data.pep.rna,
-                               idx_blocks = NULL) {
+    data.pep.rna,
+    idx_blocks = NULL) {
     if (!is.null(logs.blocks$new_adj)) {
         adj = logs.blocks$new_adj
     } else {
