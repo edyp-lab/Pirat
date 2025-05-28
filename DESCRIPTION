@@ -20,7 +20,7 @@ Authors@R:
     person(given = "Manon", 
           family = "Gaudin",
           email = "manon.gaudin@cea.fr",
-          role = c("aut"))
+          role = c("aut")),
     person(given = "Samuel", 
           family = "Wieczorek",
           email = "samuel.wieczorek@cea.fr",
