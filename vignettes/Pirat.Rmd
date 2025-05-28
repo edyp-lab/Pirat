@@ -2,7 +2,7 @@
 title: "Pirat"
 author: 
 - name: Lucas Etourneau
-- name: Samuel Wieczorek"
+- name: Samuel Wieczorek
 package: Pirat
 date: "`r Sys.Date()`"
 output:
