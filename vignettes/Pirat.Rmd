@@ -38,34 +38,25 @@ knitr::opts_chunk$set(
 
 `r Biocpkg("Pirat")` is an `R` package available via the 
 [Bioconductor](http://bioconductor.org) repository for packages. 
-<!-- You can install the release version by using the following commands  -->
-<!-- in your `R` session: -->
 
-<!-- ```{r "install", eval = FALSE} -->
-<!-- if (!requireNamespace("BiocManager", quietly = TRUE)) { -->
-<!--     install.packages("BiocManager") -->
-<!-- } -->
-<!-- BiocManager::install("cfTools") -->
-<!-- ``` -->
-
-You can install the development version from [GitHub](https://github.com/) :
-
+You can install the latest version by executing the following code:
 ```{r install_dev, eval = FALSE}
-BiocManager::install("prostarproteomics/Pirat")
-```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
+BiocManager::install("Pirat")
+```
 
 When calling one of the imputation methods for the first time after package
 installation, the underlying python module and conda environment will be 
 automatically downloaded and installed without the need for user intervention.
 This may take several minutes, but this is a one-time installation. 
-the first time after package installation.
 
 # Standard imputation with Pirat
 
 Pirat is a single imputation pipeline including a novel statistical approach 
 dedicated to bottom-up proteomics data. All the technical details and the 
-validation procedure of this method in available on the corresponding 
+validation procedure of this method are available on the corresponding 
 preprint @Etourneau2023 .
 To demonstrate its usage, we first load Pirat package and a subset of 
 Bouyssie2020 dataset in the environment.
@@ -76,7 +67,7 @@ library(utils)
 data(subbouyssie)
 ```
 
-Note that `subbouyssie` is actually a list that contains two elements:
+Note that `subbouyssie` is a list that contains two elements:
 
 1. `peptides_ab`, the matrix of peptide log-2-abundances, with samples in rows 
 and peptides in columns.
@@ -100,13 +91,6 @@ One can then impute this dataset with the following line
 imp.res <- my_pipeline_llkimpute(subbouyssie)
 ```
 
-The first plot represents the goodness of fit of the inverse-gamma prior, 
-whereas the second one
-represents the goodness of fit of the missingness mechanism (details on fitting 
-methods are given in @Etourneau2023). Note that some of these parameters were 
-originally proposed in @Chen2014, however no methods existed to find then 
-automatically and without relying on heuristics.
-
 The result `imp.res` is a list that contains:
 
 1. `data.imputed`, the imputed log-2 abundance matrix.
@@ -124,7 +108,11 @@ head(imp.res$data.imputed[ ,seq(5)])
 ```{r params}
 imp.res$params
 ```
-Note that a positive value for $\gamma1$ indicates that a random left-truncation mechanism is present in the dataset.
+These parameters were originally proposed in @Chen2014, 
+however no methods were proposed to find then 
+automatically and without heuristics.
+Note that a positive value for $\gamma_1$ indicates that a random 
+left-truncation mechanism is present in the dataset.
 
 # Intra-PG correlation analysis
 
@@ -133,8 +121,8 @@ random and those from same peptide groups (PGs).
 We use it here on the complete Ropers2021 dataset.
 
 ```{r correlations}
-data(subropers)
-plot_pep_correlations(subropers, titlename = "Ropers2021")
+data(ropers)
+plot_pep_correlations(ropers, titlename = "Ropers2021")
 ```
 
 
@@ -146,7 +134,7 @@ plot_pep_correlations(subropers, titlename = "Ropers2021")
  
 To handle singleton PGs, Pirat proposes three extensions, on top of the 
 classical Pirat approach.
-Note that the -T extensions can be applied to up to an arbitrary PG size.
+Note that the -T extension can be applied to up to an arbitrary PG size.
 To illustrate our examples, we use a subset of Ropers2021 dataset.
  
 # -2, the 2-peptide rule
@@ -176,8 +164,8 @@ as following:
 imp.res = my_pipeline_llkimpute(subropers, extension = "S")
 ```
 
-Here singleton peptides are impute after the rest of the dataset, using 
-sample-wise correlations obtained.
+Here the singleton peptides are imputed after the rest of the dataset, using 
+the sample-wise covariance matrix obtained.
 
 
 ```{r impute2}
@@ -210,9 +198,10 @@ imp.res = my_pipeline_llkimpute(subropers,
     max.pg.size.pirat.t = 1)
 ```
 
-Only few peptides have been used to fit the prior variance distribution in 
-$\Sigma$, as we use a small subset from the original Ropers2021 dataset. Thus 
-the goodness of fit may vary a lot depending on the subset chosen.
+Only a few peptides have been used to fit the prior variance distribution in 
+$\Sigma$, as we use a small subset from the original Ropers2021 dataset for 
+demonstration purpose. However, it is preferable
+in general to use the full dataset for both hyperparameter and $\Gamma$ estimation. 
 
 It gives the following imputed singletons:
 
