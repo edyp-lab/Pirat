@@ -136,6 +136,8 @@ pipeline_llkimpute <- function(
     verbose = FALSE,
     version = "accelerated") {
   
+    
+
     if(degenerated == TRUE & extension[1] == "2") {
         stop("Incompatible arguments. \n 'extension == \"2\"' and 'degenerated == TRUE' are not compatible.")
     }
@@ -203,6 +205,7 @@ pipeline_llkimpute <- function(
       min.pg.size2imp <- 1
     }
 
+   
     res_per_block = impute_block_llk_reset(
         data.pep.rna.mis,
         psi = psi, 

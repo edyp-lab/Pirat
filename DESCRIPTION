@@ -7,7 +7,7 @@ Description: Pirat enables the imputation of missing values (either MNARs or
   the instrument censorship from the data available. It accounts for sibling
   peptides correlations and it can leverage complementary transcriptomics
   measurements. 
-Version: 1.3.1
+Version: 1.3.2
 Authors@R: 
   c(person(given = "Lucas", 
           family = "Etourneau", 
@@ -16,6 +16,10 @@ Authors@R:
     person(given = "Laura", 
           family = "Fancello", 
           email = " laura.fancello@cea.fr", 
+          role = c("aut")),
+    person(given = "Manon", 
+          family = "Gaudin",
+          email = "manon.gaudin@cea.fr",
           role = c("aut")),
     person(given = "Samuel", 
           family = "Wieczorek",
@@ -36,9 +40,9 @@ biocViews: Proteomics, MassSpectrometry, Preprocessing, Software
 RoxygenNote: 7.3.2
 BiocViews: Proteomics,  MassSpectrometry
 Depends:
-  R (>= 4.4.0)
+  R (>= 4.5.0)
 Imports:
-    basilisk (>= 1.18.0), reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
+    basilisk, reticulate, progress, ggplot2, MASS, invgamma, grDevices, stats,
     graphics, SummarizedExperiment, S4Vectors
 Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
