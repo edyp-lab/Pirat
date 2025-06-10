@@ -183,11 +183,11 @@ To use this extension, the list of the dataset must contain:
 * `rnas_ab`, an log2-normalized-count table of gene or transcript expression, 
 for which samples are either paired or related (*i.e.*, from the same 
 experimental/biological conditions).
-* `adj_rna_pg`, a adjacency matrix between transcripts or genes and PGs, 
+* `adj_rna_pg`, an adjacency matrix between transcripts or genes and PGs, 
 containing either booleans or 0s and 1s.
 
 `ropers` proteomic and transcriptomic samples are paired (*i.e.* the same 
-biological samples were used for each type of analysis). Thus Pirat-T can be 
+biological samples were used for each type of analysis). Thus, Pirat-T can be 
 used as following:
 
 ```{r my_pipeline_llkimpute3}
