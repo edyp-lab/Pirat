@@ -6,11 +6,13 @@
 
 ## Installation
 
-To install this package from Github:
+To install this package:
 
 ```
-install.packages('BiocManager')
-BiocManager::install('edyp-lab/Pirat', version = '3.21')
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.21")
+BiocManager::install('Pirat')
 
 ```
 
