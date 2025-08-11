@@ -5,7 +5,7 @@ import torch as t
 #from PyPirat import FullBatchLBFGS
 #from LBFGS import FullBatchLBFGS
 import time
-#import PyPirat
+import PyPirat
 
 
 
