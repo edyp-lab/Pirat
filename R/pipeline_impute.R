@@ -102,21 +102,20 @@ NULL
 #' @importFrom basilisk basiliskStart basiliskRun basiliskStop
 #' 
 my_pipeline_llkimpute <- function(data.pep.rna.mis, ...) { 
-    message('Starting Python environment...\n')
-     proc <- basilisk::basiliskStart(envPirat)
-    on.exit(basilisk::basiliskStop(proc))
-    
-    some_useful_thing <- basilisk::basiliskRun(proc, 
-        fun = function(arg1, ...) {
-            
-            output <- pipeline_llkimpute(arg1, ...)
-            # The return value MUST be a pure R object, i.e., no reticulate
-            # Python objects, no pointers to shared memory. 
-            output 
-        }, arg1 = data.pep.rna.mis, ...)
-    
-    basilisk::basiliskStop(proc)
-    some_useful_thing 
+    message('Creating python env w/ reticulate...\n')
+    proc <- basilisk::basiliskStart(envPirat)
+   on.exit(basilisk::basiliskStop(proc))
+   some_useful_thing <- basilisk::basiliskRun(proc,
+       fun = function(arg1, ...) {
+           reticulate::py_require(packages = c("torch==2.0.0", "numpy==1.22"))
+           output <- pipeline_llkimpute(arg1, ...)
+           # The return value MUST be a pure R object, i.e., no reticulate
+           # Python objects, no pointers to shared memory.
+           output
+       }, arg1 = data.pep.rna.mis, ...)
+
+   basilisk::basiliskStop(proc)
+   some_useful_thing 
 }
 
 
@@ -146,8 +145,9 @@ pipeline_llkimpute <- function(
     }
     
     extension <- match.arg(extension)
-    
-    py <- reticulate::import("PyPirat")
+    reticulate::py_require(packages = c("torch==2.0.0", "numpy==1.22"))
+    py <- reticulate::import("torch", delay_load = TRUE)
+    py <- reticulate::import("PyPirat", delay_load = TRUE)
 
   psi_rna = NULL
   

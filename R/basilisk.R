@@ -6,8 +6,8 @@
 #' 
 envPirat <- basilisk::BasiliskEnvironment("envPirat",
     pkgname = "Pirat",
-    packages = c("pytorch=2.5.1"), #, "cpuonly=2.0", "numpy=1.24"), # "numpy=1.24"), #, "numpy", "pytorch", "cpuonly"),
+    packages = c("python=3.10"), #, "cpuonly=2.0", "numpy=1.24"), # "numpy=1.24"), #, "numpy", "pytorch", "cpuonly"),
     #channels = c("conda-forge", "pytorch", "torch", "nodefaults"),
-    channels = c("pytorch", "conda-forge", "bioconda"),
+    channels = c("conda-forge"),
     path = "myModules"
 )
