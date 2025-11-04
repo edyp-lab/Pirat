@@ -4,10 +4,9 @@
 #' @export
 #' @return An instance of the class `BasiliskEnvironment`
 #' 
-envPirat <- basilisk::BasiliskEnvironment("envPirat",
-    pkgname = "Pirat",
-    packages = c("python=3.10"), #, "cpuonly=2.0", "numpy=1.24"), # "numpy=1.24"), #, "numpy", "pytorch", "cpuonly"),
-    #channels = c("conda-forge", "pytorch", "torch", "nodefaults"),
-    channels = c("conda-forge"),
-    path = "myModules"
+envPirat <- basilisk::BasiliskEnvironment(
+  "envPirat",
+  pkgname = "Pirat",
+  packages = c("python=3.10", "torch=1.13.1", "numpy=1.21"), 
+  path = "myModules"
 )
