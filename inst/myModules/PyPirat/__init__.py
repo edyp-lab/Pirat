@@ -1,4 +1,4 @@
 # __init__.py
 
-from .LBFGS import * 
+from .lbfgs import * 
 from .llk_maximize import *

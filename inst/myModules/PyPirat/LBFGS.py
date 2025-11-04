@@ -1,4 +1,4 @@
-# LBFGS.py
+# lbfgs.py
 
 import torch
 import numpy as np
