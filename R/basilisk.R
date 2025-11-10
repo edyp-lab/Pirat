@@ -4,9 +4,15 @@
 #' @export
 #' @return An instance of the class `BasiliskEnvironment`
 #' 
+# If machine is Linux or Windows, add +cpu to torch version
+torch_version <- if (.Platform$OS.type == "unix") {
+  "torch==1.13.1"
+} else {
+  "torch==1.13.1+cpu"
+}
 envPirat <- basilisk::BasiliskEnvironment(
   "envPirat",
   pkgname = "Pirat",
-  packages = c("python=3.10", "torch=1.13.1+cpu", "numpy=1.21"), 
+  packages = c("python=3.10", torch_version, "numpy=1.21"), 
   path = "myModules"
 )
