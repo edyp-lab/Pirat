@@ -7,6 +7,6 @@
 envPirat <- basilisk::BasiliskEnvironment(
   "envPirat",
   pkgname = "Pirat",
-  packages = c("python=3.11", "torch=2.5.1", "numpy=1.24"), 
+  packages = c("python=3.10", "torch=2.5.1", "numpy=1.24"), 
   path = "myModules"
 )
