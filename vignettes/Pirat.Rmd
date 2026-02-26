@@ -57,7 +57,7 @@ This may take several minutes, but this is a one-time installation.
 Pirat is a single imputation pipeline including a novel statistical approach 
 dedicated to bottom-up proteomics data. All the technical details and the 
 validation procedure of this method are available on the corresponding 
-preprint @Etourneau2023 .
+preprint @etourneau_penalized_2025 .
 To demonstrate its usage, we first load Pirat package and a subset of 
 Bouyssie2020 dataset in the environment.
 
