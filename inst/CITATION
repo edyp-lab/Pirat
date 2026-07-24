@@ -1,0 +1,25 @@
+bibentry(
+  bibtype = "Article",
+  title = "Penalized likelihood optimization for censored missing value imputation in proteomics",
+  author = c(
+    person("Lucas", "Etourneau"),
+    person("Laura", "Fancello"),
+    person("Samuel", "Wieczorek"),
+    person("Nelle", "Varoquaux"),
+    person("Thomas", "Burger")
+  ),
+  journal = "Biostatistics",
+  year = "2025",
+  month = "January",
+  volume = "26",
+  number = "1",
+  pages = "kxaf006",
+  doi = "10.1093/biostatistics/kxaf006",
+  url = "https://doi.org/10.1093/biostatistics/kxaf006",
+  
+  textVersion = paste0(
+    "Etourneau L, Fancello L, Wieczorek S, Varoquaux N, Burger T (2025). ",
+    "\"Penalized likelihood optimization for censored missing value imputation in proteomics.\" ",
+    "Biostatistics, 26(1), kxaf006. doi:10.1093/biostatistics/kxaf006."
+  )
+)
